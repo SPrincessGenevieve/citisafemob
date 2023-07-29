@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 
 import FirstScreen from './screen/login/FirstScreen';
 import SecondScreen from './screen/login/SecondScreen';
+import HomeScreen from './screen/home/HomeScreen';
 
 const { height } = Dimensions.get('window');
 
@@ -16,9 +17,14 @@ function App() {
     scrollViewRef.current.getNode().scrollTo({ y: -currentScreenIndex.current * height - offsetY, animated: false });
   };
 
+  const [appear, setAppear] = useState(true)
+  const [appearHome, setAppearHome] = useState(false)
+
   return (
     <View style={styles.container}>
-      <PanGestureHandler onGestureEvent={handleSwipe}>
+      {appear ? 
+        <>
+        <PanGestureHandler onGestureEvent={handleSwipe}>
         <ScrollView
           ref={scrollViewRef}
           vertical
@@ -30,16 +36,19 @@ function App() {
           }}
           scrollEventThrottle={1}
         >
+          {/* SCREEN */}
           <View style={styles.screenContainer}>
             <FirstScreen />
           </View>
 
           <View style={styles.screenContainer}>
-            <SecondScreen />
+            <SecondScreen onPress={() => setAppear(!appear) & setAppearHome(!appearHome)}/>
           </View>
           
         </ScrollView>
-      </PanGestureHandler>
+      </PanGestureHandler></>
+      : null}
+      {appearHome ? <HomeScreen onPress={() => setAppearHome(!appearHome) & setAppear(!appear)}></HomeScreen> : null}
     </View>
   );
 }

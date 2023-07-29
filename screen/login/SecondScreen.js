@@ -6,7 +6,7 @@ import ConstInput from '../../components/ConstInput';
 import ConstButton from '../../components/ConstButton';
 import TextButton from '../../components/TextButton';
 
-const SeecondScreen = () => {
+const SeecondScreen = ({onSignIn, onPress}) => {
   const [isVisible, setIsVisible] = useState(true);
   const fadeAnim = new Animated.Value(1);
 
@@ -31,8 +31,11 @@ const SeecondScreen = () => {
 
   if (!fontLoaded) return null;
 
+  
+
   return (
     <View style={styles.container}>
+      
       <Image style={{width: 440, height: "100%", marginTop: "140%"}} source={require('./../../assets/images/header.png')}></Image>
       <LinearGradient
         colors={['rgba(45, 82, 178, 1)', 'rgba(45, 82, 178, 0.2)']}
@@ -52,9 +55,9 @@ const SeecondScreen = () => {
           marginTop: '35%',
         }}
       >
-        <ConstInput name="ios-person-outline"></ConstInput>
-        <ConstInput name="ios-lock-closed-outline"></ConstInput>
-        <ConstButton title="Sign In"></ConstButton>
+        <ConstInput title= "Username" name="ios-person-outline"></ConstInput>
+        <ConstInput title="Password" name="ios-lock-closed-outline"></ConstInput>
+        <ConstButton onPress={onPress} title="Sign In"></ConstButton>
         <TextButton title="Forgot Password?"></TextButton>
       </View>
       
@@ -67,13 +70,7 @@ const SeecondScreen = () => {
           width: '100%',
           position: 'relative',
         }}
-      >
-        <View style={{width:"100%", padding: 10}}>
-          
-        </View>
-        
-
-
+      >      
       </View>
     </View>
   );

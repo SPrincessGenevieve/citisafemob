@@ -4,7 +4,7 @@ import { View, StyleSheet, Image, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon
 
 
-function ConstInput({ name, label, onChange, placeholder, value }) {
+function ConstInput({ name, label, onChange, placeholder, value, title }) {
   const customTheme = {
     ...DefaultTheme,
     colors: {
@@ -16,7 +16,7 @@ function ConstInput({ name, label, onChange, placeholder, value }) {
 
   return (
     <View style={{ width: '100%' }}>
-        <Text style={{marginBottom: 10, color: "white", fontSize: 15}}>Username</Text>
+        <Text style={{marginBottom: 10, color: "white", fontSize: 15}}>{title}</Text>
         <Icon style={{fontSize: 20, color: "white", marginLeft: 10, marginTop: 49, position:"absolute"}} name={name}></Icon>
 
         <TextInput

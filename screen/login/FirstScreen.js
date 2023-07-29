@@ -97,7 +97,7 @@ const FirstScreen = () => {
           <>
             <Animated.Image
               style={{
-                opacity: 0.4,
+                opacity: 0.2,
                 opacity: fadeAnim, // Apply fade animation to the image
               }}
               source={require('./../../assets/images/up.gif')}
@@ -105,7 +105,7 @@ const FirstScreen = () => {
             <Animated.Text
               style={{
                 fontSize: 30,
-                opacity: 0.5,
+                opacity: 0.2,
                 color: 'white',
                 position: 'absolute',
                 top: 0,
