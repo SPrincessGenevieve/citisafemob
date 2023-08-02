@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { GestureHandlerRootView, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 
 import FirstScreen from './screen/login/FirstScreen';
 import SecondScreen from './screen/login/SecondScreen';
@@ -24,7 +24,7 @@ function App() {
     <View style={styles.container}>
       {appear ? 
         <>
-        <PanGestureHandler onGestureEvent={handleSwipe}>
+        <GestureHandlerRootView onGestureEvent={handleSwipe}>
         <ScrollView
           ref={scrollViewRef}
           vertical
@@ -46,7 +46,7 @@ function App() {
           </View>
           
         </ScrollView>
-      </PanGestureHandler></>
+      </GestureHandlerRootView></>
       : null}
       {appearHome ? <HomeScreen onPress={() => setAppearHome(!appearHome) & setAppear(!appear)}></HomeScreen> : null}
     </View>

@@ -1,15 +1,17 @@
 import { Camera } from 'expo-camera';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Alert, Button, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native';
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { IconButton } from 'react-native-paper';
+import RNTextDetector from 'react-native-tesseract-ocr'
 
 function ScanScreen() {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [camera, setCamera] = useState(null);
   const [image, setImage] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [showCamera, setShowCamera] = useState(true); 
+  const [showCamera, setShowCamera] = useState(true);
+  const [result, setResult] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -17,6 +19,28 @@ function ScanScreen() {
       setHasCameraPermission(cameraStatus.status === 'granted');
     })();
   }, []);
+
+  const scanImage = async () => {
+    try {
+      if (!image) {
+        console.warn('No image to scan.');
+        return;
+      }
+
+      const tesseractOptions = {
+        whitelist: null,
+        blacklist: null,
+      };
+      const extractedText = await RNTextDetector.detectFromUri(image, tesseractOptions);
+      console.log('Extracted Text:', extractedText);
+
+      // Update the result state with the extracted text
+      setResult(extractedText);
+
+    } catch (error) {
+      console.error('Error during OCR:', error);
+    }
+  };
 
   const takePicture = async () => {
     if (camera) {
@@ -29,6 +53,7 @@ function ScanScreen() {
   const recaptureImage = () => {
     setShowCamera(true);
     setImage(null);
+    setResult(''); // Reset the OCR result when recapturing the image
   };
 
   if (hasCameraPermission === false) {
@@ -36,31 +61,37 @@ function ScanScreen() {
   }
 
   return (
-    <View style={{ backgroundColor:"black", position:"absolute", height:"100%", width:"100%" }}>
+    <View style={{ backgroundColor: "black", position: "absolute", height: "100%", width: "100%" }}>
       {showCamera ? (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <Camera ref={ref => setCamera(ref)} style={styles.camera} type={type} ratio={'16:9'} />
         </View>
-      ):(
+      ) : (
         <View style={styles.imageContainer}>
           <Image source={{ uri: image }} style={styles.capturedImage}></Image>
         </View>
       )}
 
-{showCamera ? (
+      {showCamera ? (
         <View style={styles.imageButtonsContainer}>
-          <IconButton  iconColor='white' onPress={takePicture} size={40} style={{fontSize: 100}} icon="camera"></IconButton>
-          <IconButton  iconColor='white' onPress={() => setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back)} size={40} style={{fontSize: 100}} icon="camera-switch"></IconButton>
+          <IconButton iconColor='white' onPress={takePicture} size={40} style={{ fontSize: 100 }} icon="camera"></IconButton>
+          <IconButton iconColor='white' onPress={() => setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back)} size={40} style={{ fontSize: 100 }} icon="camera-switch"></IconButton>
         </View>
       ) : (
         <View style={styles.imageButtonsContainer}>
-          <TouchableOpacity style={styles.proceedButton} onPress={recaptureImage}>
+          <TouchableOpacity style={styles.recaptureButton} onPress={recaptureImage}>
             <Text style={styles.proceedButtonText}>Recapture</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.proceedButton} onPress={() => console.log('Proceed to the next step')}>
+
+          <TouchableOpacity style={styles.proceedButton} onPress={scanImage}>
             <Text style={styles.proceedButtonText}>Scan ID</Text>
           </TouchableOpacity>
+        </View>
+      )}
+
+      {result !== '' && (
+        <View style={{ backgroundColor: "pink", height: 400, width: 400, justifyContent: "center", alignItems: "center" }}>
+          <Text style={{ fontSize: 30 }}>{result}</Text>
         </View>
       )}
     </View>
