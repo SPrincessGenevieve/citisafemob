@@ -17,6 +17,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "@react-navigation/native";
+import ConstButtonShort from "./ConstButtonShort";
 
 export default function CameraScan({title, style}) {
     const [cameraMode, setCameraMode] = useState(CameraType.back);
@@ -104,7 +105,7 @@ export default function CameraScan({title, style}) {
             const extractedText = response.data.ParsedResults[0]?.ParsedText || "No text found.";
 
             // Display the extracted text using an alert
-            Alert.alert("Extracted Texts", extractedText);
+            //Alert.alert("Extracted Texts", extractedText);
         } else {
             // If no valid data found, display an error message
             Alert.alert("Text extraction failed. Please try again later.");
@@ -156,22 +157,10 @@ export default function CameraScan({title, style}) {
         {showPicture ? (
           <View style={styles.pictureContainer}>
             <Image style={styles.picture} source={{ uri: pictureUri }} />
-            
-            
-            <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
-              <Text style={styles.nextText}>Next</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.cancelBtn} onPress={cancelPicture}>
-              <Text style={styles.cancelText}>Cancel</Text>
-            </TouchableOpacity>
-
-{/*JAYDE AKO LANG NI GI BUTANG PARA MAKA START NAKO SA FORM....*/}
-            <TouchableOpacity style={{backgroundColor:"green", width: "30%", alignItems:"center", justifyContent:"center", marginTop: -100, height: 50}} onPress={handleORCRScreen}>
-              <Text style={{color:"white"}}>FORM</Text>
-            </TouchableOpacity>
-
-
+            <View style={{height: 250, width: 300, position:"absolute", marginTop: 550, top: 1, justifyContent:"center", alignItems:"center", flexDirection:"row"}}>
+                <ConstButtonShort onPress={cancelPicture} name="close" title="Cancel" backgroundColor="#C8B23D"></ConstButtonShort>
+                <ConstButtonShort onPress={handleNextButton && handleORCRScreen} name="check" title="Next" backgroundColor="#5F5DC5"></ConstButtonShort>
+            </View>
 
           </View>
         ) : (
