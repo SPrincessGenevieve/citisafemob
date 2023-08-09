@@ -23,6 +23,9 @@ function FirstScreen({navigation}) {
   const handleLogin = () =>{
     navigation.navigate("HomeScreen");
   }
+  const handleForgotPass = () =>{
+    navigation.navigate("ForgotPass");
+  }
 
 
   return (
@@ -44,7 +47,7 @@ function FirstScreen({navigation}) {
                     
                     <View style={{width:"100%", marginTop: 20}}>
                       <ConstButton name="login" title="Sign In" onPress={handleLogin}></ConstButton>
-                      <TextButton></TextButton>
+                      <TextButton onPress={handleForgotPass}></TextButton>
                     </View>
                     
                     </View>
