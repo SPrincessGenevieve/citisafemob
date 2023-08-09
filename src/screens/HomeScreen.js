@@ -45,7 +45,7 @@ function HomeScreen({navigation}) {
 
             <View style={{alignItems:"center", justifyContent:"center", width:"80%", marginTop: "30%"}}>
             <ConstButton onPress={handleRecord} name="book" title="Check Records"></ConstButton>
-            <ConstButton onPress={handleForm} name="scan1" title="Scan Driver's License and OR/CR"></ConstButton>
+            <ConstButton onPress={handleOCRSreen} name="scan1" title="Scan Driver's License and OR/CR"></ConstButton>
             </View>
             
         </View>
