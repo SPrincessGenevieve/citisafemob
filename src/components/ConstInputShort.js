@@ -3,7 +3,7 @@ import { Toucha } from 'react-native';
 import { Text, TextInput, View } from 'react-native';
 import { useFonts } from 'expo-font';
 
-function ConstInputShort({marginRight, marginLeft, width, placeholder, text, onPress, autoCapitalize, value}) {
+function ConstInputShort({editable, marginRight, marginLeft, width, placeholder, text, onPress, autoCapitalize, value}) {
 
     const [fontsLoaded] = useFonts({
         'Roboto-Light': require('./../../assets/fonts/Roboto-Light.ttf'),
@@ -16,7 +16,7 @@ function ConstInputShort({marginRight, marginLeft, width, placeholder, text, onP
     return (
         <View style={{width:"33.3%", marginLeft: marginLeft, marginRight: marginRight}}>
                 <Text style={{fontSize: 10, color: "white", fontFamily:"Roboto-Light", marginLeft: 7}}>{text}</Text>
-                <TextInput value={value} placeholder={placeholder} placeholderTextColor="white" autoCapitalize={autoCapitalize}
+                <TextInput editable={editable} value={value} placeholder={placeholder} placeholderTextColor="white" autoCapitalize={autoCapitalize}
                 style=
                     {{
                         color:"white", 

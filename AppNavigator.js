@@ -9,6 +9,7 @@ import Records from './src/screens/Records';
 import ORCRScreen from './src/screens/ORCRScreen';
 import FormScreen from './src/screens/FormScreen';
 import Violations from './src/screens/Violations';
+import Profile from './src/screens/Profile';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ function AppNavigator(props) {
                 <Stack.Screen name="Records" options={{headerShown:false}} component={Records}/>
                 <Stack.Screen name="FormScreen" options={{headerShown:false}} component={FormScreen}/>
                 <Stack.Screen name="ViolationScreen" options={{headerShown:false}} component={Violations}/>
+                <Stack.Screen name="Profile" options={{headerShown:false}} component={Profile}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

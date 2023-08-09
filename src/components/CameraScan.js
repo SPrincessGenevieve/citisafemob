@@ -104,7 +104,7 @@ export default function CameraScan({title, style}) {
             const extractedText = response.data.ParsedResults[0]?.ParsedText || "No text found.";
 
             // Display the extracted text using an alert
-            Alert.alert("Extracted Text", extractedText);
+            Alert.alert("Extracted Texts", extractedText);
         } else {
             // If no valid data found, display an error message
             Alert.alert("Text extraction failed. Please try again later.");

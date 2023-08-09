@@ -23,32 +23,32 @@ function FormScreen({navigation}) {
         <KeyboardWithoutWrapper>
             <View style={styles.contanier}>
                 <View style={{ padding: 30, paddingTop: 50 }}>
-                        <ConstInput autoCapitalize="characters" text="Last Name, First Name, Middle Name"></ConstInput>
+                        <ConstInput value="ENGRACIA, JAYDE MIKE"  autoCapitalize="characters" text="Last Name, First Name, Middle Name"></ConstInput>
                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort text="Nationality"></ConstInputShort>
-                        <ConstInputShort text="Sex"></ConstInputShort>
-                        <ConstInputShort text="Date of Birth"></ConstInputShort>
+                        <ConstInputShort value="Filipino" text="Nationality"></ConstInputShort>
+                        <ConstInputShort value="M" text="Sex"></ConstInputShort>
+                        <ConstInputShort value="03/23/2000" text="Date of Birth"></ConstInputShort>
                     </View>
-                        <ConstInput text="Address"></ConstInput>
+                        <ConstInput value="Baranggay Unahan, Cagayan De Oro, Bukidnon" text="Address"></ConstInput>
                     <View style={{flexDirection:"row", marginTop: 30}}>
-                        <ConstInputShort width="200%" text="Driver License Number"></ConstInputShort>
-                        <ConstInputShort marginLeft="35%" text="Type"></ConstInputShort>
+                        <ConstInputShort value="ABC-12341313813-dadA" width="200%" text="Driver License Number"></ConstInputShort>
+                        <ConstInputShort value="Non Prof." marginLeft="35%" text="Type"></ConstInputShort>
                     </View>
                     <View style={{flexDirection:"row", marginTop: 30}}>
-                        <ConstInputShort text="Vehicle Plate No."></ConstInputShort>
-                        <ConstInputShort text="Make"></ConstInputShort>
-                        <ConstInputShort text="Model"></ConstInputShort>
+                        <ConstInputShort value="RAR-2323" text="Vehicle Plate No."></ConstInputShort>
+                        <ConstInputShort value="TESLA" text="Make"></ConstInputShort>
+                        <ConstInputShort value="Tesla Model 1" text="Model"></ConstInputShort>
                     </View>
                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort text="Color"></ConstInputShort>
-                        <ConstInputShort text="Class"></ConstInputShort>
-                        <ConstInputShort text="Body Markings"></ConstInputShort>
+                        <ConstInputShort value="Tesla Model 1" text="Color"></ConstInputShort>
+                        <ConstInputShort value="Truck" text="Class"></ConstInputShort>
+                        <ConstInputShort value="None" text="Body Markings"></ConstInputShort>
                     </View>
-                        <ConstInput text="Registered Owner"></ConstInput>
-                        <ConstInput marginTop="10%" text="Address"></ConstInput>
+                        <ConstInput value="JAYDE MIKE ENGRACIA" text="Registered Owner"></ConstInput>
+                        <ConstInput value="Baranggay Unahan, Cagayan De Oro, Bukidnon" marginTop="10%" text="Address"></ConstInput>
                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort text="Contact No."></ConstInputShort>
-                        <ConstInputShort text="Telephone No. "></ConstInputShort>
+                        <ConstInputShort value="09123456789" text="Contact No."></ConstInputShort>
+                        <ConstInputShort value="909-2342334" text="Telephone No. "></ConstInputShort>
                     </View>
                 </View>   
             </View>
