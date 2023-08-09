@@ -1,56 +1,15 @@
-import React, { useRef, useState } from 'react';
-import { GestureHandlerRootView, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React from 'react';
+import AppNavigator from './AppNavigator';
 
-import FirstScreen from './screen/login/FirstScreen';
-import SecondScreen from './screen/login/SecondScreen';
-import HomeScreen from './screen/home/HomeScreen';
 
+const Stack = createNativeStackNavigator();
 const { height } = Dimensions.get('window');
 
-function App() {
-  const scrollViewRef = useRef(null);
-  const currentScreenIndex = useRef(0);
+export default function App() {
 
-  const handleSwipe = (event) => {
-    const offsetY = event.nativeEvent.translationY;
-    scrollViewRef.current.getNode().scrollTo({ y: -currentScreenIndex.current * height - offsetY, animated: false });
-  };
-
-  const [appear, setAppear] = useState(true)
-  const [appearHome, setAppearHome] = useState(false)
-
-  return (
-    <View style={styles.container}>
-      {appear ? 
-        <>
-        <GestureHandlerRootView onGestureEvent={handleSwipe}>
-        <ScrollView
-          ref={scrollViewRef}
-          vertical
-          pagingEnabled
-          showsVerticalScrollIndicator={false}
-          onMomentumScrollEnd={(event) => {
-            const offsetY = event.nativeEvent.contentOffset.y;
-            currentScreenIndex.current = Math.round(offsetY / height);
-          }}
-          scrollEventThrottle={1}
-        >
-          {/* SCREEN */}
-          <View style={styles.screenContainer}>
-            <FirstScreen />
-          </View>
-
-          <View style={styles.screenContainer}>
-            <SecondScreen onPress={() => setAppear(!appear) & setAppearHome(!appearHome)}/>
-          </View>
-          
-        </ScrollView>
-      </GestureHandlerRootView></>
-      : null}
-      {appearHome ? <HomeScreen onPress={() => setAppearHome(!appearHome) & setAppear(!appear)}></HomeScreen> : null}
-    </View>
-  );
+  return <AppNavigator></AppNavigator>
 }
 
 const styles = StyleSheet.create({
@@ -62,5 +21,3 @@ const styles = StyleSheet.create({
     height,
   },
 });
-
-export default App;
