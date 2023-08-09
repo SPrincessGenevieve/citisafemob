@@ -16,7 +16,7 @@ function ViolationCheck({value, text, id}) {
                 color={isChecked ? '#8CACFF' : 'white'}
                 value={isChecked}
                 onValueChange={handleCheckboxChange}
-                style={{ height: 30, width: 30, borderWidth: 1, borderColor: 'white', borderRadius: 5}}
+                style={{ height: 30, width: 30, borderWidth: 1, borderColor: 'white', borderRadius: 2}}
             />
             <Text style={{ fontSize: 15, marginLeft: 20, color: 'white' }}>{text}</Text>
         </View>
