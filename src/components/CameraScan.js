@@ -1,17 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { 
-    View, 
-    TouchableOpacity, 
-    StyleSheet, 
-    Alert, 
-    Image,
-    Text } from "react-native";
-import { 
-    Camera, 
-    CameraType, 
-    requestCameraPermissionsAsync, 
-    getCameraPermissionsAsync, // Fixed typo here
-} from "expo-camera";
+import {     View, TouchableOpacity, StyleSheet, Alert, Image, Text, ScrollView} from "react-native";
+import { Camera, CameraType, requestCameraPermissionsAsync, getCameraPermissionsAsync} from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
@@ -19,16 +8,17 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "@react-navigation/native";
 import ConstButtonShort from "./ConstButtonShort";
 
-export default function CameraScan({title, style}) {
+
+export default function ScanScreen({title, style}) {
     const [cameraMode, setCameraMode] = useState(CameraType.back);
     const [flash, setFlash] = useState("off"); // Changed to string type
     const [pictureUri, setPictureUri] = useState("");
     const cameraRef = useRef();
     const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picture
     const navigation = useNavigation();
-    const handleORCRScreen = () => {
-      navigation.navigate('FormScreen')
-    }
+    const [extractedText, setExtractedText] = useState("");
+
+
 
     useEffect(() => {
         requestPermission();
@@ -77,46 +67,77 @@ export default function CameraScan({title, style}) {
         setShowPicture(false);
       };    
 
-    const handleNextButton = async () => {
-      try {
-        // Make sure there's a picture to process
-        if (!pictureUri) {
+      const handleNextButton = async () => {
+        try {
+          if (!pictureUri) {
             Alert.alert("Please take a picture first.");
             return;
-        }
+          }
+    
+          const apiUrl = "https://api.mindee.net/v1/products/SPrincessGenevieve/gems/v1/predict";
+          const apiKey = "Token 5f9a18dcb66e4eca17af461b4b619bc9";
+    
+          const formData = new FormData();
+          formData.append("document", {
+            uri: pictureUri,
+            name: "image.jpg",
+            type: "image/jpeg",
+          });
+    
+          const response = await axios.post(apiUrl, formData, {
+            headers: {
+              Authorization: apiKey,
+              "Content-Type": "multipart/form-data",
+            },
+          });
+    
+          console.log("Mindee API Response:", response.data);
+    
+          if (response?.data?.document?.inference?.prediction) {
+            const extractedFields = response.data.document.inference.prediction;
+    
+            const displayOrder = [
+              "type",
+              "last_name_first_name_middle_name",
+              "nationality",
+              "sex",
+              "date_of_birth",
+              "weight",
+              "height",
+              "address",
+              "license_no",
+              "expiration_date",
+              "agency_code",
+              "blood_type",
+              "eyes_color",
+              "dl_codes",
+              "conditions",
+              "restrictions",
+            ];
+    
+            const extractedTexts = displayOrder
+          .map((key) => {
+            const values = extractedFields[key].values;
+            const contentArray = values.map((item) => item.content);
+            const content = contentArray.join("\n");
+            return `"${key}":\n${content}`;
+          })
+          .join("\n\n");
 
-        // Call the OCR.space API to extract text from the image
-        const apiKey = 'K82669019388957'; // Replace this with your OCR.space API key
-        const apiUrl = 'https://api.ocr.space/parse/image';
-
-        const formData = new FormData();
-        formData.append('apikey', apiKey);
-        formData.append('language', 'eng');
-        formData.append('isOverlayRequired', 'false');
-        formData.append('file', { uri: pictureUri, name: 'image.jpg', type: 'image/jpeg' }); // Use the 'uri' property here
-        formData.append('OCREngine', '2')
-
-        const response = await axios.post(apiUrl, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
-
-        // Check if the response contains valid data and extracted text
-        if (response?.data?.ParsedResults?.length > 0) {
-            const extractedText = response.data.ParsedResults[0]?.ParsedText || "No text found.";
-
-            // Display the extracted text using an alert
-            //Alert.alert("Extracted Texts", extractedText);
-        } else {
-            // If no valid data found, display an error message
-            Alert.alert("Text extraction failed. Please try again later.");
-        }
-      } catch (error) {
-          console.log("Error extracting text:", error);
-          Alert.alert("Error extracting text. Please try again later.");
-          // Handle the error here
+        setExtractedText(extractedTexts);
+        console.log("Extracted Texts:", extractedFields);
+      } else {
+        Alert.alert("Text extraction failed. Please try again later.");
       }
-
+    } catch (error) {
+      console.log("Error extracting text:", error);
+      Alert.alert("Error extracting text. Please try again later.");
     }
+  };
+      
+      
+      
+      
 
     if (!getPermission()) {
         return Alert.alert(
@@ -151,17 +172,26 @@ export default function CameraScan({title, style}) {
 
 
 
-  return(
-        <View style={styles.container}>
+    return (
+      <View style={styles.container}>
         {/* Show the camera preview or the captured picture */}
         {showPicture ? (
           <View style={styles.pictureContainer}>
             <Image style={styles.picture} source={{ uri: pictureUri }} />
-            <View style={{height: 250, width: 300, position:"absolute", marginTop: 550, top: 1, justifyContent:"center", alignItems:"center", flexDirection:"row"}}>
-                <ConstButtonShort onPress={cancelPicture} name="close" title="Cancel" backgroundColor="#C8B23D"></ConstButtonShort>
-                <ConstButtonShort onPress={handleNextButton && handleORCRScreen} name="check" title="Next" backgroundColor="#5F5DC5"></ConstButtonShort>
+            <View style={{ backgroundColor: "red", position: "absolute", width: "100%", height: "100%" }}>
+              <ScrollView>
+                <View>
+                  <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Scan Result</Text>
+                  <Text style={{ color: "white", fontSize: 16, textAlign: "left", margin: 10 }}>
+                    {extractedText || "No data extracted."}
+                  </Text>
+                </View>
+              </ScrollView>
             </View>
-
+            <View style={{ height: 250, width: 300, position: "absolute", marginTop: 550, top: 1, justifyContent: "center", alignItems: "center", flexDirection: "row" }}>
+              <ConstButtonShort onPress={cancelPicture} name="close" title="Cancel" backgroundColor="#C8B23D" />
+              <ConstButtonShort onPress={handleNextButton} name="check" title="Next" backgroundColor="#5F5DC5" />
+            </View>
           </View>
         ) : (
           <View style={styles.cameraContainer}>
@@ -260,3 +290,6 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   });
+
+
+
