@@ -15,6 +15,7 @@ export default function ScanScreen({title, style}) {
     const [pictureUri, setPictureUri] = useState("");
     const cameraRef = useRef();
     const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picture
+    const [result, setResult] = useState(false); // New state variable to control showing the picture
     const navigation = useNavigation();
     const [extractedText, setExtractedText] = useState("");
 
@@ -133,6 +134,7 @@ export default function ScanScreen({title, style}) {
       console.log("Error extracting text:", error);
       Alert.alert("Error extracting text. Please try again later.");
     }
+    setResult(!result);
   };
       
       
@@ -179,14 +181,17 @@ export default function ScanScreen({title, style}) {
           <View style={styles.pictureContainer}>
             <Image style={styles.picture} source={{ uri: pictureUri }} />
             <View style={{ backgroundColor: "red", position: "absolute", width: "100%", height: "100%" }}>
-              <ScrollView>
-                <View>
-                  <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Scan Result</Text>
-                  <Text style={{ color: "white", fontSize: 16, textAlign: "left", margin: 10 }}>
-                    {extractedText || "No data extracted."}
-                  </Text>
-                </View>
-              </ScrollView>
+              {result ? (
+                <ScrollView>
+                  <View>
+                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Scan Result</Text>
+                    <Text style={{ color: "white", fontSize: 16, textAlign: "left", margin: 10 }}>
+                      {extractedText || "No data extracted."}
+                    </Text>
+                  </View>
+                </ScrollView>
+              ) : null}
+              
             </View>
             <View style={{ height: 250, width: 300, position: "absolute", marginTop: 550, top: 1, justifyContent: "center", alignItems: "center", flexDirection: "row" }}>
               <ConstButtonShort onPress={cancelPicture} name="close" title="Cancel" backgroundColor="#C8B23D" />
