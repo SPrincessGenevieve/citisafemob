@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import KeyboardWithoutWrapper from '../components/KeyboardWithoutWrapper';
-import GradientBackground from '../components/GradientBG';
+import KeyboardWithoutWrapper from '../../../components/KeyboardWithoutWrapper';
+import GradientBackground from '../../../components/GradientBG';
 import { Text } from 'react-native';
-import ConstInput from '../components/ConstInput';
-import ConstButton from '../components/ConstButton';
+import ConstInput from '../../../components/ConstInput';
+import ConstButton from '../../../components/ConstButton';
 
 
 function ForgotPass(props) {

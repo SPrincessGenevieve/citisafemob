@@ -1,23 +1,55 @@
 import React, { useEffect, useState, useRef } from "react";
-import {     View, TouchableOpacity, StyleSheet, Alert, Image, Text, ScrollView} from "react-native";
-import { Camera, CameraType, requestCameraPermissionsAsync, getCameraPermissionsAsync} from "expo-camera";
+import { 
+    View, 
+    TouchableOpacity, 
+    StyleSheet, 
+    Alert, 
+    Image,
+    Text } from "react-native";
+import { 
+    Camera, 
+    CameraType, 
+    requestCameraPermissionsAsync, 
+    getCameraPermissionsAsync, // Fixed typo here
+} from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
+import { setRecognizedText } from "./camera/infoSlice";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import ConstButtonShort from "./ConstButtonShort";
 
 
-export default function ScanScreen({title, style}) {
+export default function CameraScan() {
     const [cameraMode, setCameraMode] = useState(CameraType.back);
     const [flash, setFlash] = useState("off"); // Changed to string type
     const [pictureUri, setPictureUri] = useState("");
     const cameraRef = useRef();
-    const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picture
-    const [result, setResult] = useState(false); // New state variable to control showing the picture
+    const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
+
+    const dispatch = useDispatch();
     const navigation = useNavigation();
-    const [extractedText, setExtractedText] = useState("");
+
+    // saving data
+    const [data, setData] = useState({
+      type: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      nationality: "",
+      sex: "",
+      date_of_birth: "",
+      weight: "",
+      height: "",
+      address: "",
+      license_no: "",
+      expiration_date: "",
+      dl_codes: "",
+      conditions: "",
+      agency_code: "",
+      restrictions: "",
+    })
 
 
 
@@ -36,19 +68,19 @@ export default function ScanScreen({title, style}) {
 
     const takePicture = async () => {
       const { uri, width, height } = await cameraRef?.current.takePictureAsync();
-    
+
       // Calculate the dimensions for cropping (adjust these values according to your needs)
-      const cropWidth = 2500;
-      const cropHeight = 1450;
-      const left = 270;
-      const top = 1300;
+      const cropWidth = 2000;
+      const cropHeight = 1420;
+      const left = 200;
+      const top = 1330;
 
       try {
         // Crop the image with specified dimensions
         const croppedImage = await ImageManipulator.manipulateAsync(
           uri,
           [{ crop: { originX: left, originY: top, width: cropWidth, height: cropHeight } }],
-          { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Adjust the compression quality here (0.8 means 80% quality)
+          { compress: 1, format: ImageManipulator.SaveFormat.JPEG } // Adjust the compression quality here (0.8 means 80% quality)
         );
 
         // Set the cropped image URI
@@ -61,85 +93,108 @@ export default function ScanScreen({title, style}) {
     
     };    
 
-
     const cancelPicture = () => {
         // Remove the displayed picture and go back to the camera preview
         setPictureUri("");
         setShowPicture(false);
       };    
 
-      const handleNextButton = async () => {
+
+    const handleNextButton = async () => {
         try {
+          // Make sure there's a picture to process
           if (!pictureUri) {
             Alert.alert("Please take a picture first.");
             return;
           }
-    
+      
+          // Call the Mindee OCR API to extract text from the image
+          const apiKey = '5f9a18dcb66e4eca17af461b4b619bc9'; // Replace this with your Mindee OCR API key
           const apiUrl = "https://api.mindee.net/v1/products/SPrincessGenevieve/gems/v1/predict";
-          const apiKey = "Token 5f9a18dcb66e4eca17af461b4b619bc9";
-    
+      
           const formData = new FormData();
-          formData.append("document", {
-            uri: pictureUri,
-            name: "image.jpg",
-            type: "image/jpeg",
-          });
-    
+          formData.append('document', { uri: pictureUri, name: 'image.jpg', type: 'image/jpeg' });
+      
           const response = await axios.post(apiUrl, formData, {
             headers: {
-              Authorization: apiKey,
-              "Content-Type": "multipart/form-data",
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Token ${apiKey}`, // Use the correct authorization format
             },
           });
-    
-          console.log("Mindee API Response:", response.data);
-    
-          if (response?.data?.document?.inference?.prediction) {
-            const extractedFields = response.data.document.inference.prediction;
-    
-            const displayOrder = [
-              "type",
-              "last_name_first_name_middle_name",
-              "nationality",
-              "sex",
-              "date_of_birth",
-              "weight",
-              "height",
-              "address",
-              "license_no",
-              "expiration_date",
-              "agency_code",
-              "blood_type",
-              "eyes_color",
-              "dl_codes",
-              "conditions",
-              "restrictions",
-            ];
-    
-            const extractedTexts = displayOrder
-          .map((key) => {
-            const values = extractedFields[key].values;
-            const contentArray = values.map((item) => item.content);
-            const content = contentArray.join("\n");
-            return `"${key}":\n${content}`;
-          })
-          .join("\n\n");
 
-        setExtractedText(extractedTexts);
-        console.log("Extracted Texts:", extractedFields);
-      } else {
-        Alert.alert("Text extraction failed. Please try again later.");
-      }
+          if (response?.data?.document !== undefined) {
+            const extractedData = response.data.document.inference.pages[0].prediction;
+
+            // Concatenate values for fields with multiple values
+            const concatenatedFields = {
+                type: "",
+                address: "",
+                agency_code: "",
+                blood_type: "",
+                conditions: "",
+                date_of_birth: "",
+                dl_codes: "",
+                expiration_date: "",
+                last_name_first_name_middle_name: "",
+                height: "",
+                license_no: "",
+                nationality: "",
+                sex: "",
+                weight: "",
+                restrictions: "",
+                // Add other fields here
+            };
+
+            for (const fieldName in concatenatedFields) {
+                if (extractedData[fieldName]?.values) {
+                    let concatenatedValue = "";
+                    for (const value of extractedData[fieldName]?.values || []) {
+                        concatenatedValue += value.content + " ";
+                    }
+                    concatenatedFields[fieldName] = concatenatedValue.trim();
+                }
+            }
+
+            // Update the data state with concatenated values
+            setData({
+                ...data,
+                ...concatenatedFields,
+                // Add other fields similarly
+            });
+
+            dispatch(setRecognizedText({
+              type : concatenatedFields.type,
+              name: concatenatedFields.last_name_first_name_middle_name,
+              licenseNumber: concatenatedFields.license_no,
+              dateOfBirth: concatenatedFields.date_of_birth,
+              bloodType: concatenatedFields.blood_type,
+              nationality: concatenatedFields.nationality,
+              sex: concatenatedFields.sex,
+              weight: concatenatedFields.weight,
+              height: concatenatedFields.height,
+              address: concatenatedFields.address,
+              dl_codes: concatenatedFields.dl_codes,
+              expirationDate: concatenatedFields.expiration_date,  
+              agency_code: concatenatedFields.agency_code,
+              conditions: concatenatedFields.conditions,   
+              restrictions: concatenatedFields.restrictions,
+            }))
+
+        } else {
+            Alert.alert("Text extraction failed. Please try again later.");
+        }
     } catch (error) {
-      console.log("Error extracting text:", error);
-      Alert.alert("Error extracting text. Please try again later.");
+        console.log("Error extracting text:", error);
+        Alert.alert("Error extracting text. Please try again later.");
     }
-    setResult(!result);
+
+
+        navigation.navigate('FormScreen');
   };
-      
-      
-      
-      
+
+  useEffect(() => {
+    console.log("Updated Data:", data);
+}, [data]);      
 
     if (!getPermission()) {
         return Alert.alert(
@@ -159,7 +214,7 @@ export default function ScanScreen({title, style}) {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [16, 9],
-        quality: 0.8,
+        quality: 1,
       })
 
       console.log(result);
@@ -170,37 +225,27 @@ export default function ScanScreen({title, style}) {
 
     }
 
-   
 
 
-
-    return (
-      <View style={styles.container}>
+  return(
+        <View style={styles.container}>
         {/* Show the camera preview or the captured picture */}
         {showPicture ? (
           <View style={styles.pictureContainer}>
             <Image style={styles.picture} source={{ uri: pictureUri }} />
-            <View style={{ backgroundColor: "red", position: "absolute", width: "100%", height: "100%" }}>
-              {result ? (
-                <ScrollView>
-                  <View>
-                    <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Scan Result</Text>
-                    <Text style={{ color: "white", fontSize: 16, textAlign: "left", margin: 10 }}>
-                      {extractedText || "No data extracted."}
-                    </Text>
-                  </View>
-                </ScrollView>
-              ) : null}
-              
-            </View>
-            <View style={{ height: 250, width: 300, position: "absolute", marginTop: 550, top: 1, justifyContent: "center", alignItems: "center", flexDirection: "row" }}>
-              <ConstButtonShort onPress={cancelPicture} name="close" title="Cancel" backgroundColor="#C8B23D" />
-              <ConstButtonShort onPress={handleNextButton} name="check" title="Next" backgroundColor="#5F5DC5" />
-            </View>
+            
+            
+            <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
+              <Text style={styles.nextText}>Next</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.cancelBtn} onPress={cancelPicture}>
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.cameraContainer}>
-          <Camera ref={cameraRef} style={styles.camera} type={cameraMode} flashMode={flash}>
+          <Camera ref={cameraRef} style={styles.camera} type={cameraMode} flashMode={flash} >
             {/* Empty View for the Camera component */}
           </Camera>   
           <View style={styles.controlsContainer}>
@@ -215,18 +260,13 @@ export default function ScanScreen({title, style}) {
           </View>
         </View>
         )}
-  
   {!showPicture && (
-        <View style={style}>
-          <Text style={styles.cardText}>{title}</Text>
+        <View style={styles.cardoutline}>
+          <Text style={styles.cardText}>Place the Driver's License Card Here</Text>
         </View>
-      )}
+      )}        
     </View>
   )
-
-
-
-
 }
 
 const styles = StyleSheet.create({
@@ -240,6 +280,7 @@ const styles = StyleSheet.create({
     },
     camera: {
       flex: 1,
+      aspectRatio: 3/4
     },
     controlsContainer: {
       backgroundColor: "rgba(57, 92, 219, 1)",
@@ -254,11 +295,27 @@ const styles = StyleSheet.create({
       width: 70,
       marginVertical: 10,
     },
+    cardoutline: {
+      width: 346,
+      height: 245,
+      borderWidth: 3,
+      borderRadius: 19,
+      borderColor: "white",
+      position: "absolute",
+      zIndex: 1,
+      top: "45%",
+      left: "50%",
+      marginLeft: -173,
+      marginTop: -123,
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
     cardText: {
       color: "white",
       letterSpacing: 1.5,
       textAlign: "justify",
-    },
+    },    
     pictureContainer: {
       flex: 1,
       justifyContent: "center",
@@ -271,7 +328,7 @@ const styles = StyleSheet.create({
     },
     cancelBtn: {
       position: "absolute",
-      bottom: 100,
+      bottom: 50,
       backgroundColor: "#fff",
       borderRadius: 10,
       padding: 10,
@@ -283,7 +340,7 @@ const styles = StyleSheet.create({
     },
     nextBtn: {
       position: "absolute",
-      bottom: 100,
+      bottom: 50,
       backgroundColor: "#fff",
       borderRadius: 10,
       padding: 10,
@@ -295,6 +352,3 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   });
-
-
-

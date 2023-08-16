@@ -3,14 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from './src/screens/HomeScreen';
-import FirstScreen from './src/screens/FirstScreen';
+import FirstScreen from './src/screens/Authentication/Login/FirstScreen';
 import OCRScreen from './src/screens/OCRScreen';
 import Records from './src/screens/Records';
 import ORCRScreen from './src/screens/ORCRScreen';
 import FormScreen from './src/screens/FormScreen';
 import Violations from './src/screens/Violations';
 import Profile from './src/screens/Profile';
-import ForgotPass from './src/screens/ForgotPass';
+import ForgotPass from './src/screens/Authentication/ForgotPass/ForgotPass';
 
 const Stack = createNativeStackNavigator();
 
