@@ -5,12 +5,15 @@ import GradientBackground from "../components/GradientBG";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import Icon from 'react-native-vector-icons/AntDesign';
 
-function Records(props) {
+function Records({navigation}) {
     const [visible, setVisible] = useState(false);
 
     const showModal = () => setVisible(true)
     const hideModal = () => setVisible(false);
     const containerStyle = {backgroundColor: 'white', padding: 20};
+    const handleDetails = () => {
+      navigation.navigate("RecordDetails");
+    }
 
     return(
       <KeyboardWithoutWrapper>
@@ -22,7 +25,7 @@ function Records(props) {
                   <TextInput style={{ borderRadius: 20, height: 60, paddingLeft: 20, paddingRight: 20, backgroundColor:"#E0E0E0", textAlign:"left"}}><Icon name="search1" style={{fontSize: 25}}></Icon></TextInput>
                 </View>
                 <View style={{flexDirection:"column", flex: 1}}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={handleDetails}>
                     <View style={{ width: "100%", flexDirection: "row", marginLeft: 20 }}>
                       <View>
                         <Image style={{height: 50, width: 50, marginTop: 17, marginLeft: 20 }} source={require('./../../assets/images/user.png')}></Image>

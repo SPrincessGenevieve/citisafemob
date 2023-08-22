@@ -11,6 +11,8 @@ import FormScreen from './src/screens/FormScreen';
 import Violations from './src/screens/Violations';
 import Profile from './src/screens/Profile';
 import ForgotPass from './src/screens/Authentication/ForgotPass/ForgotPass';
+import RecordDetails from './src/screens/RecordDetails';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +28,7 @@ function AppNavigator(props) {
                 <Stack.Screen name="FormScreen" options={{headerShown:false}} component={FormScreen}/>
                 <Stack.Screen name="ViolationScreen" options={{headerShown:false}} component={Violations}/>
                 <Stack.Screen name="Profile" options={{headerShown:false}} component={Profile}/>
+                <Stack.Screen name="RecordDetails" options={{headerShown:false}} component={RecordDetails}/>
                 <Stack.Screen name='ForgotPass' options={{headerShown:false}} component={ForgotPass}></Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
