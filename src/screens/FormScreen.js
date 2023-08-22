@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import KeyboardWithoutWrapper from '../components/KeyboardWithoutWrapper';
 import ConstInput from '../components/ConstInput';
 import ConstInputShort from '../components/ConstInputShort';
 import ConstButtonShort from '../components/ConstButtonShort';
 import Confirm from './ConfirmScreen';
 import { useSelector } from "react-redux";
+import ConstButton from '../components/ConstButton';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 function FormScreen({navigation}) {
 
@@ -55,6 +57,21 @@ function FormScreen({navigation}) {
                         <ConstInputShort marginRight={55} width={165} value="09123456789" text="Contact No."></ConstInputShort>
                         <ConstInputShort width={165} value="909-2342334" text="Telephone No. "></ConstInputShort>
                     </View>
+                    <ConstInput value="Zone 8, Cugman, Cagayan de Oro" text="Place of Violation"></ConstInput>
+                    <View style={{flexDirection:"row", marginBottom: 30, marginTop: 30 }}>
+                        <ConstInputShort marginRight={55} width={165} value="ANNA NICOLE GABRIENTO" text="Apprehending Officer"></ConstInputShort>
+                        <ConstInputShort width={165} value="10:12 PM" text="Time of Violation"></ConstInputShort>
+                    </View>
+                    <View style={{ marginBottom: 30}}>
+                        <Text style={{fontSize: 20, color:"white", marginBottom: 30}}>Image Evidence:</Text>
+                        <Image style={{height:350, width: 350, borderRadius: 30}} source={require('./../../assets/images/profile.jpg')}></Image>
+                        <TouchableOpacity style={{position:"absolute", right: 50, marginTop: 20}}>
+                            <Icon style={{fontSize: 30, color:"white"}} name='camerao'></Icon>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{position:"absolute", right: 10, marginTop: 20}}>
+                            <Icon style={{fontSize: 30, color:"white"}} name='closecircleo'></Icon>
+                        </TouchableOpacity>
+                    </View>
                 </View>   
             </View>
         </KeyboardWithoutWrapper>
@@ -80,7 +97,7 @@ const styles = StyleSheet.create({
     contanier: {
         backgroundColor:"#3C66D2",
         flex: 1,
-        height: 950,
+        height: "100vh",
 
     }
 })

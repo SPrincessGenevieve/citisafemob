@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import KeyboardWithoutWrapper from '../components/KeyboardWithoutWrapper';
 import GradientBackground from '../components/GradientBGR';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 function RecordDetails(props) {
     return (
@@ -40,9 +41,18 @@ function RecordDetails(props) {
                                 <Text style={{marginRight: 10, fontWeight: "bold"}}>Payment Status:</Text>
                                 <Text style={{fontWeight: "bold", color:"#932323"}}>Overdue, 03/03/2023 4:00 PM</Text>
                             </View>
+                            <View style={{flexDirection:"row", marginTop: 10}}>
+                                <Text style={{marginRight: 10, fontWeight: "bold"}}>Apprehending Officer:</Text>
+                                <Text style={{fontWeight: "bold"}}>Alduin Magallones</Text>
+                            </View>
                             <View style={{flexDirection:"row", marginTop: 10, marginBottom: 20}}>
                                 <Text style={{marginRight: 10, fontWeight: "bold"}}>Images:</Text>
                                 <Text style={{color:"#2521FF"}}>View Image of Violation</Text>
+                            </View>
+                            <View style={{flexDirection:"row", marginTop: 10, marginBottom: 20, justifyContent:"flex-end"}}>
+                                <TouchableOpacity>
+                                    <Icon name='printer' style={{fontSize: 30, textAlign:"right"}}></Icon>
+                               </TouchableOpacity>
                             </View>
                         </View>
                     </View>
