@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import KeyboardWithoutWrapper from '../components/KeyboardWithoutWrapper';
 import ConstInput from '../components/ConstInput';
@@ -7,12 +7,18 @@ import ConstButtonShort from '../components/ConstButtonShort';
 import Confirm from './ConfirmScreen';
 import { useSelector } from "react-redux";
 import Icon from 'react-native-vector-icons/AntDesign';
+import moment from 'moment';
+import * as Location from 'expo-location';
+import axios from 'axios';
+import { useRoute } from "@react-navigation/native";
+
+const GEOAPIFY_API_KEY = '086bbfa502194f61b72f18fb6ebaad5b';
+
 
 function FormScreen({navigation}) {
 
     const ocrText = useSelector((state) => state.infoText.extractedInfo);
     const ocrTextOCR = useSelector((state) => state.infoTextOCR.extractedInfo);
-
     const handleViolation = () => {
         navigation.navigate("ViolationScreen");
     }
@@ -22,12 +28,119 @@ function FormScreen({navigation}) {
     }
 
     const [isVisible, setIsVisible] = useState(false)
+    const [location, setLocation] = useState(null);
+    const [address, setAddress] = useState('');
+    const [detailedAddress, setDetailedAddress] = useState('');
+    const [imageUri, setImageUri] = useState(null);
+    const [currentTime, setCurrentTime] = useState(moment().format('hh:mm A'));
+    const [currentDate, setCurrentDate] = useState(moment().format('YYYY-MM-DD'));
+    const handleCam = () => {
+        navigation.navigate("CameraProof");
+        navigation.setOptions({
+            setImageUri: setImageUri
+        });
+    };
+    const route = useRoute();
+    const receivedImageUri = route.params?.imageUri;
+    console.log("receivedImageUri:", receivedImageUri);
+
+    const [imageUriState, setImageUriState] = useState(receivedImageUri);
+
+    // Function to clear the image URI
+    const clearImage = () => {
+        setImageUriState(null);
+    };
+
+    // Fetch the current time
+    const fetchTime = () => {
+        const currentTimeFormatted = moment().format('hh:mm A');
+        setCurrentTime(currentTimeFormatted);
+    };
+
+    const fetchLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
+            }
+            const location = await Location.getCurrentPositionAsync({});
+            setLocation(location.coords);
+
+            const requestOptions = {
+                method: 'GET',
+            };
+
+            const geoapifyResponse = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${location.coords.latitude}&lon=${location.coords.longitude}&apiKey=${GEOAPIFY_API_KEY}`, requestOptions);
+            const geoapifyData = await geoapifyResponse.json();
+
+            console.log('Geoapify Response:', geoapifyData);
+
+            const results = geoapifyData.features;
+            if (results.length > 0) {
+                const formattedDetailedAddress = results[0].properties.formatted;
+
+                setAddress(formattedDetailedAddress);
+                setDetailedAddress(formattedDetailedAddress);
+                console.log('Address:', formattedDetailedAddress);
+            } else {
+                setAddress('Unknown Address');
+                setDetailedAddress('Unknown Address');
+            }
+        } catch (error) {
+            console.log('Error getting location:', error);
+        }
+    };
+
+    const createDetailedAddress = (addressComponents) => {
+        let detailedAddress = '';
+        const zoneIndex = addressComponents.findIndex(component => component.types.includes('sublocality_level_1'));
+        if (zoneIndex !== -1) {
+            detailedAddress += `ZONE ${addressComponents[zoneIndex].long_name} `;
+        }
+
+        // Iterate through other components to get the desired format
+        const relevantComponents = ['route', 'locality', 'administrative_area_level_2', 'administrative_area_level_1', 'country'];
+        for (const component of addressComponents) {
+            if (relevantComponents.some(type => component.types.includes(type))) {
+                detailedAddress += `${component.long_name}, `;
+            }
+        }
+
+        return detailedAddress.slice(0, -2); // Remove the trailing comma and space
+    };
+
+
+
+    useEffect(() => {
+        const fetchTime = () => {
+            const currentTimeFormatted = moment().format('hh:mm A');
+            setCurrentTime(currentTimeFormatted);
+        };
+        
+        const fetchDate = () => {
+            const currentDateFormatted = moment().format('YYYY-MM-DD');
+            setCurrentDate(currentDateFormatted);
+        };
+    
+        fetchTime();
+        fetchDate();
+        fetchLocation();
+    }, []);
+
+    useEffect(() => {
+        setImageUriState(receivedImageUri);
+    }, [receivedImageUri]);
 
     return (
         <View style={{flex: 1}}>
         <KeyboardWithoutWrapper>
             <View style={styles.contanier}>
                 <View style={{ padding: 30, paddingTop: 50 }}>
+                    <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
+                        <ConstInputShort marginRight={55} width={165} value={"2343"} text="MFRTA TCT No"></ConstInputShort> 
+                        <ConstInputShort width={165} value={currentDate} text="Date"></ConstInputShort>
+                    </View>
                         <ConstInput value={ocrText.name}  autoCapitalize="characters" text="Last Name, First Name, Middle Name"></ConstInput>
                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
                         <ConstInputShort value={ocrText.nationality} text="Nationality"></ConstInputShort>
@@ -55,23 +168,40 @@ function FormScreen({navigation}) {
                         <ConstInput value={ocrTextOCR.complete_address} marginTop="10%" text="Address"></ConstInput>
                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
                         <ConstInputShort marginRight={55} width={165} value={ocrTextOCR.telephone_no_contact_details} text="Contact No."></ConstInputShort>
-                        <ConstInputShort width={165} value="909-2342334" text="Telephone No. "></ConstInputShort>
+                        <ConstInputShort width={165} value={currentTime} text="Time of Violation"></ConstInputShort>
                     </View>
-                    <ConstInput value="Zone 8, Cugman, Cagayan de Oro" text="Place of Violation"></ConstInput>
-                    <View style={{flexDirection:"row", marginBottom: 30, marginTop: 30 }}>
-                        <ConstInputShort marginRight={55} width={165} value="ANNA NICOLE GABRIENTO" text="Apprehending Officer"></ConstInputShort>
-                        <ConstInputShort width={165} value="10:12 PM" text="Time of Violation"></ConstInputShort>
-                    </View>
-                    <View style={{ marginBottom: 30}}>
-                        <Text style={{fontSize: 20, color:"white", marginBottom: 30}}>Image Evidence:</Text>
-                        <Image style={{height:350, width: 350, borderRadius: 30}} source={require('./../../assets/images/profile.jpg')}></Image>
-                        <TouchableOpacity style={{position:"absolute", right: 50, marginTop: 20}}>
-                            <Icon style={{fontSize: 30, color:"white"}} name='camerao'></Icon>
+                    <ConstInput value={detailedAddress} text="Place of Violation"></ConstInput>
+                    <ConstInput marginTop={30} marginBottom={30} value="ANNA NICOLE GABRIENTO" text="Apprehending Officer"></ConstInput>
+
+                    
+                    <View style={{ marginBottom: 30 }}>
+                        <Text style={{ fontSize: 20, color: "white", marginBottom: 30 }}>Image Evidence:</Text>
+                        {receivedImageUri ? (
+                            <>
+                                <Image style={{ height: 350, width: 350, borderRadius: 30 }} source={{ uri: receivedImageUri }} />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", right: 50, top: 10 }}
+                                    onPress={() => {
+                                        console.log("Close icon clicked");
+                                        setImageUriState(null); // Clear imageUriState
+                                        navigation.setParams({ imageUri: null }); // Update receivedImageUri in route params
+                                    }}
+                                >
+                                    <Icon style={{ fontSize: 30, color: "white" }} name='closecircleo'></Icon>
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <>
+                                <Text style={{ color: "white" }}>No Image Available</Text>
+                            </>
+                        )}
+                        <TouchableOpacity style={{ position: "absolute", right: 10, top: 10 }} onPress={handleCam}>
+                            <Icon style={{ fontSize: 30, color: "white" }} name='camerao'></Icon>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{position:"absolute", right: 10, marginTop: 20}}>
-                            <Icon style={{fontSize: 30, color:"white"}} name='closecircleo'></Icon>
-                        </TouchableOpacity>
                     </View>
+
+
+
                 </View>   
             </View>
         </KeyboardWithoutWrapper>
