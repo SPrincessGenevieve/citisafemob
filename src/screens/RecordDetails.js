@@ -3,8 +3,14 @@ import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import KeyboardWithoutWrapper from '../components/KeyboardWithoutWrapper';
 import GradientBackground from '../components/GradientBGR';
 import Icon from 'react-native-vector-icons/AntDesign';
+import IconAdd from 'react-native-vector-icons/MaterialIcons';
 
-function RecordDetails(props) {
+function RecordDetails({navigation}) {
+
+    const handleForm = () => {
+        navigation.navigate("FormScreen");
+    }
+
     return (
         <View style={{height: 900}}>
           <GradientBackground></GradientBackground>
@@ -22,8 +28,14 @@ function RecordDetails(props) {
                 <KeyboardWithoutWrapper >
                     <>
                     <View style={{flexDirection:"column", flex: 1}}>
+                        <TouchableOpacity onPress={handleForm} style={{flexDirection:"column", marginTop: 20, justifyContent:"center", alignItems:"center", backgroundColor:"#2E54B3", flex: 1, borderRadius: 15, height: 50}}>
+                            <View style={{flexDirection:"row", alignItems:"center"}}>
+                                <IconAdd name='post-add' style={{color:"white", fontSize: 30, zIndex: 999}}></IconAdd>
+                                <Text style={{fontSize: 20, color:"white"}}>Add violation</Text>
+                            </View>
+                        </TouchableOpacity>
                         <View style={{marginTop: 15}}>
-                            <Text style={{fontSize: 15, textAlign:"center", fontWeight:"bold"}}>Violations</Text>
+                            <Text style={{fontSize: 15, textAlign:"center", fontWeight:"bold", height: 30, paddingTop: 5}}>Violations</Text>
                         </View>
                         <View style={{borderBottomWidth: 1, borderBottomColor: "#BBBBBB", marginTop: 20}}>
                             <View style={{flexDirection:"row", marginTop: 10}}>
@@ -47,7 +59,9 @@ function RecordDetails(props) {
                             </View>
                             <View style={{flexDirection:"row", marginTop: 10, marginBottom: 20}}>
                                 <Text style={{marginRight: 10, fontWeight: "bold"}}>Images:</Text>
-                                <Text style={{color:"#2521FF"}}>View Image of Violation</Text>
+                                <TouchableOpacity>
+                                    <Text style={{color:"#2521FF"}}>View Image of Violation</Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={{flexDirection:"row", marginTop: 10, marginBottom: 20, justifyContent:"flex-end"}}>
                                 <TouchableOpacity>

@@ -12,6 +12,8 @@ import Violations from './src/screens/Violations';
 import Profile from './src/screens/Profile';
 import ForgotPass from './src/screens/Authentication/ForgotPass/ForgotPass';
 import RecordDetails from './src/screens/RecordDetails';
+import CameraScanCOR from './src/components/CameraScanCOR';
+
 
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +26,7 @@ function AppNavigator(props) {
                 <Stack.Screen name="HomeScreen" options={{headerShown:false}} component={HomeScreen}/>
                 <Stack.Screen name="OCRScan"  options={{headerShown:false}} component={OCRScreen}/>
                 <Stack.Screen name="ORCRScan"  options={{headerShown:false}} component={ORCRScreen}/>
+                <Stack.Screen name="CameraScanCOR"  options={{headerShown:false}} component={CameraScanCOR}/>
                 <Stack.Screen name="Records" options={{headerShown:false}} component={Records}/>
                 <Stack.Screen name="FormScreen" options={{headerShown:false}} component={FormScreen}/>
                 <Stack.Screen name="ViolationScreen" options={{headerShown:false}} component={Violations}/>

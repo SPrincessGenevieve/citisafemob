@@ -6,12 +6,12 @@ import ConstInputShort from '../components/ConstInputShort';
 import ConstButtonShort from '../components/ConstButtonShort';
 import Confirm from './ConfirmScreen';
 import { useSelector } from "react-redux";
-import ConstButton from '../components/ConstButton';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 function FormScreen({navigation}) {
 
     const ocrText = useSelector((state) => state.infoText.extractedInfo);
+    const ocrTextOCR = useSelector((state) => state.infoTextOCR.extractedInfo);
 
     const handleViolation = () => {
         navigation.navigate("ViolationScreen");
@@ -42,19 +42,19 @@ function FormScreen({navigation}) {
                         <ConstInput value={ocrText.address} text="Address"></ConstInput>
                         <ConstInput marginTop={30} value={ocrText.licenseNumber} text="Driver License Number"></ConstInput>
                     <View style={{flexDirection:"row", marginTop: 30}}>
-                        <ConstInputShort value="RAR-2323" text="Vehicle Plate No."></ConstInputShort>
-                        <ConstInputShort value="TESLA" text="Make"></ConstInputShort>
-                        <ConstInputShort value="Tesla Model 1" text="Model"></ConstInputShort>
+                        <ConstInputShort value={ocrTextOCR.plate_no} text="Vehicle Plate No."></ConstInputShort>
+                        <ConstInputShort value={ocrTextOCR.make} text="Make"></ConstInputShort>
+                        <ConstInputShort value={ocrTextOCR.series} text="Model"></ConstInputShort>
                     </View>
                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort value="Tesla Model 1" text="Color"></ConstInputShort>
-                        <ConstInputShort value="Truck" text="Class"></ConstInputShort>
-                        <ConstInputShort value="None" text="Body Markings"></ConstInputShort>
+                        <ConstInputShort value="" text="Color"></ConstInputShort>
+                        <ConstInputShort value="" text="Class"></ConstInputShort>
+                        <ConstInputShort value="" text="Body Markings"></ConstInputShort>
                     </View>
-                        <ConstInput value="JAYDE MIKE ENGRACIA" text="Registered Owner"></ConstInput>
-                        <ConstInput value="Baranggay Unahan, Cagayan De Oro, Bukidnon" marginTop="10%" text="Address"></ConstInput>
+                        <ConstInput value={ocrTextOCR.complete_owners_name} text="Registered Owner"></ConstInput>
+                        <ConstInput value={ocrTextOCR.complete_address} marginTop="10%" text="Address"></ConstInput>
                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort marginRight={55} width={165} value="09123456789" text="Contact No."></ConstInputShort>
+                        <ConstInputShort marginRight={55} width={165} value={ocrTextOCR.telephone_no_contact_details} text="Contact No."></ConstInputShort>
                         <ConstInputShort width={165} value="909-2342334" text="Telephone No. "></ConstInputShort>
                     </View>
                     <ConstInput value="Zone 8, Cugman, Cagayan de Oro" text="Place of Violation"></ConstInput>

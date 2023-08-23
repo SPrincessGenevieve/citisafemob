@@ -16,12 +16,12 @@ import Feather from "@expo/vector-icons/Feather";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
-import { setRecognizedText } from "./camera/infoSlice";
+import { setRecognizedText } from "./camera/infoSliceCOR";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 
-export default function CameraScan() {
+export default function CameraScanCOR() {
     const [cameraMode, setCameraMode] = useState(CameraType.back);
     const [flash, setFlash] = useState("off"); // Changed to string type
     const [pictureUri, setPictureUri] = useState("");
@@ -31,24 +31,15 @@ export default function CameraScan() {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    // saving data
     const [data, setData] = useState({
-      type: "",
-      first_name: "",
-      last_name: "",
-      middle_name: "",
-      nationality: "",
-      sex: "",
-      date_of_birth: "",
-      weight: "",
-      height: "",
-      address: "",
-      license_no: "",
-      expiration_date: "",
-      dl_codes: "",
-      conditions: "",
-      agency_code: "",
-      restrictions: "",
+        plate_no: "",
+        make: "",
+        date: "",
+        series: "",
+        make: "",
+        complete_owners_name: "",
+        complete_address: "",
+        telephone_no_contact_details: "",
     })
 
 
@@ -67,27 +58,16 @@ export default function CameraScan() {
     };
 
     const takePicture = async () => {
-      const { uri, width, height } = await cameraRef?.current.takePictureAsync();
-
-      const cropWidth = 2000;
-      const cropHeight = 1420;
-      const left = 200;
-      const top = 1330;
-
-      try {
-        const croppedImage = await ImageManipulator.manipulateAsync(
-          uri,
-          [{ crop: { originX: left, originY: top, width: cropWidth, height: cropHeight } }],
-          { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
-        );
-
-        setPictureUri(croppedImage.uri);
-        setShowPicture(true);
-      } catch (error) {
-        console.log("Error cropping the image:", error);
-      }
-    
-    };    
+        try {
+          const { uri } = await cameraRef?.current.takePictureAsync();
+      
+          setPictureUri(uri);
+          setShowPicture(true);
+        } catch (error) {
+          console.log("Error taking picture:", error);
+        }
+      };
+      
 
     const cancelPicture = () => {
         setPictureUri("");
@@ -102,8 +82,8 @@ export default function CameraScan() {
             return;
           }
       
-          const apiKey = '5f9a18dcb66e4eca17af461b4b619bc9';
-          const apiUrl = "https://api.mindee.net/v1/products/SPrincessGenevieve/gems/v1/predict";
+          const apiKey = '8e467a5f1e58b9b383da543d49105ce5';
+          const apiUrl = "https://api.mindee.net/v1/products/SPrincessGenevieve/cor/v1/predict";
       
           const formData = new FormData();
           formData.append('document', { uri: pictureUri, name: 'image.jpg', type: 'image/jpeg' });
@@ -119,21 +99,14 @@ export default function CameraScan() {
             const extractedData = response.data.document.inference.pages[0].prediction;
 
             const concatenatedFields = {
-                type: "",
-                address: "",
-                agency_code: "",
-                blood_type: "",
-                conditions: "",
-                date_of_birth: "",
-                dl_codes: "",
-                expiration_date: "",
-                last_name_first_name_middle_name: "",
-                height: "",
-                license_no: "",
-                nationality: "",
-                sex: "",
-                weight: "",
-                restrictions: "",
+                plate_no: "",
+                make: "",
+                date: "",
+                series: "",
+                make: "",
+                complete_owners_name: "",
+                complete_address: "",
+                telephone_no_contact_details: "",
             };
 
             for (const fieldName in concatenatedFields) {
@@ -152,21 +125,14 @@ export default function CameraScan() {
             });
 
             dispatch(setRecognizedText({
-              type : concatenatedFields.type,
-              name: concatenatedFields.last_name_first_name_middle_name,
-              licenseNumber: concatenatedFields.license_no,
-              dateOfBirth: concatenatedFields.date_of_birth,
-              bloodType: concatenatedFields.blood_type,
-              nationality: concatenatedFields.nationality,
-              sex: concatenatedFields.sex,
-              weight: concatenatedFields.weight,
-              height: concatenatedFields.height,
-              address: concatenatedFields.address,
-              dl_codes: concatenatedFields.dl_codes,
-              expirationDate: concatenatedFields.expiration_date,  
-              agency_code: concatenatedFields.agency_code,
-              conditions: concatenatedFields.conditions,   
-              restrictions: concatenatedFields.restrictions,
+                plate_no: concatenatedFields.plate_no,
+                make: concatenatedFields.make,
+                date: concatenatedFields.date,
+                series: concatenatedFields.series,
+                make: concatenatedFields.make,
+                complete_owners_name: concatenatedFields.complete_owners_name,
+                complete_address: concatenatedFields.complete_address,
+                telephone_no_contact_details: concatenatedFields.telephone_no_contact_details,
             }))
 
         } else {
@@ -176,7 +142,7 @@ export default function CameraScan() {
         console.log("Error extracting text:", error);
         Alert.alert("Error extracting text. Please try again later.");
     }
-        navigation.navigate('CameraScanCOR');
+        navigation.navigate('FormScreen');
   };
 
   useEffect(() => {
@@ -196,21 +162,19 @@ export default function CameraScan() {
     };
 
     const pickImage = async () => {
-
-      let result =  await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [16, 9],
-        quality: 1,
-      })
-
-      console.log(result);
-      if (!result.canceled) {
-        setPictureUri(result.assets[0].uri);
-        setShowPicture(true)
-      }
-
-    }
+        let result =  await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: false, // Set to false to disable cropping
+          aspect: [16, 9],
+          quality: 1,
+        });
+      
+        console.log(result);
+        if (!result.canceled) {
+          setPictureUri(result.uri); // Use result.uri directly
+          setShowPicture(true);
+        }
+      };
 
 
 
@@ -233,7 +197,6 @@ export default function CameraScan() {
         ) : (
           <View style={styles.cameraContainer}>
           <Camera ref={cameraRef} style={styles.camera} type={cameraMode} flashMode={flash} >
-            {/* Empty View for the Camera component */}
           </Camera>   
           <View style={styles.controlsContainer}>
             <Feather name="image" size={35} color="white" onPress={pickImage} />
@@ -249,7 +212,7 @@ export default function CameraScan() {
         )}
   {!showPicture && (
         <View style={styles.cardoutline}>
-          <Text style={styles.cardText}>Place the Driver's License Card Here</Text>
+          <Text style={styles.cardText}>Place the Certificate of Registration here</Text>
         </View>
       )}        
     </View>
@@ -283,17 +246,17 @@ const styles = StyleSheet.create({
       marginVertical: 10,
     },
     cardoutline: {
-      width: 346,
-      height: 245,
+      width: 390,
+      height: 745,
       borderWidth: 3,
       borderRadius: 19,
       borderColor: "white",
       position: "absolute",
       zIndex: 1,
       top: "45%",
-      left: "50%",
+      left: "45%",
       marginLeft: -173,
-      marginTop: -123,
+      marginTop: -370,
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
