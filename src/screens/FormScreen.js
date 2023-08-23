@@ -46,12 +46,10 @@ function FormScreen({navigation}) {
 
     const [imageUriState, setImageUriState] = useState(receivedImageUri);
 
-    // Function to clear the image URI
     const clearImage = () => {
         setImageUriState(null);
     };
 
-    // Fetch the current time
     const fetchTime = () => {
         const currentTimeFormatted = moment().format('hh:mm A');
         setCurrentTime(currentTimeFormatted);
@@ -77,12 +75,14 @@ function FormScreen({navigation}) {
             console.log('Geoapify Response:', geoapifyData);
 
             const results = geoapifyData.features;
+            console.log('Geoapify Results:', results); // Add this log
+
             if (results.length > 0) {
                 const formattedDetailedAddress = results[0].properties.formatted;
 
                 setAddress(formattedDetailedAddress);
                 setDetailedAddress(formattedDetailedAddress);
-                console.log('Address:', formattedDetailedAddress);
+                console.log('Address:', formattedDetailedAddress); // Add this log
             } else {
                 setAddress('Unknown Address');
                 setDetailedAddress('Unknown Address');
@@ -99,7 +99,7 @@ function FormScreen({navigation}) {
             detailedAddress += `ZONE ${addressComponents[zoneIndex].long_name} `;
         }
 
-        // Iterate through other components to get the desired format
+       
         const relevantComponents = ['route', 'locality', 'administrative_area_level_2', 'administrative_area_level_1', 'country'];
         for (const component of addressComponents) {
             if (relevantComponents.some(type => component.types.includes(type))) {
@@ -107,7 +107,7 @@ function FormScreen({navigation}) {
             }
         }
 
-        return detailedAddress.slice(0, -2); // Remove the trailing comma and space
+        return detailedAddress.slice(0, -2);
     };
 
 
@@ -182,9 +182,8 @@ function FormScreen({navigation}) {
                                 <TouchableOpacity
                                     style={{ position: "absolute", right: 50, top: 10 }}
                                     onPress={() => {
-                                        console.log("Close icon clicked");
-                                        setImageUriState(null); // Clear imageUriState
-                                        navigation.setParams({ imageUri: null }); // Update receivedImageUri in route params
+                                        setImageUriState(null);
+                                        navigation.setParams({ imageUri: null });
                                     }}
                                 >
                                     <Icon style={{ fontSize: 30, color: "white" }} name='closecircleo'></Icon>
@@ -199,9 +198,6 @@ function FormScreen({navigation}) {
                             <Icon style={{ fontSize: 30, color: "white" }} name='camerao'></Icon>
                         </TouchableOpacity>
                     </View>
-
-
-
                 </View>   
             </View>
         </KeyboardWithoutWrapper>

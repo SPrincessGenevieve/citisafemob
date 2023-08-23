@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {  View, Text, StyleSheet, TextInput } from 'react-native';
 import ViolationCheck from '../components/ViolationCheck';
 import KeyboardWithoutWrapper from '../components/KeyboardWithoutWrapper';
@@ -16,6 +16,7 @@ function Violations({navigation}) {
     const filteredData = violationData.filter(item =>
       item.text.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    const [isAtLeastOneChecked, setIsAtLeastOneChecked] = useState(false); // New state
 
     const handleHome = () =>{
         navigation.navigate("HomeScreen")
@@ -25,8 +26,21 @@ function Violations({navigation}) {
         navigation.navigate("Records")
     }
     
-    
+    const [checkedViolations, setCheckedViolations] = useState([]);
 
+    const handleCheckboxChange = (text, isChecked) => {
+        if (isChecked) {
+        setCheckedViolations([...checkedViolations, text]);
+        } else {
+        setCheckedViolations(checkedViolations.filter(violationText => violationText !== text));
+        }
+        setIsAtLeastOneChecked(checkedViolations.length > 0);
+    };
+
+    useEffect(() => {
+        setIsAtLeastOneChecked(checkedViolations.length > 0);
+      }, [checkedViolations]);
+    
 
     return (
         <View style={{backgroundColor:"#3C66D2", flex: 1}}>
@@ -46,6 +60,8 @@ function Violations({navigation}) {
                     key={item.id}
                     id={item.id}
                     text={item.text}
+                    isChecked={checkedViolations.includes(item.text)}
+                    handleCheckboxChange={(isChecked) => handleCheckboxChange(item.text, isChecked)}
                     />
                 ))}
                 </View>
@@ -53,7 +69,18 @@ function Violations({navigation}) {
             </KeyboardWithoutWrapper>
             <View style={{flexDirection:"row", alignItems:"center", justifyContent:"center", position:"relative"}}>
                 <ConstButtonShort  onPress={() => setIsVisible(!isVisible)}   name="close" title="Cancel" backgroundColor="#C8B23D"></ConstButtonShort>
-                <ConstButtonShort  name="check" title="Submit" onPress={() => setSuccess(!success)} backgroundColor="#5F5DC5"></ConstButtonShort>
+                <ConstButtonShort
+                name="check"
+                title="Submit"
+                onPress={() => {
+                    if (isAtLeastOneChecked) {
+                    setSuccess(!success);
+                    } else {
+                        alert("Please select at least one violation to proceed")
+                    }
+                }}
+                backgroundColor="#5F5DC5"
+                />
             </View>
             {
                 isVisible ? (
