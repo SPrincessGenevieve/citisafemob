@@ -9,13 +9,14 @@ import { useSelector } from "react-redux";
 import Icon from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import * as Location from 'expo-location';
-import axios from 'axios';
-import { useRoute } from "@react-navigation/native";
+import predefinedColors from './../components/PredefineColor.json'
+
+
 
 const GEOAPIFY_API_KEY = '086bbfa502194f61b72f18fb6ebaad5b';
 
 
-function FormScreen({navigation}) {
+function FormScreen({navigation, route}) {
 
     const ocrText = useSelector((state) => state.infoText.extractedInfo);
     const ocrTextOCR = useSelector((state) => state.infoTextOCR.extractedInfo);
@@ -40,7 +41,6 @@ function FormScreen({navigation}) {
             setImageUri: setImageUri
         });
     };
-    const route = useRoute();
     const receivedImageUri = route.params?.imageUri;
     console.log("receivedImageUri:", receivedImageUri);
 
@@ -132,80 +132,114 @@ function FormScreen({navigation}) {
         setImageUriState(receivedImageUri);
     }, [receivedImageUri]);
 
+  
+
+    if (!route.params) {
+        return null;
+      }
+
+      const getColorName = (colorHex) => {
+        const selectedColorObject = predefinedColors.find((color) => color.hex === colorHex);
+        return selectedColorObject ? selectedColorObject.name : '';
+    };
+    
+    const [selectedColor, setSelectedColor] = useState(route.params?.selectedColor || '');
+    const [selectedClass, setSelectedClass] = useState(route.params?.selectedClass || '');
+    const [selectedMarkings, setSelectedMarkings] = useState(route.params?.selectedMarkings || '');
+
+    const handleColorSelection = (color) => {
+        setSelectedColor(color);
+    };
+
+    const handleClassSelection = (classCode) => {
+        setSelectedClass(classCode);
+    };
+
+    const handleBodyMarkingsSelection = (markings) => {
+        setSelectedMarkings(markings);
+    };
+
+    useEffect(() => {
+        setImageUriState(receivedImageUri);
+        setSelectedColor(route.params?.selectedColor || '');
+        setSelectedClass(route.params?.selectedClass || '');
+        setSelectedMarkings(route.params?.selectedMarkings || '');
+    }, [receivedImageUri, route.params]);
+
     return (
         <View style={{flex: 1}}>
-        <KeyboardWithoutWrapper>
-            <View style={styles.contanier}>
-                <View style={{ padding: 30, paddingTop: 50 }}>
-                    <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort marginRight={55} width={165} value={"2343"} text="MFRTA TCT No"></ConstInputShort> 
-                        <ConstInputShort width={165} value={currentDate} text="Date"></ConstInputShort>
-                    </View>
-                        <ConstInput value={ocrText.name}  autoCapitalize="characters" text="Last Name, First Name, Middle Name"></ConstInput>
-                    <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort value={ocrText.nationality} text="Nationality"></ConstInputShort>
-                        <ConstInputShort value={ocrText.sex} text="Sex"></ConstInputShort>
-                        <ConstInputShort value={ocrText.type} text="Type"></ConstInputShort>
-                    </View>
-                    <View style={{flexDirection:"row", marginBottom: 30}}>
-                        <ConstInputShort value={ocrText.weight} text="Weight"></ConstInputShort>
-                        <ConstInputShort value={ocrText.height} text="Height"></ConstInputShort>
-                        <ConstInputShort value={ocrText.dateOfBirth} text="Date of Birth"></ConstInputShort>
-                    </View>
-                        <ConstInput value={ocrText.address} text="Address"></ConstInput>
-                        <ConstInput marginTop={30} value={ocrText.licenseNumber} text="Driver License Number"></ConstInput>
-                    <View style={{flexDirection:"row", marginTop: 30}}>
-                        <ConstInputShort value={ocrTextOCR.plate_no} text="Vehicle Plate No."></ConstInputShort>
-                        <ConstInputShort value={ocrTextOCR.make} text="Make"></ConstInputShort>
-                        <ConstInputShort value={ocrTextOCR.series} text="Model"></ConstInputShort>
-                    </View>
-                    <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort value="" text="Color"></ConstInputShort>
-                        <ConstInputShort value="" text="Class"></ConstInputShort>
-                        <ConstInputShort value="" text="Body Markings"></ConstInputShort>
-                    </View>
-                        <ConstInput value={ocrTextOCR.complete_owners_name} text="Registered Owner"></ConstInput>
-                        <ConstInput value={ocrTextOCR.complete_address} marginTop="10%" text="Address"></ConstInput>
-                    <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                        <ConstInputShort marginRight={55} width={165} value={ocrTextOCR.telephone_no_contact_details} text="Contact No."></ConstInputShort>
-                        <ConstInputShort width={165} value={currentTime} text="Time of Violation"></ConstInputShort>
-                    </View>
-                    <ConstInput value={detailedAddress} text="Place of Violation"></ConstInput>
-                    <ConstInput marginTop={30} marginBottom={30} value="ANNA NICOLE GABRIENTO" text="Apprehending Officer"></ConstInput>
+                <KeyboardWithoutWrapper>
+                    <View style={styles.contanier}>
+                        <View style={{ padding: 30, paddingTop: 50 }}>
+                            <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
+                                <ConstInputShort marginRight={55} width={165} value={"2343"} text="MFRTA TCT No"></ConstInputShort> 
+                                <ConstInputShort width={165} value={currentDate} text="Date"></ConstInputShort>
+                            </View>
+                                <ConstInput value={ocrText.name}  autoCapitalize="characters" text="Last Name, First Name, Middle Name"></ConstInput>
+                            <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
+                                <ConstInputShort value={ocrText.nationality} text="Nationality"></ConstInputShort>
+                                <ConstInputShort value={ocrText.sex} text="Sex"></ConstInputShort>
+                                <ConstInputShort value={ocrText.type} text="Type"></ConstInputShort>
+                            </View>
+                            <View style={{flexDirection:"row", marginBottom: 30}}>
+                                <ConstInputShort value={ocrText.weight} text="Weight"></ConstInputShort>
+                                <ConstInputShort value={ocrText.height} text="Height"></ConstInputShort>
+                                <ConstInputShort value={ocrText.dateOfBirth} text="Date of Birth"></ConstInputShort>
+                            </View>
+                                <ConstInput value={ocrText.address} text="Address"></ConstInput>
+                                <ConstInput marginTop={30} value={ocrText.licenseNumber} text="Driver License Number"></ConstInput>
+                            <View style={{flexDirection:"row", marginTop: 30}}>
+                                <ConstInputShort value={ocrTextOCR.plate_no} text="Vehicle Plate No."></ConstInputShort>
+                                <ConstInputShort value={ocrTextOCR.make} text="Make"></ConstInputShort>
+                                <ConstInputShort value={ocrTextOCR.series} text="Model"></ConstInputShort>
+                            </View>
+                            <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
+                                <ConstInputShort value={getColorName(selectedColor)} text="Color"></ConstInputShort>
+                                <ConstInputShort value={selectedClass} text="Class"></ConstInputShort>
+                                <ConstInputShort value={selectedMarkings} text="Body Markings"></ConstInputShort>
+                            </View>
+                                <ConstInput value={ocrTextOCR.complete_owners_name} text="Registered Owner"></ConstInput>
+                                <ConstInput value={ocrTextOCR.complete_address} marginTop="10%" text="Address"></ConstInput>
+                            <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
+                                <ConstInputShort marginRight={55} width={165} value={ocrTextOCR.telephone_no_contact_details} text="Contact No."></ConstInputShort>
+                                <ConstInputShort width={165} value={currentTime} text="Time of Violation"></ConstInputShort>
+                            </View>
+                            <ConstInput value={detailedAddress} text="Place of Violation"></ConstInput>
+                            <ConstInput marginTop={30} marginBottom={30} value="ANNA NICOLE GABRIENTO" text="Apprehending Officer"></ConstInput>
 
-                    
-                    <View style={{ marginBottom: 30 }}>
-                        <Text style={{ fontSize: 20, color: "white", marginBottom: 30 }}>Image Evidence:</Text>
-                        {receivedImageUri ? (
-                            <>
-                                <Image style={{ height: 350, width: 350, borderRadius: 30 }} source={{ uri: receivedImageUri }} />
-                                <TouchableOpacity
-                                    style={{ position: "absolute", right: 50, top: 10 }}
-                                    onPress={() => {
-                                        setImageUriState(null);
-                                        navigation.setParams({ imageUri: null });
-                                    }}
-                                >
-                                    <Icon style={{ fontSize: 30, color: "white" }} name='closecircleo'></Icon>
+                            
+                            <View style={{ marginBottom: 30 }}>
+                                <Text style={{ fontSize: 20, color: "white", marginBottom: 30 }}>Image Evidence:</Text>
+                                {receivedImageUri ? (
+                                    <>
+                                        <Image style={{ height: 350, width: 350, borderRadius: 30 }} source={{ uri: receivedImageUri }} />
+                                        <TouchableOpacity
+                                            style={{ position: "absolute", right: 50, top: 10 }}
+                                            onPress={() => {
+                                                setImageUriState(null);
+                                                navigation.setParams({ imageUri: null });
+                                            }}
+                                        >
+                                            <Icon style={{ fontSize: 30, color: "white" }} name='closecircleo'></Icon>
+                                        </TouchableOpacity>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Text style={{ color: "white" }}>No Image Available</Text>
+                                    </>
+                                )}
+                                <TouchableOpacity style={{ position: "absolute", right: 10, top: 10 }} onPress={handleCam}>
+                                    <Icon style={{ fontSize: 30, color: "white" }} name='camerao'></Icon>
                                 </TouchableOpacity>
-                            </>
-                        ) : (
-                            <>
-                                <Text style={{ color: "white" }}>No Image Available</Text>
-                            </>
-                        )}
-                        <TouchableOpacity style={{ position: "absolute", right: 10, top: 10 }} onPress={handleCam}>
-                            <Icon style={{ fontSize: 30, color: "white" }} name='camerao'></Icon>
-                        </TouchableOpacity>
+                            </View>
+                        </View>   
                     </View>
-                </View>   
-            </View>
-        </KeyboardWithoutWrapper>
+                </KeyboardWithoutWrapper>
 
-            <View style={{backgroundColor:"#3C66D2", width:"100%", height: 87, flexDirection: "row", alignItems:"center", justifyContent:"center"}}>
-                <ConstButtonShort onPress={() => setIsVisible(!isVisible)}  name="close" title="Cancel" backgroundColor="#C8B23D"></ConstButtonShort>
-                <ConstButtonShort onPress={handleViolation}  name="check" title="Next" backgroundColor="#5F5DC5"></ConstButtonShort>
-            </View>
+                    <View style={{backgroundColor:"#3C66D2", width:"100%", height: 87, flexDirection: "row", alignItems:"center", justifyContent:"center"}}>
+                        <ConstButtonShort onPress={() => setIsVisible(!isVisible)}  name="close" title="Cancel" backgroundColor="#C8B23D"></ConstButtonShort>
+                        <ConstButtonShort onPress={handleViolation}  name="check" title="Next" backgroundColor="#5F5DC5"></ConstButtonShort>
+                    </View>
             {
                 isVisible ? (
                     <>
@@ -223,7 +257,6 @@ const styles = StyleSheet.create({
     contanier: {
         backgroundColor:"#3C66D2",
         flex: 1,
-        height: "100vh",
-
+        height: "100%",
     }
 })

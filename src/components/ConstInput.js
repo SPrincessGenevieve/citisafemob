@@ -3,7 +3,7 @@ import { Toucha } from 'react-native';
 import { Text, TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
 
-function ConstInput({ secureTextEntry, marginBottom, textAlign, placeholder, text, editable,  marginTop, autoCapitalize, value}) {
+function ConstInput({ secureTextEntry, onChangeText, marginBottom, textAlign, placeholder, text, editable,  marginTop, autoCapitalize, value}) {
 
     const [fontsLoaded] = useFonts({
         'Roboto-Light': require('./../../assets/fonts/Roboto-Light.ttf'),
@@ -23,6 +23,7 @@ function ConstInput({ secureTextEntry, marginBottom, textAlign, placeholder, tex
                         autoCapitalize={autoCapitalize}  
                         editable={editable} 
                         secureTextEntry={secureTextEntry}
+                        onChangeText = {onChangeText}
                 style=
                     {{
                         color:"white", 

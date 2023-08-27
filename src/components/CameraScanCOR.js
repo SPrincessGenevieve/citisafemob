@@ -21,6 +21,8 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 
+
+
 export default function CameraScanCOR() {
     const [cameraMode, setCameraMode] = useState(CameraType.back);
     const [flash, setFlash] = useState("off"); // Changed to string type
@@ -142,7 +144,7 @@ export default function CameraScanCOR() {
         console.log("Error extracting text:", error);
         Alert.alert("Error extracting text. Please try again later.");
     }
-        navigation.navigate('FormScreen');
+        navigation.navigate('ColorSelector');
   };
 
   useEffect(() => {

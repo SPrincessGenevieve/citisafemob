@@ -28,12 +28,12 @@ function RecordDetails({navigation}) {
                 <KeyboardWithoutWrapper >
                     <>
                     <View style={{flexDirection:"column", flex: 1}}>
-                        <TouchableOpacity onPress={handleForm} style={{flexDirection:"column", marginTop: 20, justifyContent:"center", alignItems:"center", backgroundColor:"#2E54B3", flex: 1, borderRadius: 15, height: 50}}>
+                        {/*<TouchableOpacity onPress={handleForm} style={{flexDirection:"column", marginTop: 20, justifyContent:"center", alignItems:"center", backgroundColor:"#2E54B3", flex: 1, borderRadius: 15, height: 50}}>
                             <View style={{flexDirection:"row", alignItems:"center"}}>
                                 <IconAdd name='post-add' style={{color:"white", fontSize: 30, zIndex: 999}}></IconAdd>
                                 <Text style={{fontSize: 20, color:"white"}}>Add violation</Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity>*/}
                         <View style={{marginTop: 15}}>
                             <Text style={{fontSize: 15, textAlign:"center", fontWeight:"bold", height: 30, paddingTop: 5}}>Violations</Text>
                         </View>
