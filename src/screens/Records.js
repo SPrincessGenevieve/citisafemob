@@ -28,15 +28,22 @@ function Records({navigation}) {
                   <TouchableOpacity onPress={handleDetails}>
                     <View style={{ width: "100%", flexDirection: "row", marginLeft: 20 }}>
                       <View>
-                        <Image style={{height: 50, width: 50, marginTop: 17, marginLeft: 20 }} source={require('./../../assets/images/user.png')}></Image>
+                        <Image style={{height: 50, width: 50, marginTop: 30, marginLeft: 20 }} source={require('./../../assets/images/user.png')}></Image>
                       </View>
                         <DataTable style={{padding: 15, marginLeft: -15, border: 0, borderColor:"transparent" }}>
-                          <DataTable.Row style={{ marginBottom: -20, border: 0, borderColor:"transparent"}} >
-                            <DataTable.Cell style={{ height: 20, borderColor:"transparent"  }}><Text style={{fontSize: 17}}>Anna Nicole Gabriento</Text></DataTable.Cell>
+
+                          <DataTable.Row style={{ marginBottom: -20, border: 0, borderColor:"transparent", width: 250, height: 33}} >
+                            <DataTable.Cell style={{ height: 20, borderColor:"transparent" }}><Text style={{fontSize: 17}}>Anna Nicole Gabriento</Text></DataTable.Cell>
                           </DataTable.Row>
+
                           <DataTable.Row style={{borderColor:"transparent" }}>
                             <DataTable.Cell style={{ height: 20, border: 0, borderColor:"transparent"}}><Text style={{color: "grey", fontSize: 17}}>GA23-294329345-SADF</Text></DataTable.Cell>
                           </DataTable.Row>
+
+                          <DataTable.Row style={{ marginBottom: -20, border: 0, borderColor:"transparent", marginTop: -27}} >
+                            <DataTable.Cell style={{ height: 25, borderColor:"transparent"  }}><Text style={{fontSize: 22, color:"blue"}}>20230803</Text></DataTable.Cell>
+                          </DataTable.Row>
+                          
                         </DataTable>
                     </View>
                   </TouchableOpacity>
