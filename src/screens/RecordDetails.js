@@ -5,6 +5,7 @@ import GradientBackground from '../components/GradientBGR';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IconAdd from 'react-native-vector-icons/MaterialIcons';
 import { Table, Row, Rows } from 'react-native-table-component';
+import ConstButton from '../components/ConstButton';
 
 function RecordDetails({navigation}) {
 
@@ -59,13 +60,14 @@ function RecordDetails({navigation}) {
                                         <Row style={styles.row} data={header} />
                                         <Rows style={styles.row2} data={data} />
                                     </Table>
-
                                 </View>
                             </View>
                         </KeyboardWithoutWrapper>
+                        <ConstButton name={"file1"} title={"RE-GENERATE"}></ConstButton>
+
                     </View>
                     <TouchableOpacity  onPress={() => setModal(!modal)} style={{position:"absolute", top: 20, right: 20}}>
-                        <Icon name='close' color={"white"} size={40}></Icon>
+                        <Icon  name='close' color={"white"} size={40}></Icon>
                     </TouchableOpacity>
             </View>
           ) : null}
@@ -127,7 +129,7 @@ function RecordDetails({navigation}) {
                             <View style={{flexDirection:"row", marginTop: 10, marginBottom: 20}}>
                                 <Text style={{marginRight: 10, fontWeight: "bold"}}>Images:</Text>
                                 <TouchableOpacity>
-                                    <Text style={{color:"#2521FF"}}>View Image of Violation</Text>
+                                    <Text style={{color:"#2521FF"}}>Additional Documentation</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={{flexDirection:"row", marginTop: 10, marginBottom: 20}}>
