@@ -12,6 +12,7 @@ import predefinedColors from './../components/PredefineColor.json'
 import MapLocation from '../components/MapLocation';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import ColorSelector from '../components/ColorSelector';
 
 
 
@@ -28,15 +29,10 @@ function FormScreen({navigation, route}) {
     const [currentAddress, setCurrentAddress] = useState(null);
     const [selectedPin, setSelectedPin] = useState(null);
     const [isVisible, setIsVisible] = useState(false)
-    const [imageUri, setImageUri] = useState(null);
     const [currentTime, setCurrentTime] = useState(moment().format('hh:mm A'));
     const [currentDate, setCurrentDate] = useState(moment().format('YYYY-MM-DD'));
-    const [imageUriState, setImageUriState] = useState(receivedImageUri);
 
 
-
-    const receivedImageUri = route.params?.imageUri;
-    console.log("receivedImageUri:", receivedImageUri);
 
 
     if (!route.params) {
@@ -62,10 +58,6 @@ function FormScreen({navigation, route}) {
         navigation.setOptions({
             setImageUri: setImageUri
         });
-    };
-
-    const clearImage = () => {
-        setImageUriState(null);
     };
 
     const fetchTime = () => {
@@ -161,15 +153,10 @@ function FormScreen({navigation, route}) {
     }, []);
 
     useEffect(() => {
-        setImageUriState(receivedImageUri);
-    }, [receivedImageUri]);
-   
-    useEffect(() => {
-        setImageUriState(receivedImageUri);
         setSelectedColor(route.params?.selectedColor || '');
         setSelectedClass(route.params?.selectedClass || '');
         setSelectedMarkings(route.params?.selectedMarkings || '');
-    }, [receivedImageUri, route.params]);
+    }, []);
 
     useEffect(() => {
         if (location) {
@@ -201,8 +188,8 @@ function FormScreen({navigation, route}) {
                             <View style={styles.contanier}>
                                 <View style={{ padding: 30, paddingTop: 50 }}>
                                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
-                                        <ConstInputShort marginRight={55} width={165} value={mfrtaTctNo} text="MFRTA TCT No"></ConstInputShort> 
-                                        <ConstInputShort width={165} value={currentDate} text="Date"></ConstInputShort>
+                                        <ConstInputShort editable={false} marginRight={55} width={165} value={mfrtaTctNo} text="MFRTA TCT No"></ConstInputShort> 
+                                        <ConstInputShort editable={false} width={165} value={currentDate} text="Date"></ConstInputShort>
                                     </View>
                                         <ConstInput value={ocrText.name}  autoCapitalize="characters" text="Last Name, First Name, Middle Name"></ConstInput>
                                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
@@ -231,36 +218,10 @@ function FormScreen({navigation, route}) {
                                         <ConstInput value={ocrTextOCR.complete_address} marginTop="10%" text="Address"></ConstInput>
                                     <View style={{flexDirection:"row", marginTop: 30, marginBottom: 30}}>
                                         <ConstInputShort marginRight={55} width={165} value={ocrTextOCR.telephone_no_contact_details} text="Contact No."></ConstInputShort>
-                                        <ConstInputShort width={165} value={currentTime} text="Time of Violation"></ConstInputShort>
+                                        <ConstInputShort editable={false} width={165} value={currentTime} text="Time of Violation"></ConstInputShort>
                                     </View>
                                     <ConstInput value={selectedPin ? selectedPin.address : 'N/A'} text="Place of Violation"></ConstInput>
-                                    <ConstInput marginTop={30} marginBottom={30} value="ANNA NICOLE GABRIENTO" text="Apprehending Officer"></ConstInput>
-
-                                    
-                                    <View style={{ marginBottom: 30 }}>
-                                        <Text style={{ fontSize: 20, color: "white", marginBottom: 30 }}>Image Evidence:</Text>
-                                        {receivedImageUri ? (
-                                            <>
-                                                <Image style={{ height: 350, width: 350, borderRadius: 30 }} source={{ uri: receivedImageUri }} />
-                                                <TouchableOpacity
-                                                    style={{ position: "absolute", right: 50, top: 10 }}
-                                                    onPress={() => {
-                                                        setImageUriState(null);
-                                                        navigation.setParams({ imageUri: null });
-                                                    }}
-                                                >
-                                                    <Icon style={{ fontSize: 30, color: "white" }} name='closecircleo'></Icon>
-                                                </TouchableOpacity>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Text style={{ color: "white" }}>No Image Available</Text>
-                                            </>
-                                        )}
-                                        <TouchableOpacity style={{ position: "absolute", right: 10, top: 10 }} onPress={handleCam}>
-                                            <Icon style={{ fontSize: 30, color: "white" }} name='camerao'></Icon>
-                                        </TouchableOpacity>
-                                    </View>
+                                    <ConstInput  editable={false} marginTop={30} marginBottom={30} value="ANNA NICOLE GABRIENTO" text="Apprehending Officer"></ConstInput>
                                 </View>   
                             </View>
                             </KeyboardWithoutWrapper>

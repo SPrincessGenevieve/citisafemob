@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, Text, TextInput, Button } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text, TextInput, Button, Image } from 'react-native';
 import KeyboardWithoutWrapper from './KeyboardWithoutWrapper';
 import GradientBackground from './GradientBG';
 import colorsData from './Colors.json'
@@ -8,6 +8,9 @@ import ClassDisplay from './ClassDisplay';
 import BodyMarkings from './BodyMarkings';
 import ConstButton from './ConstButton';
 import FormScreen from './../screens/FormScreen'
+import CameraProof from './CameraProof';
+import Icon from 'react-native-vector-icons/EvilIcons';
+import { useRoute } from "@react-navigation/native";
 
 const predefinedColors  = [
   { hex: '#000000', name: 'Black' },
@@ -36,6 +39,27 @@ const predefinedColors  = [
 export default function ColorSelector({navigation}) {
     const [customColor, setCustomColor] = useState('');
     const [matchedColor, setMatchedColor] = useState(null);
+    const [imageUriState, setImageUriState] = useState(null); // Initialize with null
+    const [capture, setCapture] = useState(false); // Initialize with false
+    const [selectedColor, setSelectedColor] = useState(null);
+    const [selectedClass, setSelectedClass] = useState(null);
+    const [selectedMarkings, setSelectedMarkings] = useState(null);
+    const route = useRoute();
+    
+    const receivedImageUri = route.params?.imageUri;
+    console.log("receivedImageUri:", receivedImageUri);
+    
+    const handleImageClose = () => {
+      setImageUriState(null);
+      setCapture(false);
+      navigation.setParams({ imageUri: null });
+  }
+
+  useEffect(() => {
+      setImageUriState(receivedImageUri);
+  }, [receivedImageUri]);
+
+
 
     useEffect(() => {
         if (customColor) {
@@ -77,7 +101,6 @@ export default function ColorSelector({navigation}) {
         const selectedColorObject = predefinedColors.find((color) => color.hex === colorHex);
         return selectedColorObject ? selectedColorObject.name : '';
       };
-
       
     const handleForm = () => {
       navigation.navigate("FormScreen", {
@@ -87,11 +110,7 @@ export default function ColorSelector({navigation}) {
       });
     };
 
-
-   
-
-
-      const renderColorButtons = () => {
+    const renderColorButtons = () => {
         const rows = [];
         for (let i = 0; i < predefinedColors.length; i += 5) {
             const rowColors = predefinedColors.slice(i, i + 5);
@@ -123,8 +142,6 @@ export default function ColorSelector({navigation}) {
         return rows;
     };
 
-  
-
     const handleCustomColorSubmit = () => {
         const matchedColor = predefinedColors.find(
           (color) =>
@@ -140,21 +157,21 @@ export default function ColorSelector({navigation}) {
         }
       };
 
-      const [selectedColor, setSelectedColor] = useState(null);
-      const [selectedClass, setSelectedClass] = useState(null);
-      const [selectedMarkings, setSelectedMarkings] = useState(null);
-
-      const handleColorSelection = (color) => {
+    const handleColorSelection = (color) => {
           setSelectedColor(color);
       };
 
-      const handleClassSelection = (classCode) => {
+    const handleClassSelection = (classCode) => {
           setSelectedClass(classCode);
       };
 
-      const handleBodyMarkingsSelection = (markings) => {
+    const handleBodyMarkingsSelection = (markings) => {
           setSelectedMarkings(markings);
       };
+
+    const handleCam = () =>{
+      navigation.navigate("CameraProof");
+    }
 
 
               
@@ -188,7 +205,64 @@ export default function ColorSelector({navigation}) {
             <View style={{marginBottom: 10}}>
                 <BodyMarkings onBodySelection={handleBodyMarkingsSelection}></BodyMarkings>
             </View>
-            <View style={{display:"flex", width:"90%"}}>
+
+            <Text  style={{fontSize: 20, color:"white", marginTop: 40}}>Additional Documentation</Text>
+            <Text  style={{fontSize: 15, color:"white",}}>This part is optional</Text>
+            <View style={{display:"flex", flexDirection:"row", }}>
+
+            </View>
+
+            {imageUriState ? (
+            <View style={{ marginTop: 20 }}>
+                <View
+                    style={{
+                        display: "flex",
+                        borderWidth: 2,
+                        borderColor: "white",
+                        borderRadius: 20,
+                        width: 350,
+                        height: 350,
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                <View style={{position:"absolute", zIndex: 1, right: 10, top: 10}}>
+                  <TouchableOpacity onPress={handleImageClose}><Icon color={"white"} name="close" size={30}></Icon></TouchableOpacity>
+                </View>
+                    <Image
+                        style={{ borderRadius: 20, width: 350, height: 350 }}
+                        source={{ uri: imageUriState }}
+                        onError={(error) => console.error("Image Load Error: ", error)}
+                    />
+                </View>
+            </View>
+        ) : (
+            <View style={{ marginTop: 20 }}>
+              <TouchableOpacity onPress={handleCam}>
+                <View
+                      style={{
+                          display: "flex",
+                          borderWidth: 2,
+                          borderColor: "white",
+                          borderRadius: 20,
+                          width: 350,
+                          height: 350,
+                          alignItems: "center",
+                          justifyContent: "center",
+                      }}
+                  >
+                      <Icon color={"white"} name="camera" onPress={handleCam} size={30}></Icon>
+                      <Text style={{ color: "white" }}>No image taken</Text>
+                      <Text style={{ color: "white" }}>Click to capture image</Text>
+                  </View>
+              </TouchableOpacity>
+                
+            </View>
+        )}
+
+
+
+            <View style={{display:"flex", width:"90%", marginTop: 30}}>
                 <ConstButton onPress={handleForm} title={"NEXT"}></ConstButton>
             </View>
 
@@ -203,7 +277,7 @@ export default function ColorSelector({navigation}) {
       flex: 1,
       alignItems: 'center',
       backgroundColor: 'transparent',
-      height: 1200
+      height: 1700
     },
 
     button:{

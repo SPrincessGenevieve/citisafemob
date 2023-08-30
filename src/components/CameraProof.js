@@ -22,72 +22,72 @@ import { useNavigation } from "@react-navigation/native";
 
 
 export default function CameraProof() {
-    const [cameraMode, setCameraMode] = useState(CameraType.back);
-    const [flash, setFlash] = useState("off"); // Changed to string type
-    const [pictureUri, setPictureUri] = useState("");
-    const cameraRef = useRef();
-    const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
+  const [cameraMode, setCameraMode] = useState(CameraType.back);
+  const [flash, setFlash] = useState("off");
+  const [pictureUri, setPictureUri] = useState("");
+  const cameraRef = useRef();
+  const [showPicture, setShowPicture] = useState(false);
 
-    const dispatch = useDispatch();
-    const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
-   
+  useEffect(() => {
+    requestPermission();
+  }, []);    
 
+  const requestPermission = async () => {
+    const permissionGranted = await getPermission();
+    if (!permissionGranted) {
+      await requestCameraPermissionsAsync();
+    }
+  };    
 
-    useEffect(() => {
-        requestPermission();
-    }, []);    
+  const getPermission = async () => {
+    const cameraPermission = await getCameraPermissionsAsync();
+    return cameraPermission.granted;
+  };
 
-    const requestPermission = async () => {
-        await requestCameraPermissionsAsync();
-    };    
-
-    const getPermission = async () => {
-        const cameraPermission = await getCameraPermissionsAsync();
-        return cameraPermission.granted;
-    };
-
-    const takePicture = async () => {
-      const { uri } = await cameraRef?.current.takePictureAsync();
+  const takePicture = async () => {
+    if (cameraRef?.current) {
+      const { uri } = await cameraRef.current.takePictureAsync();
       setPictureUri(uri);
       setShowPicture(true);
+    }
   };
 
-    const cancelPicture = () => {
-        setPictureUri("");
-        setShowPicture(false);
-      };    
+  const cancelPicture = () => {
+    setPictureUri("");
+    setShowPicture(false);
+  };    
+
+  const handleNextButton = () => {
+    navigation.navigate('ColorSelector', {
+        imageUri: pictureUri, 
+    });
+};
 
 
-    const handleNextButton = async () => {
-        navigation.navigate('FormScreen', { imageUri: pictureUri });
-    };
-
-  
-
-    const switchFlashMode = () => {
-        setFlash(flash === "off" ? "on" : "off");
-    };
-
-    const pickImage = async () => {
-      let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [16, 9],
-          quality: 1,
-      });
-  
-      if (!result.canceled) {
-          setPictureUri(result.assets[0].uri);
-          setShowPicture(true);
-      }
+  const switchFlashMode = () => {
+    setFlash(flash === "off" ? "on" : "off");
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setPictureUri(result.uri);
+      setShowPicture(true);
+    }
+  };
 
 
   return(
         <View style={styles.container}>
-        {/* Show the camera preview or the captured picture */}
         {showPicture ? (
           <View style={styles.pictureContainer}>
             <Image style={styles.picture} source={{ uri: pictureUri }} />
@@ -104,7 +104,6 @@ export default function CameraProof() {
         ) : (
           <View style={styles.cameraContainer}>
           <Camera ref={cameraRef} style={styles.camera} type={cameraMode} flashMode={flash} >
-            {/* Empty View for the Camera component */}
           </Camera>   
           <View style={styles.controlsContainer}>
             <Feather name="image" size={35} color="white" onPress={pickImage} />

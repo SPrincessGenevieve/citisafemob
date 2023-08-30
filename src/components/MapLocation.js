@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import ConstButton from './ConstButton';
 
 export default function MapLocation({ location, selectedPin, currentAddress, handleMapPress, getLocation, showMap, setShowMap, form, setForm }) {
-    const [isPinRed, setIsPinRed] = useState(false); // State to track pin color
-
     return (
         <View style={{ flex: 1 }}>
             <MapView
@@ -18,7 +16,7 @@ export default function MapLocation({ location, selectedPin, currentAddress, han
                 }}
                 onPress={handleMapPress}
             >
-                {selectedPin && <Marker coordinate={selectedPin.coordinate} title={selectedPin.address} pinColor={isPinRed ? 'red' : 'blue'} />}
+                {selectedPin && <Marker coordinate={selectedPin.coordinate} title={selectedPin.address} />}
             </MapView>
 
             <View style={{ padding: 16 }}>
@@ -30,15 +28,12 @@ export default function MapLocation({ location, selectedPin, currentAddress, han
                 ) : (
                     <>
                         <ConstButton
-                            name={"place"} // Using MaterialIcons name for a pin icon
+                            name={"antdesign"}
                             title={"Get Location"}
-                            onPress={() => {
-                                getLocation();
-                                setIsPinRed(true); // Set the pin color to red
-                            }}
+                            onPress={getLocation}
                         />
                         <ConstButton
-                            name={"arrow-right"} // Using FontAwesome5Pro name for a right arrow icon
+                            name={"arrowright"} // Using FontAwesome5Pro name for a right arrow icon
                             title={"NEXT"}
                             onPress={() => setShowMap(!showMap) & setForm(!form)}
                         />
