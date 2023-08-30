@@ -15,6 +15,8 @@ import RecordDetails from './src/screens/RecordDetails';
 import CameraScanCOR from './src/components/CameraScanCOR';
 import CameraProof from './src/components/CameraProof';
 import ColorSelector from './src/components/ColorSelector';
+import MapLocation from './src/components/MapLocation';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +35,7 @@ function AppNavigator(props) {
                 <Stack.Screen name="Profile" options={{headerShown:false}} component={Profile}/>
                 <Stack.Screen name="RecordDetails" options={{headerShown:false}} component={RecordDetails}/>
                 <Stack.Screen name="ColorSelector" options={{headerShown:false}} component={ColorSelector}/>
+                <Stack.Screen name="MapLocation" options={{headerShown:false}} component={MapLocation}/>
                 <Stack.Screen name='ForgotPass' options={{headerShown:false}} component={ForgotPass}></Stack.Screen>
                 <Stack.Screen name='CameraProof' options={{headerShown:false}} component={CameraProof}></Stack.Screen>
             </Stack.Navigator>

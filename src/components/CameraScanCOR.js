@@ -232,7 +232,6 @@ const styles = StyleSheet.create({
     },
     camera: {
       flex: 1,
-      aspectRatio: 3/4
     },
     controlsContainer: {
       backgroundColor: "rgba(57, 92, 219, 1)",

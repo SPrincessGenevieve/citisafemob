@@ -5,6 +5,7 @@ import {
     StyleSheet, 
     Alert, 
     Image,
+    Dimensions,
     Text } from "react-native";
 import { 
     Camera, 
@@ -66,28 +67,22 @@ export default function CameraScan() {
         return cameraPermission.granted;
     };
 
+    const { width, height } = Dimensions.get("window");
+    const aspectRatio = height / width;
+  
     const takePicture = async () => {
-      const { uri, width, height } = await cameraRef?.current.takePictureAsync();
-
-      const cropWidth = 2000;
-      const cropHeight = 1420;
-      const left = 200;
-      const top = 1330;
-
-      try {
-        const croppedImage = await ImageManipulator.manipulateAsync(
-          uri,
-          [{ crop: { originX: left, originY: top, width: cropWidth, height: cropHeight } }],
-          { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
-        );
-
-        setPictureUri(croppedImage.uri);
-        setShowPicture(true);
-      } catch (error) {
-        console.log("Error cropping the image:", error);
+      if (cameraRef.current) {
+          const { uri } = await cameraRef.current.takePictureAsync();
+          
+          setPictureUri(uri); // Set the captured image URI directly
+          setShowPicture(true);
       }
+  };
     
-    };    
+    
+    
+    
+    
 
     const cancelPicture = () => {
         setPictureUri("");
@@ -267,7 +262,7 @@ const styles = StyleSheet.create({
     },
     camera: {
       flex: 1,
-      aspectRatio: 3/4
+      aspectRatio: 9/13
     },
     controlsContainer: {
       backgroundColor: "rgba(57, 92, 219, 1)",
