@@ -2,21 +2,34 @@ import React, { useState, useEffect } from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { Camera, requestCameraPermissionsAsync } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
+import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
+import { Button } from "react-native";
+import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/Ionicons";
+import Feather from "@expo/vector-icons/Feather";
 import { Image } from "react-native";
 import corners from "./../../assets/corners.png";
 import * as ImagePicker from "expo-image-picker";
+import { setRecognizedText } from "./camera/infoSlice";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
+import axios from "axios";
 
 export default function CameraScan() {
   const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
   const [cameraRef, setCameraRef] = useState(null);
   const [capturedImage, setCapturedImage] = useState(null);
+
   const [cropMode, setCropMode] = useState(false);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const [showPicture, setShowPicture] = useState(false);
+  const [imageManipulatorVisible, setImageManipulatorVisible] = useState(false);
+  const [croppedImageUri, setCroppedImageUri] = useState(null);
 
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  // saving data
 
   useEffect(() => {
     requestPermission();
@@ -26,6 +39,11 @@ export default function CameraScan() {
     await requestCameraPermissionsAsync();
   };
 
+  const getPermission = async () => {
+    const cameraPermission = await requestCameraPermissionsAsync();
+    return cameraPermission.granted;
+  };
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -33,17 +51,25 @@ export default function CameraScan() {
     })();
   }, []);
 
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   const takePicture = async () => {
     if (cameraRef) {
       const photo = await cameraRef.takePictureAsync();
+
       setCapturedImage(photo.uri);
       setCropMode(true);
       setShowPicture(true);
     }
   };
 
-  const cancelPicture = () => {
-    setCapturedImage(null);
+  const cancelPicture = async () => {
+    setCapturedImage("");
     setShowPicture(false);
   };
 
@@ -74,7 +100,7 @@ export default function CameraScan() {
           { format: ImageManipulator.SaveFormat.PNG }
         );
 
-        setCapturedImage(croppedImage.uri);
+        setCapturedImage(croppedImage.uri); // Update the capturedImage state with the cropped image URI
         setCropMode(false);
         setShowPicture(true);
       }
@@ -91,15 +117,25 @@ export default function CameraScan() {
     );
   };
 
-  const handleNextButton = () => {
+  const handleNextButton = async () => {
     navigation.navigate("CameraScanCOR");
   };
 
   return (
     <View style={styles.container}>
-      {showPicture && (
-        <View style={styles.pictureContainer}>
-          <Image style={styles.picture} source={{ uri: capturedImage }} />
+      {showPicture ? (
+        <View
+          style={{
+            backgroundColor: "red",
+            position: "absolute",
+            zIndex: 4,
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {capturedImage ? ( // Check if capturedImage is available
+            <Image style={styles.picture} source={{ uri: capturedImage }} />
+          ) : null}
 
           <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
             <Text style={styles.nextText}>Next</Text>
@@ -109,45 +145,80 @@ export default function CameraScan() {
             <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      )}
+      ) : null}
 
       {cropMode ? (
-        <ExpoImageManipulator
-          photo={{ uri: capturedImage }}
-          isVisible
-          onPictureChoosed={(uri) => setCapturedImage(uri)}
-          onToggleModal={() => setCropMode(!cropMode)}
-        />
+        <View>
+          <ExpoImageManipulator
+            photo={{ uri: capturedImage }}
+            isVisible
+            onPictureChoosed={(uri) => setCapturedImage(uri)}
+            onToggleModal={() => setCropMode(!cropMode)}
+          />
+        </View>
       ) : (
-        <View style={styles.cameraContainer}>
-          <Image style={styles.corners} source={corners} />
+        <View style={{ height: "100%", width: "100%" }}>
+          <Image style={styles.corners} source={corners}></Image>
           <Camera
             flashMode={flash}
             style={styles.camera}
-            type={Camera.Constants.Type.back}
+            type={type}
             ratio="18:9"
             ref={(ref) => {
               setCameraRef(ref);
             }}
-          />
-
+          ></Camera>
           <View style={styles.controlsContainer}>
-            <TouchableOpacity style={styles.controlButton} onPress={pickImage}>
-              <Image source={require("your-icon-path")} style={styles.icon} />
-            </TouchableOpacity>
-
             <TouchableOpacity
-              style={styles.takePictureBtn}
-              onPress={takePicture}
+              style={{
+                backgroundColor: "#75B956",
+                width: 70,
+                height: 70,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 50,
+                marginRight: 20,
+              }}
+              onPress={pickImage}
             >
-              <Image source={require("your-icon-path")} style={styles.icon} />
+              <Icon name="image" size={50} color="white" style={{}} />
             </TouchableOpacity>
 
+            <View>
+              <TouchableOpacity
+                style={styles.takePictureBtn}
+                onPress={takePicture}
+              >
+                <ScanOutlined
+                  style={{
+                    color: "white",
+                    fontSize: 70,
+                  }}
+                  name="line-scan"
+                ></ScanOutlined>
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
-              style={styles.controlButton}
+              style={{
+                backgroundColor: "#75B956",
+                width: 70,
+                height: 70,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 50,
+              }}
               onPress={toggleFlash}
             >
-              <Image source={require("your-icon-path")} style={styles.icon} />
+              <Feather
+                name={
+                  flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
+                }
+                size={30}
+                color="white"
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -160,15 +231,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  pictureContainer: {
-    backgroundColor: "red",
+  camera: {
+    flex: 1,
+  },
+  buttonContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+  button: {
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 15,
+  },
+  text: {
+    fontSize: 18,
+    color: "black",
+  },
+  controlsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    display: "flex",
     position: "absolute",
-    zIndex: 4,
+    bottom: 50,
+    width: "100%",
+    justifyContent: "center",
+    zIndex: 3,
+  },
+  takePictureBtn: {
+    backgroundColor: "#75B956",
+    borderRadius: 50,
+    height: 90,
+    width: 90,
+    marginVertical: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 20,
+  },
+  corners: {
     width: "100%",
     height: "100%",
+    position: "absolute",
+    zIndex: 1,
   },
   picture: {
-    flex: 1,
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
   nextBtn: {
@@ -195,50 +306,5 @@ const styles = StyleSheet.create({
   cancelText: {
     color: "red",
     fontSize: 16,
-  },
-  cameraContainer: {
-    height: "100%",
-    width: "100%",
-  },
-  camera: {
-    flex: 1,
-  },
-  corners: {
-    width: "100%",
-    height: "100%",
-    position: "absolute",
-    zIndex: 1,
-  },
-  controlsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: 50,
-    width: "100%",
-    zIndex: 3,
-  },
-  controlButton: {
-    backgroundColor: "#75B956",
-    width: 70,
-    height: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 50,
-    marginHorizontal: 20,
-  },
-  icon: {
-    width: 50,
-    height: 50,
-    tintColor: "white",
-  },
-  takePictureBtn: {
-    backgroundColor: "#75B956",
-    borderRadius: 50,
-    height: 90,
-    width: 90,
-    marginVertical: 10,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
