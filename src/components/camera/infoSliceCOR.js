@@ -1,29 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const infoSliceCOR = createSlice({
-name: 'infoTextOCR',
-initialState: {
+  name: "infoTextOCR",
+  initialState: {
     text: "",
     extractedInfo: {
-        plate_no: "",
-        make: "",
-        date: "",
-        series: "",
-        make: "",
-        complete_owners_name: "",
-        complete_address: "",
-        telephone_no_contact_details: "",
+      plate_no: "",
+      make: "",
+      date: "",
+      series: "",
+      make: "",
+      complete_owners_name: "",
+      complete_address: "",
+      telephone_no_contact_details: "",
     },
-},
-reducers: {
+  },
+  reducers: {
     setRecognizedText: (state, action) => {
-        state.extractedInfo = action.payload;
-        const recogText = state.extractedInfo;
+      state.extractedInfo = action.payload;
+      const recogText = state.extractedInfo;
 
-        console.log(recogText)
-        
-    }
-},
+      console.log(recogText);
+    },
+  },
 });
 
 export const { setRecognizedText } = infoSliceCOR.actions;

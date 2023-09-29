@@ -47,6 +47,7 @@ function ConstInput({
           placeholderTextColor="#C5C6CC"
           autoCapitalize={autoCapitalize}
           editable={editable}
+          secureTextEntry={!showPassword} // Toggle secureTextEntry based on the showPassword state
           onChangeText={onChangeText}
           style={{
             color: "grey",
@@ -60,6 +61,21 @@ function ConstInput({
             marginBottom: marginBottom,
           }}
         />
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={{
+            display: "flex",
+            position: "absolute",
+            width: "97%",
+            alignItems: "flex-end",
+          }}
+        >
+          <MaterialIcons
+            name={showPassword ? "visibility-off" : "visibility"}
+            size={24}
+            color="grey"
+          />
+        </TouchableOpacity>
       </View>
     </>
   );

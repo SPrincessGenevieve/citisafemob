@@ -1,13 +1,9 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
-import AppNavigator from './AppNavigator';
-import { Provider } from 'react-redux';
-import store from './plugins/store';
-
-
-const Stack = createNativeStackNavigator();
-const { height } = Dimensions.get('window');
+import React, { useCallback, useState } from "react";
+import { StyleSheet, Dimensions } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AppNavigator from "./AppNavigator";
+import { Provider } from "react-redux";
+import store from "./plugins/store";
 
 export default function App() {
   return (
@@ -16,13 +12,3 @@ export default function App() {
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  screenContainer: {
-    flex: 1,
-    height,
-  },
-});

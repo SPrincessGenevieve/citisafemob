@@ -2,26 +2,26 @@ import { createSlice } from "@reduxjs/toolkit";
 // axios
 
 export const authSlice = createSlice({
-    name: 'auth',
-    initialState: {
-        setIsLoggedIn: false,
-        token: "",
+  name: "auth",
+  initialState: {
+    setIsLoggedIn: false,
+    token: "",
+  },
+  reducers: {
+    setToken: (state, action) => {
+      state.token = action.payload;
     },
-    reducers: {
-        setToken: (state, action) => {
-            state.token = action.payload
-        },
-        setLogin: (state) => {
-            state.setIsLoggedIn = true;
-        },
-        setLogout: (state) => {
-            state.token = ""
-            
-            state.setIsLoggedIn = false
-        }
+    setLogin: (state) => {
+      state.setIsLoggedIn = true;
     },
-})
+    setLogout: (state) => {
+      state.token = "";
 
-export const {setToken, setLogin, setLogout} = authSlice.actions;
+      state.setIsLoggedIn = false;
+    },
+  },
+});
+
+export const { setToken, setLogin, setLogout } = authSlice.actions;
 
 export default authSlice.reducer;

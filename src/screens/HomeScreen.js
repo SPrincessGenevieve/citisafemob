@@ -1,86 +1,120 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Animated, Dimensions } from 'react-native';
-import GradientBackground from '../components/GradientBGR';
-import ConstButton from '../components/ConstButton';
-import Title from '../components/Title';
-import { useFonts } from 'expo-font';
-import Profile from './Profile';
-import KeyboardWithoutWrapper from './../components/KeyboardWithoutWrapper'
-
-
+import React, { useState, useRef } from "react";
+import { View, Text, Animated, Dimensions } from "react-native";
+import GradientBackground from "../components/GradientBGR";
+import ConstButton from "../components/ConstButton";
+import { useFonts } from "expo-font";
 
 function HomeScreen({ navigation }) {
-  const [showProfile, setShowProfile] = useState(false); // Initially set to false
-  const slideAnimation = useRef(new Animated.Value(0)).current; // Initially set to 0
-
   const [fontsLoaded] = useFonts({
-      'Roboto Light': require('./../../assets/fonts/Roboto-Light.ttf'),
-      'Montserrat Bold': require('./../../assets/fonts/Montserrat-Bold.ttf'),
+    "Roboto Light": require("./../../assets/fonts/Roboto-Light.ttf"),
+    "Montserrat Bold": require("./../../assets/fonts/Montserrat-Bold.ttf"),
   });
-
-  useEffect(() => {
-      if (showProfile) {
-          Animated.timing(slideAnimation, {
-              toValue: 1,
-              duration: 800,
-              useNativeDriver: true,
-          }).start();
-      } else {
-          Animated.timing(slideAnimation, {
-              toValue: 0,
-              duration: 800,
-              useNativeDriver: true,
-          }).start();
-      }
-  }, [showProfile]);
 
   if (!fontsLoaded) {
-      return null;
+    return null;
   }
 
-  const screenHeight = Dimensions.get('window').height;
-
-  const profileSlide = slideAnimation.interpolate({
-      inputRange: [0, 1],
-      outputRange: [-0.5 * screenHeight, 140], // Adjust the values to control the initial visibility and sliding distance
-  });
+  const screenHeight = Dimensions.get("window").height;
 
   const handleRecord = () => {
-      navigation.navigate("Records");
-  }
+    navigation.navigate("Records");
+  };
 
-  const handleOCRSreen = () => {
-      navigation.navigate("OCRScan");
-  }
+  const handleIntroLicense = () => {
+    navigation.navigate("IntroLicense");
+  };
 
   const handleForm = () => {
-      navigation.navigate("FormScreen");
-  }
+    navigation.navigate("FormScreen");
+  };
 
-  const handleLogout = () =>{
-    navigation.navigate("FirstScreen")
-  }
+  const handleLogout = () => {
+    navigation.navigate("FirstScreen");
+  };
 
-    return (
-        <View style={{ position: "absolute", height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
-            <GradientBackground></GradientBackground>
-            <Animated.View style={{ transform: [{ translateY: profileSlide }], zIndex: 1 }}>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Profile handleLogout={handleLogout} onPress={() => setShowProfile(!showProfile)}></Profile>
-                    </View>
-            </Animated.View>
+  return (
+    <View
+      style={{
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <GradientBackground></GradientBackground>
+      <View></View>
+      <View
+        style={{
+          top: 1,
+          position: "absolute",
 
-            <View style={{ top: 1, position: "absolute", marginTop: "50%", width: "80%" }}>
-                <Title></Title>
-                <Text style={{ marginTop: "20%", color: "white", fontSize: 20, fontFamily: "Roboto Light" }}>Good day</Text>
-                <Text style={{ marginTop: 20, color: "white", fontSize: 20, fontFamily: "Montserrat Bold" }}>Mr. John Wick Batumbakal</Text>
-            </View>
-            <View style={{ alignItems: "center", justifyContent: "center", width: "80%", marginTop: "40%" }}>
-                <ConstButton onPress={handleRecord} name="book" title="Check Records"></ConstButton>
-                <ConstButton onPress={handleOCRSreen} name="scan1" title="Scan Driver's License and OR/CR"></ConstButton>
-            </View>
+          width: "80%",
+        }}
+      >
+        <View style={{ display: "flex", flexDirection: "row" }}>
+          <Text
+            style={{
+              marginTop: "20%",
+              color: "black",
+              fontSize: 20,
+              fontFamily: "Roboto Light",
+            }}
+          >
+            Good morning,{" "}
+            <Text
+              style={{
+                color: "#3E7C1F",
+                fontSize: 20,
+                fontFamily: "Roboto Light",
+                fontWeight: "bold",
+              }}
+            >
+              John
+            </Text>
+          </Text>
         </View>
-    );
+
+        <Text
+          style={{
+            color: "#3E7C1F",
+            fontSize: 20,
+            fontFamily: "Roboto Light",
+          }}
+        >
+          Monday,{" "}
+          <Text
+            style={{
+              color: "black",
+              fontSize: 20,
+              fontFamily: "Roboto Light",
+            }}
+          >
+            September 25, 2023
+          </Text>
+        </Text>
+      </View>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          width: "80%",
+          marginTop: "40%",
+        }}
+      >
+        <ConstButton
+          onPress={handleRecord}
+          name="book"
+          title="Check Records"
+        ></ConstButton>
+        <ConstButton
+          onPress={handleIntroLicense}
+          name="scan1"
+          title="Scan Driver's License and OR/CR"
+        ></ConstButton>
+      </View>
+    </View>
+  );
 }
 
 export default HomeScreen;
