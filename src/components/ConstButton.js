@@ -12,6 +12,9 @@ function ConstButton({
   right,
   marginLeft,
   marginRight,
+  height,
+  marginLeftText,
+  size,
 }) {
   return (
     <View
@@ -30,7 +33,7 @@ function ConstButton({
         style={{
           backgroundColor: "#64A645",
           width: "100%",
-          height: 65,
+          height: height,
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 10,
@@ -42,8 +45,10 @@ function ConstButton({
           elevation: 10,
         }}
       >
-        <Icon name={name} size={30} color="white"></Icon>
-        <Text style={{ marginLeft: 20, fontSize: 17, color: "white" }}>
+        <Icon name={name} size={20} color="white"></Icon>
+        <Text
+          style={{ marginLeft: marginLeftText, fontSize: 17, color: "white" }}
+        >
           {title}
         </Text>
       </TouchableOpacity>

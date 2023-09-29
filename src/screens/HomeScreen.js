@@ -3,6 +3,8 @@ import { View, Text, Animated, Dimensions } from "react-native";
 import GradientBackground from "../components/GradientBGR";
 import ConstButton from "../components/ConstButton";
 import { useFonts } from "expo-font";
+import profile from "./../../assets/default_profile.png";
+import { Image } from "react-native";
 
 function HomeScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
@@ -43,15 +45,24 @@ function HomeScreen({ navigation }) {
       }}
     >
       <GradientBackground></GradientBackground>
-      <View></View>
       <View
         style={{
           top: 1,
           position: "absolute",
-
           width: "80%",
         }}
       >
+        <View>
+          <Image
+            source={profile}
+            style={{
+              position: "absolute",
+              display: "flex",
+              right: -10,
+              marginTop: 65,
+            }}
+          ></Image>
+        </View>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <Text
             style={{
@@ -99,18 +110,22 @@ function HomeScreen({ navigation }) {
           alignItems: "center",
           justifyContent: "center",
           width: "80%",
-          marginTop: "40%",
+          marginTop: "100%",
         }}
       >
         <ConstButton
-          onPress={handleRecord}
-          name="book"
-          title="Check Records"
+          onPress={handleIntroLicense}
+          name="form"
+          title="Cite a Ticket"
+          marginLeftText={10}
+          height={60}
         ></ConstButton>
         <ConstButton
-          onPress={handleIntroLicense}
-          name="scan1"
-          title="Scan Driver's License and OR/CR"
+          onPress={handleRecord}
+          name="mail"
+          marginLeftText={10}
+          title="Check Logs"
+          height={60}
         ></ConstButton>
       </View>
     </View>

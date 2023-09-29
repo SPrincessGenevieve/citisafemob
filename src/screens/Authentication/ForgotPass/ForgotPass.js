@@ -45,8 +45,9 @@ function ForgotPass(props) {
           ></ConstInput>
           <Text>Resend Email</Text>
           <ConstButton
-            name="mail"
-            title="send"
+            marginLeftText={-10}
+            title="Send Email"
+            height={55}
             onPress={() => isVisivle(!visible)}
           ></ConstButton>
         </View>
@@ -90,6 +91,8 @@ function ForgotPass(props) {
                 onPress={() => isVisivle(!visible)}
                 name="check"
                 title="Done"
+                height={55}
+                marginLeftText={10}
               ></ConstButton>
               <Text>
                 Please check your email. We have sent a link for you to update

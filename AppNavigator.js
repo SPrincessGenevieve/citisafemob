@@ -30,10 +30,14 @@ function TabNavigator() {
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
-      tabBarOptions={{
+      screenOptions={{
         tabBarActiveTintColor: "#3E7C1F",
         headerShown: false,
-        activeTintColor: "#007AFF", // Color of the active tab
+        activeTintColor: "#007AFF",
+        tabBarStyle: {
+          borderTopWidth: 0,
+          elevation: 0,
+        },
       }}
     >
       <Tab.Screen

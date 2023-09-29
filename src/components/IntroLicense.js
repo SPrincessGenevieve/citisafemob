@@ -1,13 +1,13 @@
 import React from "react";
 import { Image } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
-import IDImahe from "./../../assets/circle_scan.gif/";
+import IDImahe from "./../../assets/id_pic.png/";
 import ConstButton from "./ConstButton";
 
 function IntroLicense({ navigation }) {
-    const handleOCRSreen = () => {
-        navigation.navigate("OCRScan");
-      };
+  const handleOCRSreen = () => {
+    navigation.navigate("OCRScan");
+  };
 
   return (
     <View
@@ -31,7 +31,10 @@ function IntroLicense({ navigation }) {
         </Text>
       </View>
       <View style={styles.id}>
-        <Image style={{ width: 185, height: 530 }} source={IDImahe}></Image>
+        <Image
+          style={{ marginTop: 170, width: 310, height: 210 }}
+          source={IDImahe}
+        ></Image>
       </View>
       <View
         style={{
@@ -50,6 +53,8 @@ function IntroLicense({ navigation }) {
         <ConstButton
           onPress={handleOCRSreen}
           title={"Start Identification"}
+          marginLeftText={10}
+          height={60}
         ></ConstButton>
       </View>
     </View>

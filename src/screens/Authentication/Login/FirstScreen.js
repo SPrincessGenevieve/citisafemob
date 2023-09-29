@@ -92,8 +92,9 @@ function FirstScreen({ navigation }) {
             <TextButton onPress={handleForgotPass}></TextButton>
             <View style={{ width: "100%", marginTop: 20 }}>
               <ConstButton
-                name="login"
-                title="Sign In"
+                height={60}
+                title="Login"
+                marginLeftText={-10}
                 onPress={handleLogin}
               ></ConstButton>
             </View>
