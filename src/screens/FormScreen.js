@@ -147,17 +147,42 @@ function FormScreen({ navigation, route }) {
               height: "auto",
             }}
           >
-            <View style={{ padding: 20 }}>
-              <Text
-                style={{ textAlign: "center", fontSize: 20, fontWeight: 600 }}
-              >
-                You are hereby cited for committing traffic violation/s as
-                indicated hereunder
-              </Text>
-            </View>
-
             {violation ? (
               <>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 15,
+                  }}
+                  onPress={() => setViolation(!violation)}
+                >
+                  <Ant size={30} name="leftcircleo"></Ant>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      marginLeft: 20,
+                      fontSize: 20,
+                      color: "green",
+                    }}
+                  >
+                    BACK
+                  </Text>
+                </TouchableOpacity>
+                <View style={{}}>
+                  <View style={{ padding: 20 }}>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 20,
+                        fontWeight: 600,
+                      }}
+                    >
+                      You are hereby cited for committing traffic violation/s as
+                      indicated hereunder
+                    </Text>
+                  </View>
+                </View>
                 <View // SEARCH BAR AND SORTS
                   style={{
                     flexDirection: "row",
@@ -357,6 +382,20 @@ function FormScreen({ navigation, route }) {
             >
               {cat3 ? (
                 <View>
+                  <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        marginRight: 80,
+                        color: "grey",
+                      }}
+                    >
+                      Please fill out the relevant information in each section
+                    </Text>
+                    <Text style={{ marginTop: 30, color: "grey" }}>
+                      Fields marked with * are mandatory
+                    </Text>
+                  </View>
                   <View style={styles.category}>
                     <TouchableOpacity
                       style={styles.drop}

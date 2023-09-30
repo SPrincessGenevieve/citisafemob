@@ -4,20 +4,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  TextInput,
-  Button,
-  Image,
 } from "react-native";
 import KeyboardWithoutWrapper from "./KeyboardWithoutWrapper";
-import GradientBackground from "./GradientBG";
 import colorsData from "./Colors.json";
 import ConstInput from "./ConstInput";
-import ClassDisplay from "./ClassDisplay";
-import BodyMarkings from "./BodyMarkings";
-import ConstButton from "./ConstButton";
-import FormScreen from "./../screens/FormScreen";
-import CameraProof from "./CameraProof";
-import Icon from "react-native-vector-icons/EvilIcons";
 import { useRoute } from "@react-navigation/native";
 
 const predefinedColors = [

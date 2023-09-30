@@ -88,8 +88,8 @@ export default function CameraScan() {
               crop: {
                 originX: 0,
                 originY: 0,
-                width: Math.min(200, result.width),
-                height: Math.min(200, result.height),
+                width: Math.min(900, result.width),
+                height: Math.min(300, result.height),
               },
             },
           ],

@@ -49,6 +49,8 @@ export default function MapLocation({
               name={"antdesign"}
               onPress={getLocation}
               height={50}
+              backgroundColor={"green"}
+              title={"Get Location"}
             />
           </>
         ) : (
