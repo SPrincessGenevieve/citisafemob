@@ -199,7 +199,7 @@ export default function CameraScan() {
               }}
               onPress={pickImage}
             >
-              <Icon name="image" size={50} color="white" style={{}} />
+              <Icon name="image" size={28} color="white" style={{}} />
             </TouchableOpacity>
 
             <View>
@@ -210,7 +210,7 @@ export default function CameraScan() {
                 <ScanOutlined
                   style={{
                     color: "white",
-                    fontSize: 70,
+                    fontSize: 50,
                   }}
                   name="line-scan"
                 ></ScanOutlined>
@@ -233,7 +233,7 @@ export default function CameraScan() {
                 name={
                   flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
                 }
-                size={30}
+                size={28}
                 color="white"
               />
             </TouchableOpacity>

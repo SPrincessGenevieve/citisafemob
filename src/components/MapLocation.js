@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import ConstButton from "./ConstButton";
+import ConstButtonShort from "./ConstButtonShort";
 
 export default function MapLocation({
   location,
@@ -34,28 +35,31 @@ export default function MapLocation({
         )}
       </MapView>
 
-      <View style={{ padding: 16 }}>
+      <View
+        style={{
+          padding: 16,
+          width: "100%",
+          alignItems: "center",
+          height: 90,
+        }}
+      >
         {selectedPin ? (
           <>
-            <Text>Selected Location: {selectedPin.address}</Text>
-            <ConstButton
-              title={"NEXT"}
-              onPress={() => setShowMap(!showMap) & setForm(!form)}
+            <ConstButtonShort
+              name={"antdesign"}
+              onPress={getLocation}
+              height={50}
             />
           </>
         ) : (
           <>
-            <ConstButton
+            <ConstButtonShort
               name={"antdesign"}
               title={"Get Location"}
               onPress={getLocation}
+              height={50}
+              backgroundColor={"green"}
             />
-            <ConstButton
-              name={"arrowright"} // Using FontAwesome5Pro name for a right arrow icon
-              title={"NEXT"}
-              onPress={() => setShowMap(!showMap) & setForm(!form)}
-            />
-            <Text>Current Address: {currentAddress || "N/A"}</Text>
           </>
         )}
       </View>

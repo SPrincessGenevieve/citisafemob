@@ -10,7 +10,7 @@ function ConstButtonShort({ onPress, title, name, disabled, backgroundColor }) {
         disable={disabled}
         style={{
           backgroundColor: backgroundColor,
-          width: "35%",
+          width: "45%",
           height: 50,
           alignItems: "center",
           justifyContent: "center",
@@ -25,7 +25,7 @@ function ConstButtonShort({ onPress, title, name, disabled, backgroundColor }) {
         }}
       >
         <Icon name={name} size={25} color="white"></Icon>
-        <Text style={{ marginLeft: 20, fontSize: 15, color: "white" }}>
+        <Text style={{ marginLeft: 10, fontSize: 15, color: "white" }}>
           {title}
         </Text>
       </TouchableOpacity>
