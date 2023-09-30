@@ -13,6 +13,7 @@ import {
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import ConstInput from "../components/ConstInput";
 import ConstButton from "../components/ConstButton";
+import moment from "moment";
 import Confirm from "./ConfirmScreen";
 import { useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Octicons";
@@ -20,20 +21,15 @@ import Search from "react-native-vector-icons/EvilIcons";
 import Ant from "react-native-vector-icons/AntDesign";
 import Light from "react-native-vector-icons/FontAwesome5";
 import Circle from "react-native-vector-icons/Entypo";
-import moment from "moment";
-import predefinedColors from "./../components/PredefineColor.json";
 import MapLocation from "../components/MapLocation";
-import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import ColorSelector from "../components/ColorSelector";
-import DropDownPicker from "react-native-dropdown-picker";
-import Checkbox from "expo-checkbox";
 import ViolationCheck from "../components/ViolationCheck";
 import violationData from "./../components/ViolationList.json";
 
 function FormScreen({ navigation, route }) {
   const [open, setOpen] = useState(false);
-  const [sortAsc, setSortAsc] = useState(true); // Initial state set to true (ascending)
+  const [sortAsc, setSortAsc] = useState(true);
   const [cat1, setCat1] = useState(true);
   const [cat2, setCat2] = useState(true);
   const [cat3, setCat3] = useState(true);
@@ -42,13 +38,20 @@ function FormScreen({ navigation, route }) {
   const [location, setLocation] = useState(null);
   const [selectedPin, setSelectedPin] = useState(null);
   const [currentAddress, setCurrentAddress] = useState(null);
+  const [mfrtaTctNo, setMfrtaTctNo] = useState("");
+  const [currentTime, setCurrentTime] = useState(moment().format("hh:mm A"));
+  const [currentDate, setCurrentDate] = useState(moment().format("YYYY-MM-DD"));
   const [showMap, setShowMap] = useState(true);
   const [form, setForm] = useState(false);
-  const [isAtLeastOneChecked, setIsAtLeastOneChecked] = useState(false); // New state
+  const [isAtLeastOneChecked, setIsAtLeastOneChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [violation, setViolation] = useState(false);
   const [checkedViolations, setCheckedViolations] = useState([]);
+  const ocrText = useSelector((state) => state.infoText.extractedInfo);
+  const ocrTextOCR = useSelector((state) => state.infoTextOCR.extractedInfo);
+
   const scrollViewRef = useRef(null);
+
   const scrollToTop = () => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ y: 0, animated: true });
@@ -57,6 +60,39 @@ function FormScreen({ navigation, route }) {
   const filteredData = violationData.filter((item) =>
     item.text.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const generateMfrtaTctNo = () => {
+    const year = moment().format("YYYY");
+    const month = moment().format("MM");
+    const unique = generateUniqueNumber().toString().padStart(2, "0");
+    const tctNo = `${year}${month}${unique}`;
+    setMfrtaTctNo(tctNo);
+  };
+
+  useEffect(() => {
+    generateMfrtaTctNo();
+  }, []);
+
+  let uniqueNumber = 1;
+
+  const generateUniqueNumber = () => {
+    return uniqueNumber++;
+  };
+
+  useEffect(() => {
+    const fetchTime = () => {
+      const currentTimeFormatted = moment().format("hh:mm A");
+      setCurrentTime(currentTimeFormatted);
+    };
+
+    const fetchDate = () => {
+      const currentDateFormatted = moment().format("YYYY-MM-DD");
+      setCurrentDate(currentDateFormatted);
+    };
+
+    fetchTime();
+    fetchDate();
+  }, []);
 
   const handleCheckboxChange = (text, isChecked) => {
     if (isChecked) {
@@ -422,19 +458,33 @@ function FormScreen({ navigation, route }) {
                         <ConstInput
                           borderRadius={10}
                           height={40}
-                          text={"First Name*"}
+                          text={"MFRTA TCT No*"}
+                          editable={false}
                           required
+                          value={mfrtaTctNo}
                         ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
-                          text={"Last Name*"}
                           marginTop={25}
+                          value={currentDate}
+                          text="Date*"
+                          required
+                          editable={false}
+                        ></ConstInput>
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          marginTop={25}
+                          value={ocrText.name}
+                          autoCapitalize="characters"
+                          text="Last Name, First Name, Middle Name*"
                           required
                         ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
+                          value={ocrText.dateOfBirth}
                           text={"Date of Birth*"}
                           marginTop={25}
                           required
@@ -443,6 +493,7 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           text={"Sex*"}
+                          value={ocrText.sex}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -450,6 +501,7 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           text={"Nationality*"}
+                          value={ocrText.nationality}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -457,6 +509,7 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           text={"Weight*"}
+                          value={ocrText.weight}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -464,6 +517,7 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           text={"Height*"}
+                          value={ocrText.height}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -471,6 +525,7 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           text={"Address*"}
+                          value={ocrText.address}
                           marginTop={25}
                           required
                           multiline={true}
@@ -479,13 +534,7 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           text={"Driver's License Number*"}
-                          marginTop={25}
-                          required
-                        ></ConstInput>
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Contact No.*"}
+                          value={ocrText.licenseNumber}
                           marginTop={25}
                           marginBottom={25}
                           required
@@ -537,12 +586,14 @@ function FormScreen({ navigation, route }) {
                         borderRadius={10}
                         height={40}
                         text={"Registered Owner*"}
+                        value={ocrTextOCR.complete_owners_name}
                         required
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
                         text={"Plate Number*"}
+                        value={ocrTextOCR.plate_no}
                         marginTop={25}
                         required
                       ></ConstInput>
@@ -550,6 +601,7 @@ function FormScreen({ navigation, route }) {
                         borderRadius={10}
                         height={40}
                         text={"Make*"}
+                        value={ocrTextOCR.make}
                         marginTop={25}
                         required
                       ></ConstInput>
@@ -564,7 +616,17 @@ function FormScreen({ navigation, route }) {
                         borderRadius={10}
                         height={40}
                         text={"Model*"}
+                        value={ocrTextOCR.series}
                         marginTop={25}
+                        required
+                      ></ConstInput>
+                      <ConstInput
+                        borderRadius={10}
+                        height={40}
+                        text={"Contact No.*"}
+                        value={ocrTextOCR.telephone_no_contact_details}
+                        marginTop={25}
+                        marginBottom={25}
                         required
                       ></ConstInput>
                       <View>
@@ -639,12 +701,15 @@ function FormScreen({ navigation, route }) {
                         borderRadius={10}
                         height={40}
                         text={"Apprehending Officer*"}
+                        value="ANNA NICOLE GABRIENTO"
                         required
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
                         text={"Time of Violation*"}
+                        value={currentTime}
+                        editable={false}
                         marginTop={25}
                         required
                       ></ConstInput>

@@ -1,109 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { Camera, requestCameraPermissionsAsync } from "expo-camera";
-import * as ImageManipulator from "expo-image-manipulator";
-import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
-import { Button } from "react-native";
-import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
-import Icon from "react-native-vector-icons/Ionicons";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+  Dimensions,
+  Text,
+} from "react-native";
+import {
+  Camera,
+  CameraType,
+  requestCameraPermissionsAsync,
+  getCameraPermissionsAsync, // Fixed typo here
+} from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
-import { Image } from "react-native";
-import corners from "./../../assets/corners.png";
+import * as ImageManipulator from "expo-image-manipulator";
+import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import { setRecognizedText } from "./camera/infoSlice";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
+import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
+import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/Ionicons";
+import corners from "./../../assets/corners.png";
 
 export default function CameraScan() {
+  const [cameraMode, setCameraMode] = useState(CameraType.back);
+  const [flash, setFlash] = useState("off"); // Changed to string type
+  const [pictureUri, setPictureUri] = useState("");
+  const [cameraRef, setCameraRef] = useState(null);
+  const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
+  const [cropMode, setCropMode] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [cameraRef, setCameraRef] = useState(null);
-  const [capturedImage, setCapturedImage] = useState(null);
+  const [capturedImage, setCapturedImage] = useState("");
 
-  const [cropMode, setCropMode] = useState(false);
-  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const [showPicture, setShowPicture] = useState(false);
   const [imageManipulatorVisible, setImageManipulatorVisible] = useState(false);
   const [croppedImageUri, setCroppedImageUri] = useState(null);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  // saving data
-  useEffect(() => {
-    (async () => {
-      const cameraPermission = await Camera.requestCameraPermissionsAsync();
-      const imagePickerPermission =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (
-        cameraPermission.status === "granted" &&
-        imagePickerPermission.status === "granted"
-      ) {
-        setHasPermission(true);
-      } else {
-        setHasPermission(false);
-      }
-    })();
-  }, []);
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-  const takePicture = async () => {
-    if (cameraRef) {
-      const photo = await cameraRef.takePictureAsync();
-
-      setCapturedImage(photo.uri);
-      setCropMode(true);
-      setShowPicture(true);
-    }
-  };
-
-  const cancelPicture = async () => {
-    setCapturedImage("");
-    setShowPicture(false);
-  };
-
-  const pickImage = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [18, 9],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        const { uri } = result;
-
-        const croppedImage = await ImageManipulator.manipulateAsync(
-          uri,
-          [
-            {
-              crop: {
-                originX: 0,
-                originY: 0,
-                width: Math.min(900, result.width),
-                height: Math.min(300, result.height),
-              },
-            },
-          ],
-          { format: ImageManipulator.SaveFormat.PNG }
-        );
-
-        setCapturedImage(croppedImage.uri); // Update the capturedImage state with the cropped image URI
-        setCropMode(false);
-        setShowPicture(true);
-      }
-    } catch (error) {
-      console.error("Error picking an image", error);
-    }
-  };
 
   const toggleFlash = () => {
     setFlash((currentFlash) =>
@@ -113,8 +51,177 @@ export default function CameraScan() {
     );
   };
 
+  // saving data
+  const [data, setData] = useState({
+    type: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    nationality: "",
+    sex: "",
+    date_of_birth: "",
+    weight: "",
+    height: "",
+    address: "",
+    license_no: "",
+    expiration_date: "",
+    dl_codes: "",
+    conditions: "",
+    agency_code: "",
+    restrictions: "",
+  });
+
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
+  const requestPermission = async () => {
+    await requestCameraPermissionsAsync();
+  };
+
+  const getPermission = async () => {
+    const cameraPermission = await getCameraPermissionsAsync();
+    return cameraPermission.granted;
+  };
+
+  const { width, height } = Dimensions.get("window");
+  const aspectRatio = height / width;
+
+  const takePicture = async () => {
+    if (cameraRef) {
+      const uri = await cameraRef.takePictureAsync();
+
+      setCapturedImage(uri.uri); // Set the captured image URI directly
+      setCropMode(true);
+      setShowPicture(true);
+    }
+  };
+
+  const cancelPicture = () => {
+    setCapturedImage("");
+    setShowPicture(false);
+  };
+
   const handleNextButton = async () => {
-    navigation.navigate("IntroOCR");
+    try {
+      if (!capturedImage) {
+        Alert.alert("Please take a picture first.");
+        return;
+      }
+
+      const apiKey = "5f9a18dcb66e4eca17af461b4b619bc9";
+      const apiUrl =
+        "https://api.mindee.net/v1/products/SPrincessGenevieve/gems/v1/predict";
+
+      const formData = new FormData();
+      formData.append("document", {
+        uri: capturedImage,
+        name: "image.jpg",
+        type: "image/jpeg",
+      });
+
+      const response = await axios.post(apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Token ${apiKey}`,
+        },
+      });
+
+      if (response?.data?.document !== undefined) {
+        const extractedData =
+          response.data.document.inference.pages[0].prediction;
+
+        const concatenatedFields = {
+          type: "",
+          address: "",
+          agency_code: "",
+          blood_type: "",
+          conditions: "",
+          date_of_birth: "",
+          dl_codes: "",
+          expiration_date: "",
+          last_name_first_name_middle_name: "",
+          height: "",
+          license_no: "",
+          nationality: "",
+          sex: "",
+          weight: "",
+          restrictions: "",
+        };
+
+        for (const fieldName in concatenatedFields) {
+          if (extractedData[fieldName]?.values) {
+            let concatenatedValue = "";
+            for (const value of extractedData[fieldName]?.values || []) {
+              concatenatedValue += value.content + " ";
+            }
+            concatenatedFields[fieldName] = concatenatedValue.trim();
+          }
+        }
+
+        setData({
+          ...data,
+          ...concatenatedFields,
+        });
+
+        dispatch(
+          setRecognizedText({
+            type: concatenatedFields.type,
+            name: concatenatedFields.last_name_first_name_middle_name,
+            licenseNumber: concatenatedFields.license_no,
+            dateOfBirth: concatenatedFields.date_of_birth,
+            bloodType: concatenatedFields.blood_type,
+            nationality: concatenatedFields.nationality,
+            sex: concatenatedFields.sex,
+            weight: concatenatedFields.weight,
+            height: concatenatedFields.height,
+            address: concatenatedFields.address,
+            dl_codes: concatenatedFields.dl_codes,
+            expirationDate: concatenatedFields.expiration_date,
+            agency_code: concatenatedFields.agency_code,
+            conditions: concatenatedFields.conditions,
+            restrictions: concatenatedFields.restrictions,
+          })
+        );
+      } else {
+        Alert.alert("Text extraction failed. Please try again later.");
+      }
+    } catch (error) {
+      console.log("Error extracting text:", error);
+      Alert.alert("Error extracting text. Please try again later.");
+    }
+    navigation.navigate("CameraScanOCR");
+  };
+
+  useEffect(() => {
+    console.log("Updated Data:", data);
+  }, [data]);
+
+  if (!getPermission()) {
+    return Alert.alert(
+      "Permission Required!",
+      "You need to provide the permissions to access the camera",
+      [{ text: "Got it" }]
+    );
+  }
+
+  const switchFlashMode = () => {
+    setFlash(flash === "off" ? "on" : "off");
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+    });
+
+    console.log(result);
+    if (!result.canceled) {
+      setCapturedImage(result.assets[0].uri);
+      setShowPicture(true);
+    }
   };
 
   return (
@@ -243,7 +350,6 @@ export default function CameraScan() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

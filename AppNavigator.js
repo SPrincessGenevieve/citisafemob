@@ -14,7 +14,6 @@ import Profile from "./src/screens/Profile";
 import ForgotPass from "./src/screens/Authentication/ForgotPass/ForgotPass";
 import RecordDetails from "./src/screens/RecordDetails";
 import CameraScanCOR from "./src/components/CameraScanCOR";
-import CameraProof from "./src/components/CameraProof";
 import ColorSelector from "./src/components/ColorSelector";
 import MapLocation from "./src/components/MapLocation";
 import HomeScreen from "./src/screens/HomeScreen";
@@ -190,11 +189,6 @@ function AppNavigator() {
         name="ForgotPass"
         options={{ headerShown: false }}
         component={ForgotPass}
-      />
-      <Stack.Screen
-        name="CameraProof"
-        options={{ headerShown: false }}
-        component={CameraProof}
       />
     </Stack.Navigator>
   );

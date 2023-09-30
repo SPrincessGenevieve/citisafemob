@@ -1,92 +1,56 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { Camera, requestCameraPermissionsAsync } from "expo-camera";
-import * as ImageManipulator from "expo-image-manipulator";
-import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
-import { Button } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+  Text,
+} from "react-native";
+import {
+  Camera,
+  CameraType,
+  requestCameraPermissionsAsync,
+  getCameraPermissionsAsync, // Fixed typo here
+} from "expo-camera";
 import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
-import { Image } from "react-native";
-import corners from "./../../assets/cornersOCR.png";
+import * as ImageManipulator from "expo-image-manipulator";
+import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
-import { setRecognizedText } from "./camera/infoSlice";
+import { setRecognizedText } from "./camera/infoSliceCOR";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
+import corners from "./../../assets/cornersOCR.png";
 
 export default function CameraScanCOR() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [cameraMode, setCameraMode] = useState(CameraType.back);
+  const [flash, setFlash] = useState("off"); // Changed to string type
+  const [capturedImage, setCapturedImage] = useState("");
+  const [pictureUri, setPictureUri] = useState("");
   const [cameraRef, setCameraRef] = useState(null);
-  const [capturedImage, setCapturedImage] = useState(null);
-
+  const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
   const [cropMode, setCropMode] = useState(false);
-  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const [showPicture, setShowPicture] = useState(false);
-  const [imageManipulatorVisible, setImageManipulatorVisible] = useState(false);
+  const [type, setType] = useState(Camera.Constants.Type.back);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  // saving data
+
+  const [data, setData] = useState({
+    plate_no: "",
+    make: "",
+    date: "",
+    series: "",
+    make: "",
+    complete_owners_name: "",
+    complete_address: "",
+    telephone_no_contact_details: "",
+  });
+
   useEffect(() => {
-    (async () => {
-      const cameraPermission = await Camera.requestCameraPermissionsAsync();
-      const imagePickerPermission =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (
-        cameraPermission.status === "granted" &&
-        imagePickerPermission.status === "granted"
-      ) {
-        setHasPermission(true);
-      } else {
-        setHasPermission(false);
-      }
-    })();
+    requestPermission();
   }, []);
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-  const takePicture = async () => {
-    if (cameraRef) {
-      const photo = await cameraRef.takePictureAsync();
-
-      setCapturedImage(photo.uri);
-      setCropMode(true);
-      setShowPicture(true);
-    }
-  };
-
-  const cancelPicture = async () => {
-    setCapturedImage("");
-    setShowPicture(false);
-  };
-
-  const pickImage = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false, // Disable editing when picking an image
-        aspect: [18, 9],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        const { uri } = result;
-        setCapturedImage(uri);
-        setCropMode(false); // Set cropMode to false when picking an image
-        setShowPicture(true);
-      }
-    } catch (error) {
-      console.error("Error picking an image", error);
-    }
-  };
 
   const toggleFlash = () => {
     setFlash((currentFlash) =>
@@ -96,8 +60,140 @@ export default function CameraScanCOR() {
     );
   };
 
+  const requestPermission = async () => {
+    await requestCameraPermissionsAsync();
+  };
+
+  const getPermission = async () => {
+    const cameraPermission = await getCameraPermissionsAsync();
+    return cameraPermission.granted;
+  };
+
+  const takePicture = async () => {
+    try {
+      const { uri } = await cameraRef?.current.takePictureAsync();
+
+      setCapturedImage(uri);
+      setShowPicture(true);
+    } catch (error) {
+      console.log("Error taking picture:", error);
+    }
+  };
+
+  const cancelPicture = () => {
+    setCapturedImage("");
+    setShowPicture(false);
+  };
+
   const handleNextButton = async () => {
+    try {
+      if (!capturedImage) {
+        Alert.alert("Please take a picture first.");
+        return;
+      }
+
+      const apiKey = "8e467a5f1e58b9b383da543d49105ce5";
+      const apiUrl =
+        "https://api.mindee.net/v1/products/SPrincessGenevieve/cor/v1/predict";
+
+      const formData = new FormData();
+      formData.append("document", {
+        uri: capturedImage,
+        name: "image.jpg",
+        type: "image/jpeg",
+      });
+
+      const response = await axios.post(apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Token ${apiKey}`,
+        },
+      });
+
+      if (response?.data?.document !== undefined) {
+        const extractedData =
+          response.data.document.inference.pages[0].prediction;
+
+        const concatenatedFields = {
+          plate_no: "",
+          make: "",
+          date: "",
+          series: "",
+          make: "",
+          complete_owners_name: "",
+          complete_address: "",
+          telephone_no_contact_details: "",
+        };
+
+        for (const fieldName in concatenatedFields) {
+          if (extractedData[fieldName]?.values) {
+            let concatenatedValue = "";
+            for (const value of extractedData[fieldName]?.values || []) {
+              concatenatedValue += value.content + " ";
+            }
+            concatenatedFields[fieldName] = concatenatedValue.trim();
+          }
+        }
+
+        setData({
+          ...data,
+          ...concatenatedFields,
+        });
+
+        dispatch(
+          setRecognizedText({
+            plate_no: concatenatedFields.plate_no,
+            make: concatenatedFields.make,
+            date: concatenatedFields.date,
+            series: concatenatedFields.series,
+            make: concatenatedFields.make,
+            complete_owners_name: concatenatedFields.complete_owners_name,
+            complete_address: concatenatedFields.complete_address,
+            telephone_no_contact_details:
+              concatenatedFields.telephone_no_contact_details,
+          })
+        );
+      } else {
+        Alert.alert("Text extraction failed. Please try again later.");
+      }
+    } catch (error) {
+      console.log("Error extracting text:", error);
+      Alert.alert("Error extracting text. Please try again later.");
+    }
     navigation.navigate("FormScreen");
+  };
+
+  useEffect(() => {
+    console.log("Updated Data:", data);
+  }, [data]);
+
+  if (!getPermission()) {
+    return Alert.alert(
+      "Permission Required!",
+      "You need to provide the permissions to access the camera",
+      [{ text: "Got it" }]
+    );
+  }
+
+  const switchFlashMode = () => {
+    setFlash(flash === "off" ? "on" : "off");
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false, // Set to false to disable cropping
+      aspect: [16, 9],
+      quality: 1,
+    });
+
+    console.log(result);
+    if (!result.canceled) {
+      const { uri } = result;
+      setCapturedImage(uri); // Use result.uri directly
+      setCropMode(false);
+      setShowPicture(true);
+    }
   };
 
   return (
