@@ -87,7 +87,7 @@ function FirstScreen({ navigation }) {
           >
             <Title></Title>
 
-            <ConstInput placeholder="username"></ConstInput>
+            <ConstInput borderRadius={10} placeholder="username"></ConstInput>
             <ConstInputVisible placeholder="password"></ConstInputVisible>
             <TextButton onPress={handleForgotPass}></TextButton>
             <View style={{ width: "100%", marginTop: 20 }}>
@@ -96,6 +96,7 @@ function FirstScreen({ navigation }) {
                 title="Login"
                 marginLeftText={-10}
                 onPress={handleLogin}
+                borderRadius={10}
               ></ConstButton>
             </View>
           </View>

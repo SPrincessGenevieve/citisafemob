@@ -42,6 +42,7 @@ function ForgotPass(props) {
           <ConstInput
             marginBottom={30}
             placeholder="Please enter your email"
+            borderRadius={10}
           ></ConstInput>
           <Text>Resend Email</Text>
           <ConstButton

@@ -22,7 +22,7 @@ import { useRoute } from "@react-navigation/native";
 
 const predefinedColors = [
   { hex: "#000000", name: "Black" },
-  { hex: "#FFFFFF", name: "White" },
+  { hex: "#F0F0F0", name: "White" },
   { hex: "#C0C0C0", name: "Silver" },
   { hex: "#808080", name: "Gray" },
   { hex: "#0000FF", name: "Blue" },
@@ -33,14 +33,6 @@ const predefinedColors = [
   { hex: "#FFA500", name: "Orange" },
   { hex: "#800080", name: "Purple" },
   { hex: "#FFDF00", name: "Gold" },
-  { hex: "#CD7F32", name: "Bronze" },
-  { hex: "#F5F5DC", name: "Beige" },
-  { hex: "#FFC0CB", name: "Pink" },
-  { hex: "#008080", name: "Teal" },
-  { hex: "#800020", name: "Burgundy" },
-  { hex: "#800000", name: "Maroon" },
-  { hex: "#000080", name: "Navy" },
-  { hex: "#36454F", name: "Charcoal" },
 ];
 
 export default function ColorSelector({ navigation }) {
@@ -101,10 +93,19 @@ export default function ColorSelector({ navigation }) {
   };
 
   const getColorName = (colorHex) => {
-    const selectedColorObject = predefinedColors.find(
+    const predefinedColor = predefinedColors.find(
       (color) => color.hex === colorHex
     );
-    return selectedColorObject ? selectedColorObject.name : "";
+    if (predefinedColor) {
+      return predefinedColor.name;
+    }
+
+    const jsonDataColor = colorsData.find((color) => color.hex === colorHex);
+    if (jsonDataColor) {
+      return jsonDataColor.name;
+    }
+
+    return "Unknown";
   };
 
   const handleForm = () => {
@@ -117,8 +118,8 @@ export default function ColorSelector({ navigation }) {
 
   const renderColorButtons = () => {
     const rows = [];
-    for (let i = 0; i < predefinedColors.length; i += 5) {
-      const rowColors = predefinedColors.slice(i, i + 5);
+    for (let i = 0; i < predefinedColors.length; i += 4) {
+      const rowColors = predefinedColors.slice(i, i + 4);
       const row = (
         <View key={i} style={styles.colorRow}>
           {rowColors.map((color) => (
@@ -128,11 +129,11 @@ export default function ColorSelector({ navigation }) {
                 styles.colorButton,
                 {
                   backgroundColor:
-                    selectedColor === color.hex ? "transparent" : color.hex,
+                    selectedColor === color.hex ? color.hex : color.hex,
                   borderColor:
-                    selectedColor === color.hex ? "white" : color.hex, // Border color changes on selection
+                    selectedColor === color.hex ? "black" : color.hex,
                   borderWidth: selectedColor === color.hex ? 2 : 0,
-                  opacity: selectedColor === color.hex ? 1 : 1,
+                  opacity: selectedColor === color.hex ? 1 : 0.5,
                 },
               ]}
               onPress={() => handleColorSelection(color.hex)}
@@ -141,7 +142,10 @@ export default function ColorSelector({ navigation }) {
                 style={[
                   styles.colorText,
                   {
-                    color: selectedColor === color.hex ? "white" : "lightgrey",
+                    color: selectedColor === color.hex ? "#595959" : "black",
+                    textTransform: "uppercase",
+                    fontWeight: "bold",
+                    fontSize: 12,
                   },
                 ]}
               >
@@ -190,122 +194,37 @@ export default function ColorSelector({ navigation }) {
   return (
     <KeyboardWithoutWrapper>
       <View style={styles.container}>
-        <GradientBackground></GradientBackground>
         <View style={{ paddingBottom: 30 }}>
           <View style={styles.selectColor}>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 20,
-                color: "white",
-                marginBottom: 20,
-              }}
-            >
-              Vehicle Color
-            </Text>
-            <View style={{ width: 400, marginBottom: 30 }}>
-              <ConstInput
-                onChangeText={handleCustomColorChange}
-                value={customColor}
-                placeholder="Enter color name"
-              ></ConstInput>
-            </View>
             {matchedColor && (
               <Text style={{ color: "red", marginBottom: 20, fontSize: 20 }}>
                 {matchedColor}
               </Text>
             )}
             {renderColorButtons()}
-            <Text style={{ color: "white", marginTop: 20 }}>
-              Selected Color
-            </Text>
             <View
-              style={[
-                styles.selectedColorIndicator,
-                { backgroundColor: selectedColor },
-              ]}
-            />
-            <Text style={{ color: "white" }}>
-              {selectedColor ? getColorName(selectedColor) : ""}
-            </Text>
-          </View>
-        </View>
-        <View style={{ marginBottom: 10 }}>
-          <ClassDisplay onClassSelection={handleClassSelection}></ClassDisplay>
-        </View>
-        <View style={{ marginBottom: 10 }}>
-          <BodyMarkings
-            onBodySelection={handleBodyMarkingsSelection}
-          ></BodyMarkings>
-        </View>
-
-        <Text style={{ fontSize: 20, color: "white", marginTop: 40 }}>
-          Additional Documentation
-        </Text>
-        <Text style={{ fontSize: 15, color: "white" }}>
-          This part is optional
-        </Text>
-        <View style={{ display: "flex", flexDirection: "row" }}></View>
-
-        {imageUriState ? (
-          <View style={{ marginTop: 20 }}>
-            <View
-              style={{
-                display: "flex",
-                borderWidth: 2,
-                borderColor: "white",
-                borderRadius: 20,
-                width: 350,
-                height: 350,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              style={{ width: "100%", marginBottom: 30, alignItems: "center" }}
             >
               <View
-                style={{ position: "absolute", zIndex: 1, right: 10, top: 10 }}
+                style={[
+                  styles.selectedColorIndicator,
+                  { backgroundColor: selectedColor },
+                ]}
               >
-                <TouchableOpacity onPress={handleImageClose}>
-                  <Icon color={"white"} name="close" size={30}></Icon>
-                </TouchableOpacity>
+                <Text style={{ color: "black" }}>
+                  {getColorName(selectedColor)}
+                </Text>
               </View>
-              <Image
-                style={{ borderRadius: 20, width: 350, height: 350 }}
-                source={{ uri: imageUriState }}
-                onError={(error) => console.error("Image Load Error: ", error)}
-              />
+              <ConstInput
+                borderRadius={20}
+                onChangeText={handleCustomColorChange}
+                value={customColor}
+                placeholder="Others"
+              ></ConstInput>
             </View>
           </View>
-        ) : (
-          <View style={{ marginTop: 20 }}>
-            <TouchableOpacity onPress={handleCam}>
-              <View
-                style={{
-                  display: "flex",
-                  borderWidth: 2,
-                  borderColor: "white",
-                  borderRadius: 20,
-                  width: 350,
-                  height: 350,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon
-                  color={"white"}
-                  name="camera"
-                  onPress={handleCam}
-                  size={30}
-                ></Icon>
-                <Text style={{ color: "white" }}>No image taken</Text>
-                <Text style={{ color: "white" }}>Click to capture image</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        <View style={{ display: "flex", width: "90%", marginTop: 30 }}>
-          <ConstButton onPress={handleForm} title={"NEXT"}></ConstButton>
         </View>
+        <View style={{ display: "flex", flexDirection: "row" }}></View>
       </View>
     </KeyboardWithoutWrapper>
   );
@@ -316,11 +235,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "transparent",
-    height: 1700,
+    height: "auto",
   },
 
   button: {
-    backgroundColor: "white",
+    backgroundColor: "",
     borderRadius: 20,
     height: 50,
     width: 200,
@@ -342,25 +261,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   colorButton: {
-    width: 50,
-    height: 50,
+    width: 80,
+    height: 30,
     margin: 5,
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
+    borderColor: "black",
+    opacity: 0.3,
   },
   colorText: {
     fontSize: 10,
     textAlign: "center",
   },
   selectedColorIndicator: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 30,
     marginTop: 20,
     backgroundColor: "transparent",
-    borderColor: "white",
     borderWidth: 2,
     borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
   },
   customColorInput: {
     marginTop: 10,

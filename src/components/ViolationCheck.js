@@ -8,19 +8,18 @@ function ViolationCheck({ text, isChecked, handleCheckboxChange }) {
       style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}
     >
       <CheckBox
-        borderColor="white"
-        color={isChecked ? "#8CACFF" : "white"}
+        borderColor="#D9D9D9"
+        color={isChecked ? "green" : "#D9D9D9"}
         value={isChecked}
         onValueChange={handleCheckboxChange}
         style={{
-          height: 30,
-          width: 30,
-          borderWidth: 1,
-          borderColor: "white",
-          borderRadius: 2,
+          height: 25,
+          width: 25,
+          borderWidth: 2,
+          borderRadius: 5,
         }}
       />
-      <Text style={{ fontSize: 15, marginLeft: 20, color: "white" }}>
+      <Text style={{ fontSize: 15, marginLeft: 20, color: "black" }}>
         {text}
       </Text>
     </View>

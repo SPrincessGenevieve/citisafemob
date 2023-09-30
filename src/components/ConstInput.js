@@ -15,6 +15,10 @@ function ConstInput({
   autoCapitalize,
   value,
   type,
+  required,
+  borderRadius,
+  minHeight, // New prop for minimum height
+  multiline,
 }) {
   const [fontsLoaded] = useFonts({
     "Roboto-Light": require("./../../assets/fonts/Roboto-Light.ttf"),
@@ -30,17 +34,20 @@ function ConstInput({
     <>
       <Text
         style={{
-          fontSize: 10,
-          color: "red",
+          fontSize: 15,
+          color: "grey",
           fontFamily: "Roboto-Light",
           marginLeft: 7,
           marginTop: marginTop,
+          marginBottom: 10,
+          fontWeight: "bold",
         }}
       >
         {text}
       </Text>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TextInput
+          required={required}
           value={value}
           type={type}
           placeholder={placeholder}
@@ -49,16 +56,19 @@ function ConstInput({
           editable={editable}
           onChangeText={onChangeText}
           style={{
-            color: "grey",
+            color: "black",
             borderWidth: 1,
-            borderRadius: 10,
+            borderRadius: borderRadius,
             padding: 10,
             borderColor: "#C5C6CC",
             fontSize: 17,
             flex: 1, // Take up remaining space
             textAlign: textAlign,
             marginBottom: marginBottom,
+            minHeight: minHeight, // Set a minimum height
           }}
+          multiline={multiline} // Enable multiline input
+          numberOfLines={1} // Set an initial number of lines
         />
       </View>
     </>
