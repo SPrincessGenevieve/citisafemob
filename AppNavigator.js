@@ -135,13 +135,30 @@ function AppNavigator() {
         component={OCRScreen}
       />
       <Stack.Screen
+        name="CameraScanOCR"
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#518638",
+          },
+          headerTintColor: "#ffff",
+        }}
+        component={CameraScanCOR}
+      />
+      <Stack.Screen
         name="Records"
         options={{ headerShown: false }}
         component={Records}
       />
       <Stack.Screen
         name="FormScreen"
-        options={{ headerShown: false }}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#518638",
+          },
+          headerTintColor: "#ffff",
+        }}
         component={FormScreen}
       />
       <Stack.Screen

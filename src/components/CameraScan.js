@@ -30,24 +30,20 @@ export default function CameraScan() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   // saving data
-
-  useEffect(() => {
-    requestPermission();
-  }, []);
-
-  const requestPermission = async () => {
-    await requestCameraPermissionsAsync();
-  };
-
-  const getPermission = async () => {
-    const cameraPermission = await requestCameraPermissionsAsync();
-    return cameraPermission.granted;
-  };
-
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
+      const cameraPermission = await Camera.requestCameraPermissionsAsync();
+      const imagePickerPermission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (
+        cameraPermission.status === "granted" &&
+        imagePickerPermission.status === "granted"
+      ) {
+        setHasPermission(true);
+      } else {
+        setHasPermission(false);
+      }
     })();
   }, []);
 
@@ -118,7 +114,7 @@ export default function CameraScan() {
   };
 
   const handleNextButton = async () => {
-    navigation.navigate("CameraScanCOR");
+    navigation.navigate("IntroOCR");
   };
 
   return (
@@ -126,14 +122,14 @@ export default function CameraScan() {
       {showPicture ? (
         <View
           style={{
-            backgroundColor: "red",
+            backgroundColor: "black",
             position: "absolute",
             zIndex: 4,
             width: "100%",
             height: "100%",
           }}
         >
-          {capturedImage ? ( // Check if capturedImage is available
+          {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
           ) : null}
 
@@ -169,6 +165,27 @@ export default function CameraScan() {
             }}
           ></Camera>
           <View style={styles.controlsContainer}>
+            <View
+              style={{
+                position: "absolute",
+                zIndex: 4,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                top: -550,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
+              >
+                Photo of Driver’s License
+              </Text>
+              <Text style={{ color: "white" }}>
+                Please place the front of the Driver’s License
+              </Text>
+              <Text style={{ color: "white" }}>in the frame</Text>
+            </View>
             <TouchableOpacity
               style={{
                 backgroundColor: "#75B956",
@@ -261,7 +278,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   takePictureBtn: {
-    backgroundColor: "#75B956",
+    backgroundColor: "#3E7C1F",
     borderRadius: 50,
     height: 90,
     width: 90,

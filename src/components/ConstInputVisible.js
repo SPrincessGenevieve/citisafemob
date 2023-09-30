@@ -66,8 +66,8 @@ function ConstInput({
           style={{
             display: "flex",
             position: "absolute",
-            width: "97%",
             alignItems: "flex-end",
+            marginLeft: 280,
           }}
         >
           <MaterialIcons

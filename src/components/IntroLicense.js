@@ -1,6 +1,5 @@
 import React from "react";
-import { Image } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import IDImahe from "./../../assets/id_pic.png/";
 import ConstButton from "./ConstButton";
 

@@ -14,7 +14,7 @@ import {
   getCameraPermissionsAsync, // Fixed typo here
 } from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
-import * as ImageManipulator from "expo-image-manipulator";
+import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import { setRecognizedText } from "./camera/infoSliceCOR";
@@ -31,16 +31,6 @@ export default function CameraScanCOR() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const [data, setData] = useState({
-    plate_no: "",
-    make: "",
-    date: "",
-    series: "",
-    make: "",
-    complete_owners_name: "",
-    complete_address: "",
-    telephone_no_contact_details: "",
-  });
 
   useEffect(() => {
     requestPermission();
@@ -72,95 +62,10 @@ export default function CameraScanCOR() {
   };
 
   const handleNextButton = async () => {
-    try {
-      if (!pictureUri) {
-        Alert.alert("Please take a picture first.");
-        return;
-      }
-
-      const apiKey = "8e467a5f1e58b9b383da543d49105ce5";
-      const apiUrl =
-        "https://api.mindee.net/v1/products/SPrincessGenevieve/cor/v1/predict";
-
-      const formData = new FormData();
-      formData.append("document", {
-        uri: pictureUri,
-        name: "image.jpg",
-        type: "image/jpeg",
-      });
-
-      const response = await axios.post(apiUrl, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Token ${apiKey}`,
-        },
-      });
-
-      if (response?.data?.document !== undefined) {
-        const extractedData =
-          response.data.document.inference.pages[0].prediction;
-
-        const concatenatedFields = {
-          plate_no: "",
-          make: "",
-          date: "",
-          series: "",
-          make: "",
-          complete_owners_name: "",
-          complete_address: "",
-          telephone_no_contact_details: "",
-        };
-
-        for (const fieldName in concatenatedFields) {
-          if (extractedData[fieldName]?.values) {
-            let concatenatedValue = "";
-            for (const value of extractedData[fieldName]?.values || []) {
-              concatenatedValue += value.content + " ";
-            }
-            concatenatedFields[fieldName] = concatenatedValue.trim();
-          }
-        }
-
-        setData({
-          ...data,
-          ...concatenatedFields,
-        });
-
-        dispatch(
-          setRecognizedText({
-            plate_no: concatenatedFields.plate_no,
-            make: concatenatedFields.make,
-            date: concatenatedFields.date,
-            series: concatenatedFields.series,
-            make: concatenatedFields.make,
-            complete_owners_name: concatenatedFields.complete_owners_name,
-            complete_address: concatenatedFields.complete_address,
-            telephone_no_contact_details:
-              concatenatedFields.telephone_no_contact_details,
-          })
-        );
-      } else {
-        Alert.alert("Text extraction failed. Please try again later.");
-      }
-    } catch (error) {
-      console.log("Error extracting text:", error);
-      Alert.alert("Error extracting text. Please try again later.");
-    }
-    navigation.navigate("ColorSelector");
+    navigation.navigate("FormScreen");
   };
 
-  useEffect(() => {
-    console.log("Updated Data:", data);
-  }, [data]);
-
-  if (!getPermission()) {
-    return Alert.alert(
-      "Permission Required!",
-      "You need to provide the permissions to access the camera",
-      [{ text: "Got it" }]
-    );
-  }
-
+  
   const switchFlashMode = () => {
     setFlash(flash === "off" ? "on" : "off");
   };
@@ -182,7 +87,6 @@ export default function CameraScanCOR() {
 
   return (
     <View style={styles.container}>
-      {/* Show the camera preview or the captured picture */}
       {showPicture ? (
         <View style={styles.pictureContainer}>
           <Image style={styles.picture} source={{ uri: pictureUri }} />
