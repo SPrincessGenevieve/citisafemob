@@ -3,13 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Animated,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Keyboard,
-  ScrollView,
-  TouchableWithoutFeedback,
 } from "react-native";
 import GradientBackground from "../../../components/GradientBG";
 import { useFonts } from "expo-font";
@@ -19,6 +13,9 @@ import KeyboardWithoutWrapper from "../../../components/KeyboardWithoutWrapper";
 import ConstButton from "../../../components/ConstButton";
 import Title from "../../../components/Title";
 import TextButton from "../../../components/TextButton";
+import axios from '../../../../plugins/axios'
+import { useDispatch } from "react-redux";
+import { setToken } from "../authSlice";
 
 function FirstScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
@@ -28,17 +25,54 @@ function FirstScreen({ navigation }) {
   const [textInputFocused, setTextInputFocused] = useState(false);
   const [animationValue] = useState(new Animated.Value(1));
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  const dispatch = useDispatch()
 
-  const handleLogin = () => {
-    navigation.navigate("HomeScreen");
-  };
   const handleForgotPass = () => {
     navigation.navigate("ForgotPass");
   };
 
+  // jayde inserted code
+  const [credentials, setCredentials] = useState({
+    username: 'mobile1',
+    password: 'dario100',
+  })
+
+  const handleLogin = () => {
+
+    axios.post("accounts/token/login/", credentials).then((response) => {
+      console.log('Successfully Login')
+
+      const token = response.data.auth_token
+
+      dispatch(setToken(token));
+
+      axios.get('accounts/users/me/', {
+        headers: {
+          'Authorization': `token ${token}`
+        }
+      }).then(response => {
+        console.log(response.data)
+
+        const role = response.data.role
+
+        if(role != 'ENFORCER') {
+          alert(`Warning! You role is ${role}. This app is for Enforcer Only `)
+        }else {
+          alert(`Welcome officer ${response.data.last_name}`)
+          navigation.navigate('HomeScreen')
+        }
+
+      })
+
+
+    }).catch((error) => {
+      console.log(error)
+    })
+  };
+
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <KeyboardWithoutWrapper>
       <View style={styles.container}>
@@ -87,8 +121,23 @@ function FirstScreen({ navigation }) {
           >
             <Title></Title>
 
-            <ConstInput placeholder="username"></ConstInput>
-            <ConstInputVisible placeholder="password"></ConstInputVisible>
+            <ConstInput placeholder="username" value={credentials.username} onChangeText={(text) => {
+              setCredentials({
+                ...credentials, username: text
+              })
+            }}></ConstInput>
+
+            {/* DILI MAKAINPUT OG TEXT */}
+            {/* <ConstInputVisible placeholder="password" value={credentials.password} onChangeText={(text) => {
+              setCredentials({
+                ...credentials, password: text
+              })
+            }}></ConstInputVisible> */}
+            <ConstInput placeholder="password" value={credentials.password} onChangeText={(text) => {
+              setCredentials({
+                ...credentials, password: text
+              })
+            }}></ConstInput>            
             <TextButton onPress={handleForgotPass}></TextButton>
             <View style={{ width: "100%", marginTop: 20 }}>
               <ConstButton
