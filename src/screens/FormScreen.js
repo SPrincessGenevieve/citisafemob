@@ -27,6 +27,7 @@ import ColorSelector from "../components/ColorSelector";
 import ViolationCheck from "../components/ViolationCheck";
 import violationData from "./../components/ViolationList.json";
 import { useTheme } from "react-native-paper";
+import PreviewComponent from "../components/PreviewComponent";
 
 function FormScreen({ navigation, route }) {
   const [open, setOpen] = useState(false);
@@ -260,17 +261,47 @@ function FormScreen({ navigation, route }) {
                         Personal Information
                       </Text>
                     </View>
-                    <View style={{}}>
-                      <Text>{mfrtaTctNo}</Text>
-                      <Text>{currentDate}</Text>
-                      <Text>{ocrText.name}</Text>
-                      <Text>{ocrText.dateOfBirth}</Text>
-                      <Text>{ocrText.sex}</Text>
-                      <Text>{ocrText.nationality}</Text>
-                      <Text>{ocrText.weight}</Text>
-                      <Text>{ocrText.height}</Text>
-                      <Text>{ocrText.address}</Text>
-                      <Text>{ocrText.licenseNumber}</Text>
+                    <View style={{ marginBottom: 20 }}>
+                      <PreviewComponent
+                        title={"MFRTA TICKET NO."}
+                        value={mfrtaTctNo}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"DATE"}
+                        value={currentDate}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"LAST NAME, FIRST NAME, MIDDLE NAME"}
+                        value={ocrText.name}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"DATE OF BIRTH"}
+                        value={ocrText.dateOfBirth}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"SEX"}
+                        value={ocrText.sex}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"NATIONALITY"}
+                        value={ocrText.nationality}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"WEIGHT"}
+                        value={ocrText.weight}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"HEIGHT"}
+                        value={ocrText.height}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"ADDRESS"}
+                        value={ocrText.address}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"LICENSE NO."}
+                        value={ocrText.licenseNumber}
+                      ></PreviewComponent>
                     </View>
                   </View>
                   <View>
@@ -285,15 +316,39 @@ function FormScreen({ navigation, route }) {
                         Vehicle Information
                       </Text>
                     </View>
-                    <View style={{}}>
-                      <Text>{ocrTextOCR.complete_owners_name}</Text>
-                      <Text>{ocrTextOCR.plate_no}</Text>
-                      <Text>{ocrTextOCR.make}</Text>
-                      <Text>{"class"}</Text>
-                      <Text>{ocrTextOCR.series}</Text>
-                      <Text>{ocrTextOCR.telephone_no_contact_details}</Text>
-                      <Text>{"COLOR"}</Text>
-                      <Text>{"body marks"}</Text>
+                    <View style={{ marginBottom: 20 }}>
+                      <PreviewComponent
+                        title={"REGISTERED OWNER"}
+                        value={ocrTextOCR.complete_owners_name}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"PLATE NO."}
+                        value={ocrTextOCR.plate_no}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"MAKE"}
+                        value={ocrTextOCR.make}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"CLASS"}
+                        value={"E CONNECT PANI"}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"MODEL"}
+                        value={ocrTextOCR.series}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"CONTACT NO."}
+                        value={ocrTextOCR.telephone_no_contact_details}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"COLOR"}
+                        value={"E CONNECT PANI"}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"BODY MARKS"}
+                        value={"E CONNECT PANI"}
+                      ></PreviewComponent>
                     </View>
                   </View>
                   <View>
@@ -309,12 +364,21 @@ function FormScreen({ navigation, route }) {
                       </Text>
                     </View>
                     <View style={{}}>
-                      <Text>{"Anna Nicole Gabriento"}</Text>
-                      <Text>{currentTime}</Text>
-                      <Text>
-                        {ocrText.selectedPin ? selectedPin.address : "N/A"}
+                      <PreviewComponent
+                        title={"APPREHENDING OFFICER"}
+                        value={"E CONNECT PANI"}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"TIME"}
+                        value={currentTime}
+                      ></PreviewComponent>
+                      <PreviewComponent
+                        title={"PLACE OF VIOLATION"}
+                        value={selectedPin.address}
+                      ></PreviewComponent>
+                      <Text style={{ color: "grey", marginTop: 20 }}>
+                        TRAFFIC RULES VIOLATION
                       </Text>
-
                       {checkedViolations.map((checkedViolation, index) => (
                         <View
                           style={{
@@ -325,11 +389,16 @@ function FormScreen({ navigation, route }) {
                           }}
                           key={index}
                         >
-                          <Circle
-                            name="controller-record"
-                            style={{ marginRight: 10, fontSize: 6 }}
-                          ></Circle>
-                          <Text key={index}>{checkedViolation}</Text>
+                          <Icon
+                            name="dot-fill"
+                            style={{ marginRight: 10, marginTop: 3 }}
+                          ></Icon>
+                          <Text
+                            style={{ fontSize: 20, fontWeight: "bold" }}
+                            key={index}
+                          >
+                            {checkedViolation}
+                          </Text>
                         </View>
                       ))}
                     </View>
@@ -893,6 +962,7 @@ function FormScreen({ navigation, route }) {
                           marginBottom={25}
                           required
                           value={selectedPin ? selectedPin.address : "N/A"}
+                          multiline={true}
                         ></ConstInput>
                       </View>
                     </View>
