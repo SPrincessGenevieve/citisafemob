@@ -105,7 +105,13 @@ function AppNavigator() {
       <Stack.Screen
         name="PrivacyScreen"
         component={Privacy}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#518638",
+          },
+          headerTintColor: "#ffff",
+        }}
       />
       <Stack.Screen
         name="AboutScreen"

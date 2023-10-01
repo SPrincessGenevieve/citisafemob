@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useFonts } from "expo-font";
 import { MaterialIcons } from "@expo/vector-icons";
+import ConstButton from "./ConstButton";
 
 function ConstInput({
   secureTextEntry,
@@ -27,14 +28,15 @@ function ConstInput({
   }
 
   return (
-    <>
+    <View style={{ width: "100%", marginBottom: 10 }}>
       <Text
         style={{
-          fontSize: 10,
-          color: "red",
-          fontFamily: "Roboto-Light",
+          fontSize: 15,
+          color: "black",
           marginLeft: 7,
           marginTop: marginTop,
+          marginBottom: 15,
+          fontWeight: "bold",
         }}
       >
         {text}
@@ -77,7 +79,7 @@ function ConstInput({
           />
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   );
 }
 
