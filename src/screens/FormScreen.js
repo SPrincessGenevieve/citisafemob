@@ -26,6 +26,7 @@ import * as Location from "expo-location";
 import ColorSelector from "../components/ColorSelector";
 import ViolationCheck from "../components/ViolationCheck";
 import violationData from "./../components/ViolationList.json";
+import { useTheme } from "react-native-paper";
 
 function FormScreen({ navigation, route }) {
   const [open, setOpen] = useState(false);
@@ -47,6 +48,7 @@ function FormScreen({ navigation, route }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [violation, setViolation] = useState(false);
   const [checkedViolations, setCheckedViolations] = useState([]);
+  const [preview, setPreview] = useState(false);
   const ocrText = useSelector((state) => state.infoText.extractedInfo);
   const ocrTextOCR = useSelector((state) => state.infoTextOCR.extractedInfo);
 
@@ -183,6 +185,158 @@ function FormScreen({ navigation, route }) {
               height: "auto",
             }}
           >
+            {preview ? (
+              <View
+                style={{
+                  height: "100%",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 15,
+                  }}
+                  onPress={() => setPreview(!preview)}
+                >
+                  <Ant size={30} name="leftcircleo"></Ant>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      marginLeft: 20,
+                      fontSize: 20,
+                      color: "green",
+                    }}
+                  >
+                    BACK
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    paddingHorizontal: 45,
+                    marginTop: 40,
+                    marginBottom: 40,
+                  }}
+                >
+                  <View style={{}}>
+                    <Text
+                      style={{
+                        fontSize: 40,
+                        fontWeight: "bold",
+                        color: "#367717",
+                      }}
+                    >
+                      Preview
+                    </Text>
+                  </View>
+                  <View style={{}}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: "grey",
+                      }}
+                    >
+                      Please check all of the information is correct before you
+                      submit the form.
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: "#E4FAD9",
+                    height: "100%",
+                    padding: 40,
+                  }}
+                >
+                  <View>
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#038855",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Personal Information
+                      </Text>
+                    </View>
+                    <View style={{}}>
+                      <Text>{mfrtaTctNo}</Text>
+                      <Text>{currentDate}</Text>
+                      <Text>{ocrText.name}</Text>
+                      <Text>{ocrText.dateOfBirth}</Text>
+                      <Text>{ocrText.sex}</Text>
+                      <Text>{ocrText.nationality}</Text>
+                      <Text>{ocrText.weight}</Text>
+                      <Text>{ocrText.height}</Text>
+                      <Text>{ocrText.address}</Text>
+                      <Text>{ocrText.licenseNumber}</Text>
+                    </View>
+                  </View>
+                  <View>
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#038855",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Vehicle Information
+                      </Text>
+                    </View>
+                    <View style={{}}>
+                      <Text>{ocrTextOCR.complete_owners_name}</Text>
+                      <Text>{ocrTextOCR.plate_no}</Text>
+                      <Text>{ocrTextOCR.make}</Text>
+                      <Text>{"class"}</Text>
+                      <Text>{ocrTextOCR.series}</Text>
+                      <Text>{ocrTextOCR.telephone_no_contact_details}</Text>
+                      <Text>{"COLOR"}</Text>
+                      <Text>{"body marks"}</Text>
+                    </View>
+                  </View>
+                  <View>
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#038855",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Violation Information
+                      </Text>
+                    </View>
+                    <View style={{}}>
+                      <Text>{"Anna Nicole Gabriento"}</Text>
+                      <Text>{currentTime}</Text>
+                      <Text>
+                        {ocrText.selectedPin ? selectedPin.address : "N/A"}
+                      </Text>
+
+                      {checkedViolations.map((checkedViolation, index) => (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginLeft: 20,
+                            marginTop: 10,
+                          }}
+                          key={index}
+                        >
+                          <Circle
+                            name="controller-record"
+                            style={{ marginRight: 10, fontSize: 6 }}
+                          ></Circle>
+                          <Text key={index}>{checkedViolation}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+              </View>
+            ) : null}
             {violation ? (
               <>
                 <TouchableOpacity
@@ -406,7 +560,12 @@ function FormScreen({ navigation, route }) {
                   <View style={{ width: "70%", height: "100%" }}>
                     <ConstButton
                       title="Preview Ticket"
-                      onPress={() => setViolation(!violation)}
+                      onPress={() =>
+                        setPreview(!preview) &
+                        setViolation(!violation) &
+                        Keyboard.dismiss() &
+                        scrollToTop()
+                      }
                       height={50}
                     ></ConstButton>
                   </View>
@@ -536,7 +695,7 @@ function FormScreen({ navigation, route }) {
                           text={"Driver's License Number*"}
                           value={ocrText.licenseNumber}
                           marginTop={25}
-                          marginBottom ={25}
+                          marginBottom={25}
                           required
                         ></ConstInput>
                       </View>

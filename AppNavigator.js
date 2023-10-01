@@ -50,17 +50,7 @@ function TabNavigator() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Logs"
-        component={LogsScreen}
-        options={{
-          tabBarActiveTintColor: "#3E7C1F",
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="book" size={size} color={color} />
-          ),
-        }}
-      />
+
       <Tab.Screen
         name="Profile"
         component={Profile}
