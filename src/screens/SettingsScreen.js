@@ -19,6 +19,10 @@ function SettingsScreen({ navigation }) {
     navigation.navigate("AboutScreen");
   };
 
+  handleLogout = () => {
+    navigation.navigate("FirstScreen");
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View>
@@ -109,6 +113,33 @@ function SettingsScreen({ navigation }) {
               <Icon
                 name="right"
                 style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
+              ></Icon>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              height: 60,
+              justifyContent: "center",
+              marginTop: 20,
+              borderTopColor: "#D9D9D9",
+              borderBottomColor: "#D9D9D9",
+              borderTopWidth: 1,
+              borderBottomWidth: 1,
+              marginTop: 370,
+            }}
+          >
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={{
+                flexDirection: "row",
+                marginLeft: 25,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 15 }}>Logout</Text>
+              <Icon
+                name="logout"
+                style={{ marginLeft: 298, fontSize: 20, color: "grey" }}
               ></Icon>
             </TouchableOpacity>
           </View>
