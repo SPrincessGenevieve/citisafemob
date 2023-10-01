@@ -10,7 +10,15 @@ import {
 import profile from "./../../assets/profile.png";
 import Icon from "react-native-vector-icons/AntDesign";
 
-function SettingsScreen(props) {
+function SettingsScreen({ navigation }) {
+  handlePrivacy = () => {
+    navigation.navigate("PrivacyScreen");
+  };
+
+  handleAbout = () => {
+    navigation.navigate("AboutScreen");
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View>
@@ -49,7 +57,7 @@ function SettingsScreen(props) {
               height: "100%",
             }}
           >
-            <Text style={{ marginTop: 170, fontWeight: "bold", fontSize: 20 }}>
+            <Text style={{ marginTop: 180, fontWeight: "bold", fontSize: 20 }}>
               John B. Doe
             </Text>
           </View>
@@ -67,6 +75,7 @@ function SettingsScreen(props) {
             }}
           >
             <TouchableOpacity
+              onPress={handlePrivacy}
               style={{
                 flexDirection: "row",
                 marginLeft: 25,
@@ -89,6 +98,7 @@ function SettingsScreen(props) {
             }}
           >
             <TouchableOpacity
+              onPress={handleAbout}
               style={{
                 flexDirection: "row",
                 marginLeft: 25,

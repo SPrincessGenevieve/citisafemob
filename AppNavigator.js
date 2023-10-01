@@ -21,6 +21,8 @@ import SettingsScreen from "./src/screens/SettingsScreen";
 import LogsScreen from "./src/screens/LogsScreen";
 import IntroLicense from "./src/components/IntroLicense";
 import IntroOCR from "./src/components/IntroOCR";
+import Privacy from "./src/screens/Privacy";
+import About from "./src/screens/About";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -98,6 +100,16 @@ function AppNavigator() {
       <Stack.Screen
         name="HomeScreen"
         component={TabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PrivacyScreen"
+        component={Privacy}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AboutScreen"
+        component={About}
         options={{ headerShown: false }}
       />
       <Stack.Screen
