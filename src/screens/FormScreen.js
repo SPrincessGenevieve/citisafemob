@@ -536,7 +536,7 @@ function FormScreen({ navigation, route }) {
                           text={"Driver's License Number*"}
                           value={ocrText.licenseNumber}
                           marginTop={25}
-                          marginBottom={25}
+                          marginBottom ={25}
                           required
                         ></ConstInput>
                       </View>

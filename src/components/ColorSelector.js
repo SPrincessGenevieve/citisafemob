@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import KeyboardWithoutWrapper from "./KeyboardWithoutWrapper";
 import colorsData from "./Colors.json";
 import ConstInput from "./ConstInput";
@@ -205,12 +200,14 @@ export default function ColorSelector({ navigation }) {
                   {getColorName(selectedColor)}
                 </Text>
               </View>
-              <ConstInput
-                borderRadius={20}
-                onChangeText={handleCustomColorChange}
-                value={customColor}
-                placeholder="Others"
-              ></ConstInput>
+              <View style={{ width: "97%" }}>
+                <ConstInput
+                  borderRadius={20}
+                  onChangeText={handleCustomColorChange}
+                  value={customColor}
+                  placeholder="Others"
+                ></ConstInput>
+              </View>
             </View>
           </View>
         </View>
