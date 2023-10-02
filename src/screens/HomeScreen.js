@@ -12,6 +12,7 @@ import { useFonts } from "expo-font";
 import profile from "./../../assets/default_profile.png";
 import { Image } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
+import { useSelector } from "react-redux";
 
 function HomeScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
@@ -20,6 +21,8 @@ function HomeScreen({ navigation }) {
   });
 
   const [cite, setCite] = useState(true);
+
+  const user = useSelector((state) => state.auth.enforcer)
 
   if (!fontsLoaded) {
     return null;
@@ -91,11 +94,12 @@ function HomeScreen({ navigation }) {
                 fontWeight: "bold",
               }}
             >
-              John
+              {user.last_name}, {user.first_name}
             </Text>
           </Text>
         </View>
 
+        {/* need to update */}
         <Text
           style={{
             color: "#3E7C1F",
