@@ -1,6 +1,6 @@
-// import axios from 'axios';
+import axios from 'axios';
 
-// axios.defaults.baseURL = 'http://127.0.0.1:8081/api/v1/';
-// axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.baseURL = 'http://192.168.0.11:8000/api/v1/';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// export default axios;
+export default axios;

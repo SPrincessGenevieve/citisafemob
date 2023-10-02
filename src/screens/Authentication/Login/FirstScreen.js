@@ -19,8 +19,13 @@ import KeyboardWithoutWrapper from "../../../components/KeyboardWithoutWrapper";
 import ConstButton from "../../../components/ConstButton";
 import Title from "../../../components/Title";
 import TextButton from "../../../components/TextButton";
+import axios from '../../../../plugins/axios'
+import { useDispatch } from "react-redux";
+import { setEnforcer, setToken } from "../authSlice";
+
 
 function FirstScreen({ navigation }) {
+  const dispatch = useDispatch();
   const [fontsLoaded] = useFonts({
     "Zen Dots Regular": require("./../../../../assets/fonts/ZenDots-Regular.ttf"),
   });
@@ -28,16 +33,56 @@ function FirstScreen({ navigation }) {
   const [textInputFocused, setTextInputFocused] = useState(false);
   const [animationValue] = useState(new Animated.Value(1));
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  const [credentials, setCredentials] = useState({
+    username: '',
+    password: ''
+  })
 
   const handleLogin = () => {
     navigation.navigate("HomeScreen");
+
+    axios.post("accounts/token/login/", credentials).then((response) => {
+
+      const token = response.data.auth_token
+      dispatch(setToken(token));
+
+      axios.get('accounts/users/me/', {
+        headers: {
+          Authorization: `token ${token}`
+        }
+      }).then((response) => {
+
+        const role = response.data.role
+        const last_name = response.data.last_name
+
+        dispatch(setEnforcer(response.data))
+
+        if (role != 'ENFORCER'){
+          alert(`Sir ${last_name}, Your Role is ${role}`)
+          setCredentials({
+            username: '',
+            password: ''
+          })
+        }else {
+          alert(`Welcome to eTCMF ${role} - ${last_name}`)
+          navigation.navigate("HomeScreen");
+        }
+
+      })
+
+    })
+
+
   };
   const handleForgotPass = () => {
     navigation.navigate("ForgotPass");
   };
+
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
 
   return (
     <KeyboardWithoutWrapper>
@@ -87,8 +132,16 @@ function FirstScreen({ navigation }) {
           >
             <Title></Title>
 
-            <ConstInput borderRadius={10} placeholder="username"></ConstInput>
-            <ConstInputVisible placeholder="password"></ConstInputVisible>
+            <ConstInput borderRadius={10} placeholder="username" value={credentials.username} onChangeText={(text) => {
+              setCredentials({
+                ...credentials, username: text
+              })
+            }}></ConstInput>
+            <ConstInputVisible placeholder="password" value={credentials.password} onChangeText={(text) => {
+              setCredentials({
+                ...credentials, password: text
+              })
+            }}></ConstInputVisible>
             <TextButton onPress={handleForgotPass}></TextButton>
             <View style={{ width: "100%", marginTop: 20 }}>
               <ConstButton

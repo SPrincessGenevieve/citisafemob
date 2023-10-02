@@ -6,6 +6,10 @@ export const authSlice = createSlice({
   initialState: {
     setIsLoggedIn: false,
     token: "",
+    enforcer: {
+
+    },
+
   },
   reducers: {
     setToken: (state, action) => {
@@ -19,9 +23,12 @@ export const authSlice = createSlice({
 
       state.setIsLoggedIn = false;
     },
+    setEnforcer: (state, action) => {
+      state.enforcer = action.payload
+    }
   },
 });
 
-export const { setToken, setLogin, setLogout } = authSlice.actions;
+export const { setToken, setLogin, setLogout, setEnforcer } = authSlice.actions;
 
 export default authSlice.reducer;
