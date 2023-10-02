@@ -25,6 +25,7 @@ import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
 import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import corners from "./../../assets/corners.png";
+import ConstButtonShort from "./../components/ConstButtonShort";
 
 export default function CameraScan() {
   const [cameraMode, setCameraMode] = useState(CameraType.back);
@@ -237,16 +238,52 @@ export default function CameraScan() {
           }}
         >
           {capturedImage ? (
-            <Image style={styles.picture} source={{ uri: capturedImage }} />
+            <>
+              <Image style={styles.picture} source={{ uri: capturedImage }} />
+            </>
           ) : null}
 
-          <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
-            <Text style={styles.nextText}>Next</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.cancelBtn} onPress={cancelPicture}>
-            <Text style={styles.cancelText}>Cancel</Text>
-          </TouchableOpacity>
+          <View
+            style={{
+              height: "100%",
+              width: "100%",
+              zIndex: 9,
+              position: "absolute",
+              paddingHorizontal: 30,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: "70%",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                borderRadius: 10,
+                height: 50,
+                width: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 15,
+              }}
+              onPress={handleNextButton}
+            >
+              <Text style={{ color: "green", fontSize: 17 }}>Next</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                borderRadius: 10,
+                height: 50,
+                width: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={cancelPicture}
+            >
+              <Text style={{ color: "red", fontSize: 17 }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       ) : null}
 
@@ -410,8 +447,9 @@ const styles = StyleSheet.create({
     bottom: 50,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 10,
-    paddingHorizontal: 20,
+    padding: 15,
+    paddingHorizontal: 50,
+    marginLeft: -50,
     left: 95,
   },
   nextText: {
@@ -423,8 +461,9 @@ const styles = StyleSheet.create({
     bottom: 50,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
     right: 95,
+    paddingHorizontal: 50,
   },
   cancelText: {
     color: "red",

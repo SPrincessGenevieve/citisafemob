@@ -942,6 +942,7 @@ function FormScreen({ navigation, route }) {
                         text={"Apprehending Officer*"}
                         value="ANNA NICOLE GABRIENTO"
                         required
+                        editable={false}
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}

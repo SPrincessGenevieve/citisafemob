@@ -212,13 +212,49 @@ export default function CameraScanCOR() {
             <Image style={styles.picture} source={{ uri: capturedImage }} />
           ) : null}
 
-          <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
-            <Text style={styles.nextText}>Next</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.cancelBtn} onPress={cancelPicture}>
-            <Text style={styles.cancelText}>Cancel</Text>
-          </TouchableOpacity>
+          <View
+            style={{
+              height: "100%",
+              width: "100%",
+              zIndex: 9,
+              position: "absolute",
+              paddingHorizontal: 30,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: "70%",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                borderRadius: 10,
+                height: 50,
+                width: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 15,
+                borderWidth: 1,
+              }}
+              onPress={handleNextButton}
+            >
+              <Text style={{ color: "green", fontSize: 17 }}>Next</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                borderRadius: 10,
+                height: 50,
+                width: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                borderWidth: 1,
+              }}
+              onPress={cancelPicture}
+            >
+              <Text style={{ color: "red", fontSize: 17 }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       ) : null}
 
