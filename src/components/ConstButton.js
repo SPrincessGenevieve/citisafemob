@@ -15,6 +15,7 @@ function ConstButton({
   height,
   marginLeftText,
   size,
+  marginLeftIcon
 }) {
   return (
     <View
@@ -45,7 +46,7 @@ function ConstButton({
           elevation: 10,
         }}
       >
-        <Icon name={name} size={20} color="white"></Icon>
+        <Icon name={name} size={20} marginLeft={marginLeftIcon} color="white"></Icon>
         <Text
           style={{ marginLeft: marginLeftText, fontSize: 17, color: "white" }}
         >
