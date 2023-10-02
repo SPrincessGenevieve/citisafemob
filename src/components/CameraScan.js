@@ -16,15 +16,16 @@ import {
 } from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
 import * as ImageManipulator from "expo-image-manipulator";
-import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
-import { setRecognizedText } from "./camera/infoSlice";
-import { useDispatch } from "react-redux";
+import { setDriverID, setDriverRegisterd, setFinalDriver, setRecognizedText } from "./camera/infoSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
 import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import corners from "./../../assets/corners.png";
+import axios from '../../plugins/axios'
+import { setdriverID } from "./camera/infoSliceCOR";
 
 export default function CameraScan() {
   const [cameraMode, setCameraMode] = useState(CameraType.back);
@@ -42,6 +43,8 @@ export default function CameraScan() {
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const Token = useSelector((state) => state.auth.token)
 
   const toggleFlash = () => {
     setFlash((currentFlash) =>
@@ -70,6 +73,25 @@ export default function CameraScan() {
     agency_code: "",
     restrictions: "",
   });
+
+  const [drivers, getDrivers] = useState([])
+
+  // registered driver
+
+  useEffect(() => {
+
+    axios.get('drivers/register/', {
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      getDrivers(response.data)
+
+    }).catch((error) => {
+      console.log('error dong')
+    })
+
+  }, []);
 
   useEffect(() => {
     requestPermission();
@@ -183,6 +205,32 @@ export default function CameraScan() {
             restrictions: concatenatedFields.restrictions,
           })
         );
+
+
+        // check if the driver is exist
+        const driverExists = drivers.some(
+          (driver) => driver.license_number === concatenatedFields.license_no
+        );
+  
+        if (driverExists) {
+          alert(`Existing Driver: ${concatenatedFields.license_no}`)
+  
+          const driverId = driverExists.id;
+          dispatch(setDriverRegisterd())
+          dispatch(setDriverID(driverId))
+          // vehicle slice
+          dispatch(setdriverID(driverId))
+  
+          navigation.navigate("CameraScanOCR");
+        } else {
+          // POST HERE THE NEW DRIVER AND GET THE ID
+          console.log(`Driver not found: ${concatenatedFields.license_no}`);
+          alert(`New Driver: ${concatenatedFields.license_no}`)
+          dispatch(setFinalDriver());
+          navigation.navigate("CameraScanOCR");
+        }
+
+
       } else {
         Alert.alert("Text extraction failed. Please try again later.");
       }
@@ -190,7 +238,6 @@ export default function CameraScan() {
       console.log("Error extracting text:", error);
       Alert.alert("Error extracting text. Please try again later.");
     }
-    navigation.navigate("CameraScanOCR");
   };
 
   useEffect(() => {

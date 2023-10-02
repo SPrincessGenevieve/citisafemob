@@ -50,8 +50,10 @@ function FormScreen({ navigation, route }) {
   const [violation, setViolation] = useState(false);
   const [checkedViolations, setCheckedViolations] = useState([]);
   const [preview, setPreview] = useState(false);
-  const ocrText = useSelector((state) => state.infoText.extractedInfo);
-  const ocrTextOCR = useSelector((state) => state.infoTextOCR.extractedInfo);
+
+  // datas
+  const ocrText = useSelector((state) => state.infoText.finalDriver);
+  const ocrTextOCR = useSelector((state) => state.infoTextOCR.finalVehicle);
 
   const scrollViewRef = useRef(null);
 
@@ -266,10 +268,11 @@ function FormScreen({ navigation, route }) {
                       </Text>
                     </View>
                     <View style={{ marginBottom: 20 }}>
-                      <PreviewComponent
+                      {/* driver info */}
+                      {/* <PreviewComponent
                         title={"MFRTA TICKET NO."}
                         value={mfrtaTctNo}
-                      ></PreviewComponent>
+                      ></PreviewComponent> */}
                       <PreviewComponent
                         title={"DATE"}
                         value={currentDate}
@@ -694,45 +697,61 @@ function FormScreen({ navigation, route }) {
                       }}
                     >
                       <View style={{ width: "90%" }}>
-                        <ConstInput
+                        {/* <ConstInput
                           borderRadius={10}
                           height={40}
                           text={"MFRTA TCT No*"}
                           editable={false}
                           required
                           value={mfrtaTctNo}
-                        ></ConstInput>
+                        ></ConstInput> */}
                         <ConstInput
                           borderRadius={10}
                           height={40}
+                          text={"Driver's License Number*"}
+                          value={ocrText.license_number}
                           marginTop={25}
-                          value={currentDate}
-                          text="Date*"
+                          marginBottom={25}
+                          required
+                        ></ConstInput>                        
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          value={ocrText.first_name}
+                          text="First Name"
                           required
                           editable={false}
                         ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
-                          marginTop={25}
-                          value={ocrText.name}
-                          autoCapitalize="characters"
-                          text="Last Name, First Name, Middle Name*"
+                          value={ocrText.middle_initial}
+                          text="Middle Name"
                           required
+                          editable={false}
                         ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
-                          value={ocrText.dateOfBirth}
+                          value={ocrText.last_name}
+                          text="First Name"
+                          required
+                          editable={false}
+                        ></ConstInput>         
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          text={"Address*"}
+                          value={ocrText.address}
+                          marginTop={25}
+                          required
+                          multiline={true}
+                        ></ConstInput>                                                               
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          value={ocrText.birthdate}
                           text={"Date of Birth*"}
-                          marginTop={25}
-                          required
-                        ></ConstInput>
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Sex*"}
-                          value={ocrText.sex}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -743,7 +762,16 @@ function FormScreen({ navigation, route }) {
                           value={ocrText.nationality}
                           marginTop={25}
                           required
+                        ></ConstInput>                        
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          text={"Sex*"}
+                          value={ocrText.gender}
+                          marginTop={25}
+                          required
                         ></ConstInput>
+
                         <ConstInput
                           borderRadius={10}
                           height={40}
@@ -759,21 +787,45 @@ function FormScreen({ navigation, route }) {
                           value={ocrText.height}
                           marginTop={25}
                           required
-                        ></ConstInput>
+                        ></ConstInput>                        
                         <ConstInput
                           borderRadius={10}
                           height={40}
-                          text={"Address*"}
-                          value={ocrText.address}
+                          text={"Expiration Date"}
+                          value={ocrText.expiration_date}
                           marginTop={25}
                           required
-                          multiline={true}
                         ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
-                          text={"Driver's License Number*"}
-                          value={ocrText.licenseNumber}
+                          text={"Blood Type"}
+                          value={ocrText.blood_type}
+                          marginTop={25}
+                          required
+                        ></ConstInput>     
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          text={"Agency Code"}
+                          value={ocrText.agency_code}
+                          marginTop={25}
+                          required
+                        ></ConstInput>   
+                              {/* if possible selection ra sya */}
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          text={"Classification"}
+                          value={ocrText.classification}
+                          marginTop={25}
+                          required
+                        ></ConstInput>                           
+                        <ConstInput
+                          borderRadius={10}
+                          height={40}
+                          text={"DL Code"}
+                          value={ocrText.dl_codes}
                           marginTop={25}
                           marginBottom={25}
                           required
@@ -824,50 +876,59 @@ function FormScreen({ navigation, route }) {
                       <ConstInput
                         borderRadius={10}
                         height={40}
-                        text={"Registered Owner*"}
-                        value={ocrTextOCR.complete_owners_name}
+                        text={"Plate Number*"}
+                        value={ocrTextOCR.plate_number}
                         required
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
-                        text={"Plate Number*"}
-                        value={ocrTextOCR.plate_no}
                         marginTop={25}
+                        text={"Registered Owner*"}
+                        value={ocrTextOCR.owner_ID.name}
                         required
-                      ></ConstInput>
+                      ></ConstInput>            
+                      <ConstInput
+                        borderRadius={10}
+                        height={40}
+                        text={"Owner Address"}
+                        value={ocrTextOCR.owner_ID.address}
+                        required
+                      ></ConstInput>              
+                      <ConstInput
+                        borderRadius={10}
+                        height={40}
+                        text={"Contact No.*"}
+                        value={ocrTextOCR.owner_ID.contact_number}
+                        required
+                      ></ConstInput>                                          
                       <ConstInput
                         borderRadius={10}
                         height={40}
                         text={"Make*"}
                         value={ocrTextOCR.make}
-                        marginTop={25}
                         required
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
                         text={"Class*"}
-                        marginTop={25}
+                        value={ocrTextOCR.vehicle_class}
                         required
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
                         text={"Model*"}
-                        value={ocrTextOCR.series}
-                        marginTop={25}
+                        value={ocrTextOCR.vehicle_model}
                         required
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
-                        text={"Contact No.*"}
-                        value={ocrTextOCR.telephone_no_contact_details}
-                        marginTop={25}
-                        marginBottom={25}
+                        text={"Body Markings*"}
                         required
-                      ></ConstInput>
+                      ></ConstInput>                      
                       <View>
                         <Text
                           style={{
@@ -884,14 +945,7 @@ function FormScreen({ navigation, route }) {
                         </Text>
                         <ColorSelector></ColorSelector>
                       </View>
-                      <ConstInput
-                        borderRadius={10}
-                        height={40}
-                        text={"Body Markings*"}
-                        marginTop={-35}
-                        marginBottom={25}
-                        required
-                      ></ConstInput>
+
                     </View>
                   </View>
                 </View>

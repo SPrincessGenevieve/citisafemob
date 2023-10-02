@@ -17,10 +17,10 @@ import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import * as ImageManipulator from "expo-image-manipulator";
-import axios from "axios";
+import axios from "../../plugins/axios";
 import * as ImagePicker from "expo-image-picker";
-import { setRecognizedText } from "./camera/infoSliceCOR";
-import { useDispatch } from "react-redux";
+import { setFinalVehicle, setIsCarRegistered, setRecognizedText, setVehicleID } from "./camera/infoSliceCOR";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import corners from "./../../assets/cornersOCR.png";
 
@@ -37,6 +37,8 @@ export default function CameraScanCOR() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+  const Token = useSelector((state) => state.auth.token)
+
   const [data, setData] = useState({
     plate_no: "",
     make: "",
@@ -47,6 +49,25 @@ export default function CameraScanCOR() {
     complete_address: "",
     telephone_no_contact_details: "",
   });
+
+  const [vehicle, setVehicle] = useState([])
+  // registered vehicle
+
+  useEffect(() => {
+
+    axios.get('vehicles/register/', {
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      setVehicle(response.data)
+
+    }).catch((error) => {
+      console.log('error dong')
+    })
+
+  }, []);
+
 
   useEffect(() => {
     requestPermission();
@@ -153,6 +174,30 @@ export default function CameraScanCOR() {
               concatenatedFields.telephone_no_contact_details,
           })
         );
+
+              // Check if the driver exists
+        const vehicleExists = vehicle.some(
+          (vehicles) => vehicles.plate_number === concatenatedFields.plate_no
+        );
+          
+        if (vehicleExists) {
+          alert(`Existing Vehicle: ${concatenatedFields.plate_no}`)
+          navigation.navigate("FormScreen");
+
+          const vehicleID = vehicleExists.id;
+          dispatch(setIsCarRegistered());
+          dispatch(setVehicleID(vehicleID));
+
+        }else {
+          console.log(`Vehicle Not found: ${concatenatedFields.plate_no}`);
+          alert(`New Vehicle: ${concatenatedFields.plate_no}`)
+          dispatch(setFinalVehicle())
+          navigation.navigate("FormScreen");
+
+        }
+
+
+
       } else {
         Alert.alert("Text extraction failed. Please try again later.");
       }
@@ -160,7 +205,6 @@ export default function CameraScanCOR() {
       console.log("Error extracting text:", error);
       Alert.alert("Error extracting text. Please try again later.");
     }
-    navigation.navigate("FormScreen");
   };
 
   useEffect(() => {

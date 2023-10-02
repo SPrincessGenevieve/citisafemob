@@ -34,13 +34,11 @@ function FirstScreen({ navigation }) {
   const [animationValue] = useState(new Animated.Value(1));
 
   const [credentials, setCredentials] = useState({
-    username: '',
-    password: ''
+    username: 'mobile',
+    password: 'dario100'
   })
 
   const handleLogin = () => {
-    navigation.navigate("HomeScreen");
-
     axios.post("accounts/token/login/", credentials).then((response) => {
 
       const token = response.data.auth_token

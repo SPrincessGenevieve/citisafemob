@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export const infoSlice = createSlice({
   name: "infoText",
   initialState: {
+    isDriverRegisterd: false,
+    id: '',
     text: "",
     extractedInfo: {
       type: "",
@@ -127,10 +129,16 @@ export const infoSlice = createSlice({
         condition: "",
         classification: ''
       }
+    },
+    setDriverRegisterd: (state) => {
+      state.isDriverRegisterd = true
+    },
+    setDriverID: (state, action) => {
+      state.id = action.payload
     }
   },
 });
 
-export const { setRecognizedText, setFinalDriver, setEmptyRecognizedText, } = infoSlice.actions;
+export const { setRecognizedText, setFinalDriver, setEmptyRecognizedText, setEmptyFinalDriver, setDriverRegisterd, setDriverID } = infoSlice.actions;
 
 export default infoSlice.reducer;
