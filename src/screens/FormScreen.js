@@ -990,11 +990,12 @@ function FormScreen({ navigation, route }) {
                     }}
                   >
                     <View style={{ width: "90%" }}>
+                      {/* dili na need e butang */}
                       <ConstInput
                         borderRadius={10}
                         height={40}
-                        text={"Apprehending Officer*"}
-                        value="ANNA NICOLE GABRIENTO"
+                        text={"Ticket Status"}
+                        value="PENDING"
                         required
                       ></ConstInput>
                       <ConstInput
