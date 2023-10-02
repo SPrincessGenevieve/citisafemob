@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,12 @@ import {
 } from "react-native";
 import profile from "./../../assets/profile.png";
 import Icon from "react-native-vector-icons/AntDesign";
+import ConstButton from "../components/ConstButton";
+import ConstButtonShort from "../components/ConstButtonShort";
 
 function SettingsScreen({ navigation }) {
+  const [logout, setLogout] = useState(false);
+
   handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
   };
@@ -129,7 +133,7 @@ function SettingsScreen({ navigation }) {
             }}
           >
             <TouchableOpacity
-              onPress={handleLogout}
+              onPress={() => setLogout(!logout)}
               style={{
                 flexDirection: "row",
                 marginLeft: 25,
@@ -144,6 +148,81 @@ function SettingsScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
+        {logout ? (
+          <>
+            <View
+              style={{ width: "100%", height: "100%", position: "absolute" }}
+            >
+              <View
+                style={{
+                  position: "absolute",
+                  backgroundColor: "black",
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0.5,
+                }}
+              ></View>
+
+              <View
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  alignItems: "center",
+                  marginTop: "80%",
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    width: "90%",
+                    height: "20%",
+                    borderRadius: 20,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                    You are about to logout
+                  </Text>
+                  <Text style={{ color: "grey" }}>
+                    Please confirm your selection
+                  </Text>
+                  <View
+                    style={{
+                      width: "35%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: 20,
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "65%",
+                        backgroundColor: "white",
+                        borderWidth: 2,
+                        borderColor: "green",
+                        borderRadius: 10,
+                        marginRight: 20,
+                      }}
+                      onPress={() => setLogout(!logout)}
+                    >
+                      <Text>Cancel</Text>
+                    </TouchableOpacity>
+                    <ConstButton
+                      onPress={handleLogout}
+                      height={45}
+                      title={"Logout"}
+                    ></ConstButton>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </>
+        ) : null}
       </View>
     </View>
   );
