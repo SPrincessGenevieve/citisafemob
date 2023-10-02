@@ -23,6 +23,7 @@ import IntroLicense from "./src/components/IntroLicense";
 import IntroOCR from "./src/components/IntroOCR";
 import Privacy from "./src/screens/Privacy";
 import About from "./src/screens/About";
+import TicketScreen from "./src/screens/TicketScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -74,6 +75,11 @@ function AppNavigator() {
         name="FirstScreen"
         options={{ headerShown: false }}
         component={FirstScreen}
+      />
+      <Stack.Screen
+        name="TicketScreen"
+        options={{ headerShown: false }}
+        component={TicketScreen}
       />
       <Stack.Screen
         name="IntroLicense"

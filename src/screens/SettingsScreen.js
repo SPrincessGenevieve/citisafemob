@@ -122,30 +122,25 @@ function SettingsScreen({ navigation }) {
           </View>
           <View
             style={{
-              height: 60,
+              alignItems: "center",
               justifyContent: "center",
-              marginTop: 20,
-              borderTopColor: "#D9D9D9",
-              borderBottomColor: "#D9D9D9",
-              borderTopWidth: 1,
-              borderBottomWidth: 1,
-              marginTop: 370,
+              width: "100%",
+              marginTop: "80%",
             }}
           >
-            <TouchableOpacity
-              onPress={() => setLogout(!logout)}
+            <View
               style={{
-                flexDirection: "row",
-                marginLeft: 25,
                 alignItems: "center",
+                justifyContent: "center",
+                width: "40%",
               }}
             >
-              <Text style={{ fontSize: 15 }}>Logout</Text>
-              <Icon
-                name="logout"
-                style={{ marginLeft: 298, fontSize: 20, color: "grey" }}
-              ></Icon>
-            </TouchableOpacity>
+              <ConstButton
+                onPress={() => setLogout(!logout)}
+                height={45}
+                title={"Logout"}
+              ></ConstButton>
+            </View>
           </View>
         </View>
         {logout ? (

@@ -171,6 +171,10 @@ function FormScreen({ navigation, route }) {
     setSortAsc(!sortAsc); // Toggle the state between true and false
   };
 
+  const handleTicket = () => {
+    navigation.navigate("TicketScreen");
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -402,6 +406,13 @@ function FormScreen({ navigation, route }) {
                         </View>
                       ))}
                     </View>
+                  </View>
+                  <View style={{ marginTop: 20 }}>
+                    <ConstButton
+                      onPress={handleTicket}
+                      title={"Print Ticket"}
+                      height={50}
+                    ></ConstButton>
                   </View>
                 </View>
               </View>

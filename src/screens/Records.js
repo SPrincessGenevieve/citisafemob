@@ -30,6 +30,10 @@ function Records({ navigation }) {
     navigation.navigate("RecordDetails");
   };
 
+  handlePrint = () => {
+    navigation.navigate("TicketScreen");
+  };
+
   return (
     <View style={{ backgroundColor: "white", height: "100%", width: "100%" }}>
       <KeyboardWithoutWrapper>
@@ -251,6 +255,7 @@ function Records({ navigation }) {
                             name={"printer"}
                             title={"RE-PRINT"}
                             height={50}
+                            onPress={handlePrint}
                           ></ConstButton>
                         </View>
                       </View>
