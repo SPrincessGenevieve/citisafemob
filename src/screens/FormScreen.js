@@ -55,6 +55,12 @@ function FormScreen({ navigation, route }) {
   const [checkedViolations, setCheckedViolations] = useState([]);
   const [preview, setPreview] = useState(false);
 
+  // selected violation id's 
+  const [violationIDs, setViolationIDs] = useState({
+    "violation_id": []
+  })
+
+
   // datas
   const ocrText = useSelector((state) => state.infoText.finalDriver);
   const ocrTextOCR = useSelector((state) => state.infoTextOCR.finalVehicle);
@@ -125,13 +131,24 @@ function FormScreen({ navigation, route }) {
     fetchDate();
   }, []);
 
-  const handleCheckboxChange = (text, isChecked) => {
+  const handleCheckboxChange = (text, isChecked, ids) => {
     if (isChecked) {
       setCheckedViolations((prev) => [...prev, text]);
+      // id
+      setViolationIDs(prevState => ({
+        violation_id: [...prevState.violation_id, ids]
+      }));
+
+      console.log(violationIDs)
+
     } else {
       setCheckedViolations((prev) =>
         prev.filter((violation) => violation !== text)
       );
+
+      setViolationIDs(prevState => ({
+        violation_id: prevState.violation_id.filter(id => id !== ids)
+      }));
     }
   };
 
@@ -198,6 +215,9 @@ function FormScreen({ navigation, route }) {
   const toggleSortIcon = () => {
     setSortAsc(!sortAsc); // Toggle the state between true and false
   };
+
+
+// final screen
 
   const handleTicket = () => {
     navigation.navigate("TicketScreen");
@@ -628,6 +648,9 @@ function FormScreen({ navigation, route }) {
                         </TouchableOpacity>
                       </View>
                       <View style={{ marginLeft: 25, marginTop: 20 }}>
+
+                      {/* violation area */}
+
                         {filteredData.map((item) => (
                           <ViolationCheck
                             key={item.id}
@@ -635,7 +658,7 @@ function FormScreen({ navigation, route }) {
                             text={item.violation_type}
                             isChecked={checkedViolations.includes(item.violation_type)}
                             handleCheckboxChange={(isChecked) =>
-                              handleCheckboxChange(item.violation_type, isChecked)
+                              handleCheckboxChange(item.violation_type, isChecked, item.id)
                             }
                           />
                         ))}
