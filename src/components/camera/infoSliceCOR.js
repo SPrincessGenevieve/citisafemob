@@ -61,10 +61,53 @@ export const infoSliceCOR = createSlice({
     },
     setdriverID: (state, action) => {
       state.driverids = action.payload
+    },
+    // set manually
+    setOwnerName: (state, action) => {
+      state.finalVehicle.owner_ID.name = action.payload
+    },
+    setOwnerAddress: (state, action) => {
+      state.finalVehicle.owner_ID.address = action.payload
+    },
+    setOwnerContactNumber: (state, action) => {
+      state.finalVehicle.owner_ID.contact_number = action.payload
+    },
+    setPlateNumber: (state, action) => {
+      state.finalVehicle.plate_number = action.payload
+    },
+    setMake: (state, action) => {
+      state.finalVehicle.make = action.payload
+    },
+    setColor: (state, action) => {
+      state.finalVehicle.color = action.payload
+    },
+    setVehicleClass: (state, action) => {
+      state.finalVehicle.vehicle_class = action.payload
+    },
+    setBodyMarkings: (state, action) => {
+      state.finalVehicle.body_markings = action.payload
+    },
+    setVehicleModel: (state, action) => {
+      state.finalVehicle.vehicle_model = action.payload
     }
   },
 });
 
-export const { setRecognizedText, setVehicleID, setIsCarRegistered, setFinalVehicle, setdriverID } = infoSliceCOR.actions;
+export const { 
+  setRecognizedText, 
+  setVehicleID, 
+  setIsCarRegistered, 
+  setFinalVehicle, 
+  setdriverID,
+  setOwnerName,
+  setOwnerContactNumber,
+  setOwnerAddress,
+  setPlateNumber,
+  setMake,
+  setColor,
+  setVehicleClass,
+  setBodyMarkings,
+  setVehicleModel,
+} = infoSliceCOR.actions;
 
 export default infoSliceCOR.reducer;
