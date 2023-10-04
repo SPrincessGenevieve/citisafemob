@@ -28,8 +28,12 @@ import ViolationCheck from "../components/ViolationCheck";
 import violationData from "./../components/ViolationList.json";
 import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
+import axios from '../../plugins/axios'
 
 function FormScreen({ navigation, route }) {
+
+  const Token = useSelector((state) => state.auth.token)
+
   const [open, setOpen] = useState(false);
   const [sortAsc, setSortAsc] = useState(true);
   const [cat1, setCat1] = useState(true);
@@ -62,8 +66,29 @@ function FormScreen({ navigation, route }) {
       scrollViewRef.current.scrollTo({ y: 0, animated: true });
     }
   };
-  const filteredData = violationData.filter((item) =>
-    item.text.toLowerCase().includes(searchQuery.toLowerCase())
+
+  // mao ning violation
+
+  const [violationData1, setViolationData1] = useState([])
+
+  useEffect(() => {
+
+    axios.get('ticket/violation/', {
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      setViolationData1(response.data)
+      console.log(response.data)
+    }).catch(error => {
+      console.log(error)
+    })
+
+  }, [])
+
+
+  const filteredData = violationData1.filter((item) =>
+    item.violation_type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const generateMfrtaTctNo = () => {
@@ -606,10 +631,10 @@ function FormScreen({ navigation, route }) {
                           <ViolationCheck
                             key={item.id}
                             id={item.id}
-                            text={item.text}
-                            isChecked={checkedViolations.includes(item.text)}
+                            text={item.violation_type}
+                            isChecked={checkedViolations.includes(item.violation_type)}
                             handleCheckboxChange={(isChecked) =>
-                              handleCheckboxChange(item.text, isChecked)
+                              handleCheckboxChange(item.violation_type, isChecked)
                             }
                           />
                         ))}
