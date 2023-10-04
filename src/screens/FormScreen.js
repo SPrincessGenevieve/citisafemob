@@ -55,6 +55,13 @@ function FormScreen({ navigation, route }) {
   const [checkedViolations, setCheckedViolations] = useState([]);
   const [preview, setPreview] = useState(false);
 
+  // driver details
+  const driver = useSelector((state) => state.infoText)
+  // vehicel details
+  const vehicle = useSelector((state) => state.infoTextOCR)
+
+
+
   // selected violation id's 
   const [violationIDs, setViolationIDs] = useState({
     "violation_id": []
@@ -222,6 +229,18 @@ function FormScreen({ navigation, route }) {
   const handleTicket = () => {
     navigation.navigate("TicketScreen");
   };
+
+  const handlePreviewTicket = () => {
+
+    setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
+
+    if(!driver.isDriverRegisterd && !vehicle.isCarRegistered){
+
+      
+    }
+
+
+  }
 
   return (
     <View style={styles.container}>
@@ -692,12 +711,7 @@ function FormScreen({ navigation, route }) {
                   <View style={{ width: "70%", height: "100%" }}>
                     <ConstButton
                       title="Preview Ticket"
-                      onPress={() =>
-                        setPreview(!preview) &
-                        setViolation(!violation) &
-                        Keyboard.dismiss() &
-                        scrollToTop()
-                      }
+                      onPress={handlePreviewTicket}
                       height={50}
                     ></ConstButton>
                   </View>
