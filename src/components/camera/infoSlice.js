@@ -135,10 +135,22 @@ export const infoSlice = createSlice({
     },
     setDriverID: (state, action) => {
       state.id = action.payload
+    },
+    // SET MANUALLY INFO
+    setDriverClassification: (state, action) => {
+      state.finalDriver.classification = action.payload
     }
   },
 });
 
-export const { setRecognizedText, setFinalDriver, setEmptyRecognizedText, setEmptyFinalDriver, setDriverRegisterd, setDriverID } = infoSlice.actions;
+export const { 
+  setRecognizedText, 
+  setFinalDriver, 
+  setEmptyRecognizedText, 
+  setEmptyFinalDriver, 
+  setDriverRegisterd, 
+  setDriverID,
+  setDriverClassification
+} = infoSlice.actions;
 
 export default infoSlice.reducer;

@@ -15,7 +15,7 @@ import ConstInput from "../components/ConstInput";
 import ConstButton from "../components/ConstButton";
 import moment from "moment";
 import Confirm from "./ConfirmScreen";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Octicons";
 import Search from "react-native-vector-icons/EvilIcons";
 import Ant from "react-native-vector-icons/AntDesign";
@@ -29,9 +29,11 @@ import violationData from "./../components/ViolationList.json";
 import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
 import axios from '../../plugins/axios'
+import { setDriverClassification, setDriverID } from "../components/camera/infoSlice";
+import { setVehicleID } from "../components/camera/infoSliceCOR";
 
 function FormScreen({ navigation, route }) {
-
+  const dispatch = useDispatch();
   const Token = useSelector((state) => state.auth.token)
 
   const [open, setOpen] = useState(false);
@@ -230,16 +232,106 @@ function FormScreen({ navigation, route }) {
     navigation.navigate("TicketScreen");
   };
 
-  const handlePreviewTicket = () => {
 
-    setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
+  const handleNextButton = () => {
+    // Keyboard.dismiss(); // Dismiss the keyboard
+    // scrollToTop(); // Scroll to the top
+    // setViolation(!violation);
 
-    if(!driver.isDriverRegisterd && !vehicle.isCarRegistered){
+    // check if the driver and vehicle registered
+    const isDriverExist = driver.isDriverRegisterd
+    const isVehicleExist = vehicle.isCarRegistered
 
-      
+    // if driver exist
+    if (!isDriverExist) {
+      console.log('Not Exist')
+      console.log(isDriverExist)
+
+      const drivers = driver.finalDriver
+      console.log(drivers)  
+
+      axios.post(`drivers/register/`, drivers, {
+        headers: {
+          Authorization: `token ${Token}`
+        }
+      }).then((response) => {
+          const id = response.data.id
+          dispatch(setDriverID(id))
+          console.log(drivers)
+          alert('Successfully Register Driver')
+  
+        }).catch((error) => {
+          console.log('unsa naman sad ni')
+          console.log(error)
+        })
+
+
+    }
+
+    if (!isVehicleExist) {
+      console.log('Vehicle Not Exist')
+      console.log(isVehicleExist)
+
+      const vehicles = vehicle.finalVehicle
+      console.log(vehicles)
+
+      axios.post(`vehicles/register/`, vehicles, {
+        headers: {
+          Authorization: `token ${Token}`
+        }
+      }).then((response) => {
+          const id = response.data.id
+          dispatch(setVehicleID(id))
+          console.log(vehicles)
+          alert('Successfully Register Vehicle')
+  
+        }).catch((error) => {
+          console.log('unsa naman sad ni')
+          console.log(error)
+        })
+
+
+
+
     }
 
 
+
+  }
+
+
+// for ticket
+  const [trafficViolationID, setTrafficViolationID] = useState("")
+
+  const handlePreviewTicket = () => {
+
+    setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
+    
+    
+    const driverID = driver.id
+    const vehicleID = vehicle.id
+
+    const formData = new FormData();
+    formData.append('vehicle', vehicleID)
+    formData.append('driver_id', driverID)
+    formData.append('violations', trafficViolationID)
+    formData.append('place_violation', selectedPin)
+    formData.append('ticket_status', 'PENDING')
+
+
+    // first post the traffic violation
+    axios.post('ticket/trafficviolation/', violationIDs,{
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      // traffic violation id
+      const traffic_violationID = response.data.id
+      setTrafficViolationID(trafficViolationID)
+      console.log(response.data)
+    }).catch((error) => {
+      console.log(error)
+    })
   }
 
   return (
@@ -875,12 +967,15 @@ function FormScreen({ navigation, route }) {
                           marginTop={25}
                           required
                         ></ConstInput>   
-                              {/* if possible selection ra sya */}
+                              {/* if possible, selection ra sya */}
                         <ConstInput
                           borderRadius={10}
                           height={40}
                           text={"Classification"}
                           value={ocrText.classification}
+                          onChangeText={(text) => {
+                            dispatch(setDriverClassification(text))
+                          }}
                           marginTop={25}
                           required
                         ></ConstInput>                           
@@ -1122,11 +1217,7 @@ function FormScreen({ navigation, route }) {
               <View style={{ width: "70%", height: "100%" }}>
                 <ConstButton
                   title="Next"
-                  onPress={() => {
-                    Keyboard.dismiss(); // Dismiss the keyboard
-                    scrollToTop(); // Scroll to the top
-                    setViolation(!violation);
-                  }}
+                  onPress={handleNextButton}
                   height={50}
                 ></ConstButton>
               </View>
