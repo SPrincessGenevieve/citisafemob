@@ -243,30 +243,30 @@ function FormScreen({ navigation, route }) {
     const isVehicleExist = vehicle.isCarRegistered
 
     // if driver exist
-    if (!isDriverExist) {
-      console.log('Not Exist')
-      console.log(isDriverExist)
+    // if (!isDriverExist) {
+    //   console.log('Not Exist')
+    //   console.log(isDriverExist)
 
-      const drivers = driver.finalDriver
-      console.log(drivers)  
+    //   const drivers = driver.finalDriver
+    //   console.log(drivers)  
 
-      axios.post(`drivers/register/`, drivers, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-          const id = response.data.id
-          dispatch(setDriverID(id))
-          console.log(drivers)
-          alert('Successfully Register Driver')
+    //   axios.post(`drivers/register/`, drivers, {
+    //     headers: {
+    //       Authorization: `token ${Token}`
+    //     }
+    //   }).then((response) => {
+    //       const id = response.data.id
+    //       dispatch(setDriverID(id))
+    //       console.log(drivers)
+    //       alert('Successfully Register Driver')
   
-        }).catch((error) => {
-          console.log('unsa naman sad ni')
-          console.log(error)
-        })
+    //     }).catch((error) => {
+    //       console.log('Error for Drivers')
+    //       console.log(error)
+    //     })
 
 
-    }
+    // }
 
     if (!isVehicleExist) {
       console.log('Vehicle Not Exist')
@@ -286,7 +286,7 @@ function FormScreen({ navigation, route }) {
           alert('Successfully Register Vehicle')
   
         }).catch((error) => {
-          console.log('unsa naman sad ni')
+          console.log('Error for Vehicle')
           console.log(error)
         })
 

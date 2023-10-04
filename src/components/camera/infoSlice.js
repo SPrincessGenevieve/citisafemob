@@ -139,7 +139,52 @@ export const infoSlice = createSlice({
     // SET MANUALLY INFO
     setDriverClassification: (state, action) => {
       state.finalDriver.classification = action.payload
-    }
+    },
+    setLicenseNumber: (state, action) => {
+      state.finalDriver.license_number = action.payload
+    },
+    setFirstName: (state, action) => {
+      state.finalDriver.first_name = action.payload
+    },
+    setMiddleInitial: (state, action) => {
+      state.finalDriver.middle_initial = action.payload
+    },
+    setLastName: (state, action) => {
+      state.finalDriver.last_name = action.payload
+    },
+    setAddress: (state, action) => {
+      state.finalDriver.address = action.payload
+    },
+    setBirthDate: (state, action) => {
+      state.finalDriver.birthdate = action.payload
+    },
+    setNationality: (state, action) => {
+      state.finalDriver.nationality = action.payload
+    },
+    setGender: (state, action) => {
+      state.finalDriver.gender = action.payload
+    },
+    setWeight: (state, action) => {
+      state.finalDriver.weight = action.payload
+    },
+    setHeight: (state, action) => {
+      state.finalDriver.height = action.payload
+    },
+    setExpirationDate: (state, action) => {
+      state.finalDriver.expiration_date = action.payload
+    },
+    setBloodTypes: (state, action) => {
+      state.finalDriver.blood_type = action.payload
+    },
+    setAgencyCodes: (state, action) => {
+      state.finalDriver.agency_code = action.payload
+    },
+    setDLCodes: (state, action) => {
+      state.finalDriver.dl_codes = action.payload
+    },
+    setCondition: (state, action) => {
+      state.finalDriver.condition = action.payload
+    },
   },
 });
 
@@ -150,7 +195,22 @@ export const {
   setEmptyFinalDriver, 
   setDriverRegisterd, 
   setDriverID,
-  setDriverClassification
+  setDriverClassification,
+  setLicenseNumber,
+  setFirstName,
+  setMiddleInitial,
+  setLastName,
+  setAddress,
+  setBirthDate,
+  setNationality,
+  setGender,
+  setWeight,
+  setHeight,
+  setExpirationDate,
+  setBloodTypes,
+  setAgencyCodes,
+  setDLCodes,
+  setCondition,
 } = infoSlice.actions;
 
 export default infoSlice.reducer;
