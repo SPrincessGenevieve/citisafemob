@@ -72,19 +72,20 @@ function FormScreen({ navigation, route }) {
   const [violationData1, setViolationData1] = useState([])
 
   useEffect(() => {
-
     axios.get('ticket/violation/', {
       headers: {
         Authorization: `token ${Token}`
       }
     }).then((response) => {
-      setViolationData1(response.data)
-      console.log(response.data)
+      // Filter out only the active penalties
+      const activePenalties = response.data.filter(item => item.penalty_ID.status === 'Active');
+  
+      setViolationData1(activePenalties);
+      console.log(activePenalties);
     }).catch(error => {
-      console.log(error)
-    })
-
-  }, [])
+      console.log(error);
+    });
+  }, []);
 
 
   const filteredData = violationData1.filter((item) =>
