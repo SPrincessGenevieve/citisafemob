@@ -220,7 +220,9 @@ export default function CameraScan() {
           dispatch(setDriverID(driverId))
           // vehicle slice
           dispatch(setdriverID(driverId))
-  
+
+          // if there is changes
+          dispatch(setFinalDriver());
           navigation.navigate("CameraScanOCR");
         } else {
           // POST HERE THE NEW DRIVER AND GET THE ID

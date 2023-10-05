@@ -29,8 +29,8 @@ import violationData from "./../components/ViolationList.json";
 import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
 import axios from '../../plugins/axios'
-import { setDriverClassification, setDriverID } from "../components/camera/infoSlice";
-import { setVehicleID } from "../components/camera/infoSliceCOR";
+import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setExpirationDate, setFirstName, setGender, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
+import { setBodyMarkings, setColor, setMake, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel } from "../components/camera/infoSliceCOR";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -94,9 +94,7 @@ function FormScreen({ navigation, route }) {
     }).then((response) => {
       // Filter out only the active penalties
       const activePenalties = response.data.filter(item => item.penalty_ID.status === 'Active');
-  
       setViolationData1(activePenalties);
-      console.log(activePenalties);
     }).catch(error => {
       console.log(error);
     });
@@ -865,6 +863,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Driver's License Number*"}
                           value={ocrText.license_number}
+                          onChangeText={(text) => {
+                            dispatch(setLicenseNumber(text))
+                          }}
                           marginTop={25}
                           marginBottom={25}
                           required
@@ -873,6 +874,9 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           value={ocrText.first_name}
+                          onChangeText={(text) => {
+                            dispatch(setFirstName(text));
+                          }}
                           text="First Name"
                           required
                           editable={false}
@@ -881,6 +885,9 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           value={ocrText.middle_initial}
+                          onChangeText={(text) => {
+                            dispatch(setMiddleInitial(text))
+                          }}
                           text="Middle Name"
                           required
                           editable={false}
@@ -889,7 +896,10 @@ function FormScreen({ navigation, route }) {
                           borderRadius={10}
                           height={40}
                           value={ocrText.last_name}
-                          text="First Name"
+                          text="Last Name"
+                          onChangeText={(text) => {
+                            dispatch(setLastName(text));
+                          }}
                           required
                           editable={false}
                         ></ConstInput>         
@@ -898,6 +908,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Address*"}
                           value={ocrText.address}
+                          onChangeText={(text) => {
+                            dispatch(setAddress(text));
+                          }}                          
                           marginTop={25}
                           required
                           multiline={true}
@@ -907,6 +920,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           value={ocrText.birthdate}
                           text={"Date of Birth*"}
+                          onChangeText={(text) => {
+                            dispatch(setBirthDate(text));
+                          }}                          
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -915,6 +931,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Nationality*"}
                           value={ocrText.nationality}
+                          onChangeText={(text) => {
+                            dispatch(setNationality(text));
+                          }}                          
                           marginTop={25}
                           required
                         ></ConstInput>                        
@@ -923,6 +942,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Sex*"}
                           value={ocrText.gender}
+                          onChangeText={(text) => {
+                            dispatch(setGender(text));
+                          }}                          
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -932,6 +954,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Weight*"}
                           value={ocrText.weight}
+                          onChangeText={(text) => {
+                            dispatch(setWeight(text));
+                          }}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -940,6 +965,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Height*"}
                           value={ocrText.height}
+                          onChangeText={(text) => {
+                            dispatch(setHeight(text));
+                          }}                          
                           marginTop={25}
                           required
                         ></ConstInput>                        
@@ -948,6 +976,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Expiration Date"}
                           value={ocrText.expiration_date}
+                          onChangeText={(text) => {
+                            dispatch(setExpirationDate(text));
+                          }}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -956,6 +987,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Blood Type"}
                           value={ocrText.blood_type}
+                          onChangeText={(text) => {
+                            dispatch(setBloodTypes(text));
+                          }}                          
                           marginTop={25}
                           required
                         ></ConstInput>     
@@ -964,6 +998,9 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"Agency Code"}
                           value={ocrText.agency_code}
+                          onChangeText={(text) => {
+                            dispatch(setAgencyCodes(text));
+                          }}                          
                           marginTop={25}
                           required
                         ></ConstInput>   
@@ -984,10 +1021,17 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           text={"DL Code"}
                           value={ocrText.dl_codes}
+                          onChangeText={(text) => {
+                            dispatch(setDLCodes(text));
+                          }}                          
                           marginTop={25}
                           marginBottom={25}
                           required
                         ></ConstInput>
+
+                          {/* if existing user there is button for edit of his/her info */}
+
+
                       </View>
                     </View>
                   </View>
@@ -1036,6 +1080,9 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         text={"Plate Number*"}
                         value={ocrTextOCR.plate_number}
+                        onChangeText={(text) => {
+                          dispatch(setPlateNumber(text));
+                        }}
                         required
                       ></ConstInput>
                       <ConstInput
@@ -1044,6 +1091,9 @@ function FormScreen({ navigation, route }) {
                         marginTop={25}
                         text={"Registered Owner*"}
                         value={ocrTextOCR.owner_ID.name}
+                        onChangeText={(text) => {
+                          dispatch(setOwnerName(text));
+                        }}
                         required
                       ></ConstInput>            
                       <ConstInput
@@ -1051,6 +1101,9 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         text={"Owner Address"}
                         value={ocrTextOCR.owner_ID.address}
+                        onChangeText={(text) => {
+                          dispatch(setOwnerAddress(text));
+                        }}
                         required
                       ></ConstInput>              
                       <ConstInput
@@ -1058,6 +1111,9 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         text={"Contact No.*"}
                         value={ocrTextOCR.owner_ID.contact_number}
+                        onChangeText={(text) => {
+                          dispatch(setOwnerContactNumber(text));
+                        }}
                         required
                       ></ConstInput>                                          
                       <ConstInput
@@ -1065,6 +1121,9 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         text={"Make*"}
                         value={ocrTextOCR.make}
+                        onChangeText={(text) => {
+                          dispatch(setMake(text));
+                        }}
                         required
                       ></ConstInput>
                       <ConstInput
@@ -1072,6 +1131,9 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         text={"Class*"}
                         value={ocrTextOCR.vehicle_class}
+                        onChangeText={(text) => {
+                          dispatch(setVehicleClass(text));
+                        }}
                         required
                       ></ConstInput>
                       <ConstInput
@@ -1079,12 +1141,18 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         text={"Model*"}
                         value={ocrTextOCR.vehicle_model}
+                        onChangeText={(text) => {
+                          dispatch(setVehicleModel(text));
+                        }}
                         required
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
                         text={"Body Markings*"}
+                        onChangeText={(text) => {
+                          dispatch(setBodyMarkings(text));
+                        }}
                         required
                       ></ConstInput>                      
                       <View>
@@ -1101,7 +1169,11 @@ function FormScreen({ navigation, route }) {
                         >
                           Vehicle Color*
                         </Text>
-                        <ColorSelector></ColorSelector>
+                        <ColorSelector value={ocrTextOCR.color}
+                          onChangeText={(text) => {
+                            dispatch(setColor(text));
+                          }}                        
+                        ></ColorSelector>
                       </View>
 
                     </View>
