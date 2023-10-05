@@ -15,9 +15,8 @@ import {
   getCameraPermissionsAsync, // Fixed typo here
 } from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
-import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
-import { setDriverID, setDriverRegisterd, setFinalDriver, setRecognizedText } from "./camera/infoSlice";
+import { setDriverClassification, setDriverID, setDriverRegisterd, setFinalDriver, setGetFinalDriver, setRecognizedText } from "./camera/infoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
@@ -74,9 +73,9 @@ export default function CameraScan() {
     restrictions: "",
   });
 
-  const [drivers, getDrivers] = useState([])
 
   // registered driver
+  const [drivers, getDrivers] = useState([])
 
   useEffect(() => {
 
@@ -86,9 +85,8 @@ export default function CameraScan() {
       }
     }).then((response) => {
       getDrivers(response.data)
-
     }).catch((error) => {
-      console.log('error dong')
+      console.log(`Error Fetch Driver's Data: ${error}`)
     })
 
   }, []);
@@ -208,21 +206,39 @@ export default function CameraScan() {
 
 
         // check if the driver is exist
-        const driverExists = drivers.some(
+        const driverExists = drivers.find(
           (driver) => driver.license_number === concatenatedFields.license_no
         );
   
         if (driverExists) {
           alert(`Existing Driver: ${concatenatedFields.license_no}`)
-  
+          
           const driverId = driverExists.id;
           dispatch(setDriverRegisterd())
           dispatch(setDriverID(driverId))
+          console.log(driverExists)
+          // dispatch(setGetFinalDriver({
+          //   ...driverExists, 
+          //   license_number: driverExists.license_number,
+          //   first_name: driverExists.first_name,
+          //   middle_initial: driverExists.middle_initial,
+          //   last_name: driverExists.last_name,
+          //   address: driverExists.address,
+          //   birthdate: driverExists.birthdate,
+          //   nationality: driverExists.nationality,
+          //   gender: driverExists.gender,
+          //   weight: driverExists.weight,
+          //   height: driverExists.height,
+          //   expiration_date: driverExists.expiration_date,
+          //   blood_type: driverExists.blood_type,
+          //   agency_code: driverExists.agency_code,
+          //   dl_codes: driverExists.dl_codes,
+          //   condition: driverExists.condition,
+          //   classification: driverExists.classification,
+          // }))
           // vehicle slice
           dispatch(setdriverID(driverId))
-
           // if there is changes
-          dispatch(setFinalDriver());
           navigation.navigate("CameraScanOCR");
         } else {
           // POST HERE THE NEW DRIVER AND GET THE ID

@@ -22,7 +22,6 @@ export const infoSlice = createSlice({
       expirationDate: "",
       conditions: "",
       restrictions: "",
-      classification: '',
     },
     finalDriver: {
       license_number: '',
@@ -40,7 +39,7 @@ export const infoSlice = createSlice({
       agency_code: "",
       dl_codes: "",
       condition: "",
-      classification: ''
+      classification: '',
     }
   },
   reducers: {
@@ -107,7 +106,6 @@ export const infoSlice = createSlice({
         expirationDate: "",
         conditions: "",
         restrictions: "",
-        classification: '',
       };
     },
     setEmptyFinalDriver: (state) => {
@@ -127,7 +125,7 @@ export const infoSlice = createSlice({
         agency_code: "",
         dl_codes: "",
         condition: "",
-        classification: ''
+        classification: null,
       }
     },
     setDriverRegisterd: (state) => {
@@ -185,6 +183,9 @@ export const infoSlice = createSlice({
     setCondition: (state, action) => {
       state.finalDriver.condition = action.payload
     },
+    setGetFinalDriver: (state, action) => {
+      state.finalDriver = action.payload
+    }
   },
 });
 
@@ -211,6 +212,7 @@ export const {
   setAgencyCodes,
   setDLCodes,
   setCondition,
+  setGetFinalDriver
 } = infoSlice.actions;
 
 export default infoSlice.reducer;

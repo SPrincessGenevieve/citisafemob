@@ -266,34 +266,35 @@ function FormScreen({ navigation, route }) {
 
     // }
 
-    if (!isVehicleExist) {
-      console.log('Vehicle Not Exist')
-      console.log(isVehicleExist)
+    // if (!isVehicleExist) {
+    //   console.log('Vehicle Not Exist')
+    //   console.log(isVehicleExist)
 
-      const vehicles = vehicle.finalVehicle
-      console.log(vehicles)
+    //   const vehicles = vehicle.finalVehicle
+    //   console.log(vehicles)
 
-      axios.post(`vehicles/register/`, vehicles, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-          const id = response.data.id
-          dispatch(setVehicleID(id))
-          console.log(vehicles)
-          alert('Successfully Register Vehicle')
+    //   axios.post(`vehicles/register/`, vehicles, {
+    //     headers: {
+    //       Authorization: `token ${Token}`
+    //     }
+    //   }).then((response) => {
+    //       const id = response.data.id
+    //       dispatch(setVehicleID(id))
+    //       console.log(vehicles)
+    //       alert('Successfully Register Vehicle')
   
-        }).catch((error) => {
-          console.log('Error for Vehicle')
-          console.log(error)
-        })
+    //     }).catch((error) => {
+    //       console.log('Error for Vehicle')
+    //       console.log(error)
+    //     })
 
 
 
 
-    }
+    // }
 
-
+    console.log(vehicle)
+    console.log(driver)
 
   }
 
@@ -1008,6 +1009,7 @@ function FormScreen({ navigation, route }) {
                         <ConstInput
                           borderRadius={10}
                           height={40}
+                          type={Number}
                           text={"Classification"}
                           value={ocrText.classification}
                           onChangeText={(text) => {
@@ -1016,6 +1018,7 @@ function FormScreen({ navigation, route }) {
                           marginTop={25}
                           required
                         ></ConstInput>                           
+
                         <ConstInput
                           borderRadius={10}
                           height={40}

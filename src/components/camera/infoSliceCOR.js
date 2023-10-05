@@ -89,7 +89,9 @@ export const infoSliceCOR = createSlice({
     },
     setVehicleModel: (state, action) => {
       state.finalVehicle.vehicle_model = action.payload
-    }
+    },
+
+
   },
 });
 
