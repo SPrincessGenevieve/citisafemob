@@ -16,7 +16,7 @@ import {
 } from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
-import { setDriverClassification, setDriverID, setDriverRegisterd, setFinalDriver, setGetFinalDriver, setRecognizedText } from "./camera/infoSlice";
+import { setDriverID, setDriverRegisterd, setFinalDriver, setGetFinalDriver, setRecognizedText } from "./camera/infoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
@@ -27,18 +27,12 @@ import axios from '../../plugins/axios'
 import { setdriverID } from "./camera/infoSliceCOR";
 
 export default function CameraScan() {
-  const [cameraMode, setCameraMode] = useState(CameraType.back);
   const [flash, setFlash] = useState("off"); // Changed to string type
-  const [pictureUri, setPictureUri] = useState("");
   const [cameraRef, setCameraRef] = useState(null);
   const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
   const [cropMode, setCropMode] = useState(false);
-  const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [capturedImage, setCapturedImage] = useState("");
-
-  const [imageManipulatorVisible, setImageManipulatorVisible] = useState(false);
-  const [croppedImageUri, setCroppedImageUri] = useState(null);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -214,28 +208,29 @@ export default function CameraScan() {
           alert(`Existing Driver: ${concatenatedFields.license_no}`)
           
           const driverId = driverExists.id;
+          const classificationString = driverExists.classification.toString();
           dispatch(setDriverRegisterd())
           dispatch(setDriverID(driverId))
-          console.log(driverExists)
-          // dispatch(setGetFinalDriver({
-          //   ...driverExists, 
-          //   license_number: driverExists.license_number,
-          //   first_name: driverExists.first_name,
-          //   middle_initial: driverExists.middle_initial,
-          //   last_name: driverExists.last_name,
-          //   address: driverExists.address,
-          //   birthdate: driverExists.birthdate,
-          //   nationality: driverExists.nationality,
-          //   gender: driverExists.gender,
-          //   weight: driverExists.weight,
-          //   height: driverExists.height,
-          //   expiration_date: driverExists.expiration_date,
-          //   blood_type: driverExists.blood_type,
-          //   agency_code: driverExists.agency_code,
-          //   dl_codes: driverExists.dl_codes,
-          //   condition: driverExists.condition,
-          //   classification: driverExists.classification,
-          // }))
+
+          dispatch(setGetFinalDriver({
+            ...driverExists, 
+            license_number: driverExists.license_number,
+            first_name: driverExists.first_name,
+            middle_initial: driverExists.middle_initial,
+            last_name: driverExists.last_name,
+            address: driverExists.address,
+            birthdate: driverExists.birthdate,
+            nationality: driverExists.nationality,
+            gender: driverExists.gender,
+            weight: driverExists.weight,
+            height: driverExists.height,
+            expiration_date: driverExists.expiration_date,
+            blood_type: driverExists.blood_type,
+            agency_code: driverExists.agency_code,
+            dl_codes: driverExists.dl_codes,
+            condition: driverExists.condition,
+            classification: classificationString,
+          }))
           // vehicle slice
           dispatch(setdriverID(driverId))
           // if there is changes
@@ -258,9 +253,9 @@ export default function CameraScan() {
     }
   };
 
-  useEffect(() => {
-    console.log("Updated Data:", data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log("Updated Data:", data);
+  // }, [data]);
 
   if (!getPermission()) {
     return Alert.alert(
