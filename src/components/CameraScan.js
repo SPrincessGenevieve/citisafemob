@@ -212,6 +212,7 @@ export default function CameraScan() {
           dispatch(setDriverRegisterd())
           dispatch(setDriverID(driverId))
 
+          // for editing soon
           dispatch(setGetFinalDriver({
             ...driverExists, 
             license_number: driverExists.license_number,

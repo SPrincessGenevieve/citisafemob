@@ -241,57 +241,58 @@ function FormScreen({ navigation, route }) {
     const isVehicleExist = vehicle.isCarRegistered
 
     // if driver exist
-    // if (!isDriverExist) {
-    //   console.log('Not Exist')
-    //   console.log(isDriverExist)
+    if (!isDriverExist) {
+      console.log('Not Exist')
+      console.log(isDriverExist)
 
-    //   const drivers = driver.finalDriver
-    //   console.log(drivers)  
+      const drivers = driver.finalDriver
+      console.log(drivers)  
 
-    //   axios.post(`drivers/register/`, drivers, {
-    //     headers: {
-    //       Authorization: `token ${Token}`
-    //     }
-    //   }).then((response) => {
-    //       const id = response.data.id
-    //       dispatch(setDriverID(id))
-    //       console.log(drivers)
-    //       alert('Successfully Register Driver')
+      axios.post(`drivers/register/`, drivers, {
+        headers: {
+          Authorization: `token ${Token}`
+        }
+      }).then((response) => {
+          const id = response.data.id
+          dispatch(setDriverID(id))
+          console.log(drivers)
+          alert('Successfully Register Driver')
   
-    //     }).catch((error) => {
-    //       console.log('Error for Drivers')
-    //       console.log(error)
-    //     })
+        }).catch((error) => {
+          console.log('Error for Drivers')
+          console.log(error)
+        })
 
 
-    // }
+    }
 
-    // if (!isVehicleExist) {
-    //   console.log('Vehicle Not Exist')
-    //   console.log(isVehicleExist)
+    if (!isVehicleExist) {
+      console.log('Vehicle Not Exist')
+      console.log(isVehicleExist)
 
-    //   const vehicles = vehicle.finalVehicle
-    //   console.log(vehicles)
+      const vehicles = vehicle.finalVehicle
+      console.log(vehicles)
 
-    //   axios.post(`vehicles/register/`, vehicles, {
-    //     headers: {
-    //       Authorization: `token ${Token}`
-    //     }
-    //   }).then((response) => {
-    //       const id = response.data.id
-    //       dispatch(setVehicleID(id))
-    //       console.log(vehicles)
-    //       alert('Successfully Register Vehicle')
+      axios.post(`vehicles/register/`, vehicles, {
+        headers: {
+          Authorization: `token ${Token}`
+        }
+      }).then((response) => {
+          const id = response.data.id
+          dispatch(setVehicleID(id))
+          console.log(vehicles)
+          alert('Successfully Register Vehicle')
   
-    //     }).catch((error) => {
-    //       console.log('Error for Vehicle')
-    //       console.log(error)
-    //     })
+        }).catch((error) => {
+          console.log('Error for Vehicle')
+          console.log(error)
+          console.log(vehicles)
+        })
 
 
 
 
-    // }
+    }
 
     console.log(vehicle)
     console.log(driver)
@@ -1093,7 +1094,7 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         marginTop={25}
                         text={"Registered Owner*"}
-                        value={ocrTextOCR.owner_ID.name}
+                        value={ocrTextOCR.name}
                         onChangeText={(text) => {
                           dispatch(setOwnerName(text));
                         }}
@@ -1103,7 +1104,7 @@ function FormScreen({ navigation, route }) {
                         borderRadius={10}
                         height={40}
                         text={"Owner Address"}
-                        value={ocrTextOCR.owner_ID.address}
+                        value={ocrTextOCR.address}
                         onChangeText={(text) => {
                           dispatch(setOwnerAddress(text));
                         }}
@@ -1113,7 +1114,7 @@ function FormScreen({ navigation, route }) {
                         borderRadius={10}
                         height={40}
                         text={"Contact No.*"}
-                        value={ocrTextOCR.owner_ID.contact_number}
+                        value={ocrTextOCR.contact_number}
                         onChangeText={(text) => {
                           dispatch(setOwnerContactNumber(text));
                         }}
@@ -1157,9 +1158,18 @@ function FormScreen({ navigation, route }) {
                           dispatch(setBodyMarkings(text));
                         }}
                         required
-                      ></ConstInput>                      
+                      ></ConstInput>             
+                      <ConstInput
+                        borderRadius={10}
+                        height={40}
+                        text={"Colors*"}
+                        onChangeText={(text) => {
+                          dispatch(setColor(text));
+                        }}
+                        required
+                      ></ConstInput>                                  
                       <View>
-                        <Text
+                        {/* <Text
                           style={{
                             fontSize: 15,
                             color: "grey",
@@ -1171,12 +1181,13 @@ function FormScreen({ navigation, route }) {
                           }}
                         >
                           Vehicle Color*
-                        </Text>
-                        <ColorSelector value={ocrTextOCR.color}
+                        </Text> */}
+                        {/* <ColorSelector value={ocrTextOCR.color}
                           onChangeText={(text) => {
                             dispatch(setColor(text));
                           }}                        
-                        ></ColorSelector>
+                        ></ColorSelector> */}
+                         
                       </View>
 
                     </View>

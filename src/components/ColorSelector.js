@@ -4,6 +4,8 @@ import KeyboardWithoutWrapper from "./KeyboardWithoutWrapper";
 import colorsData from "./Colors.json";
 import ConstInput from "./ConstInput";
 import { useRoute } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { setColor } from "./camera/infoSliceCOR";
 
 const predefinedColors = [
   { hex: "#000000", name: "Black" },
@@ -21,6 +23,7 @@ const predefinedColors = [
 ];
 
 export default function ColorSelector({ navigation }) {
+  const dispatch = useDispatch()
   const [customColor, setCustomColor] = useState("");
   const [matchedColor, setMatchedColor] = useState(null);
   const [imageUriState, setImageUriState] = useState(null); // Initialize with null
@@ -75,6 +78,7 @@ export default function ColorSelector({ navigation }) {
 
   const handleCustomColorChange = (color) => {
     setCustomColor(color);
+    dispatch(setColor(color))
   };
 
   const getColorName = (colorHex) => {
@@ -154,7 +158,9 @@ export default function ColorSelector({ navigation }) {
 
     if (matchedColor) {
       setSelectedColor(matchedColor.hex);
+      dispatch(setColor(matchedColor.hex))
       setCustomColor("");
+      
     } else {
       alert("Color not found. Please enter a valid color name or hex code.");
     }

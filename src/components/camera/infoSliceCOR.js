@@ -19,11 +19,9 @@ export const infoSliceCOR = createSlice({
       class: ''
     },
     finalVehicle: {
-      owner_ID: {
-        name: '',
-        address: '',
-        contact_number: '',
-      },
+      name: '',
+      address: '',
+      contact_number: '',
       plate_number: '',
       make: '',
       color: '',
@@ -48,9 +46,9 @@ export const infoSliceCOR = createSlice({
     },
     setFinalVehicle: (state) => {
 
-      state.finalVehicle.owner_ID.name = state.extractedInfo.complete_owners_name
-      state.finalVehicle.owner_ID.address = state.extractedInfo.complete_address
-      state.finalVehicle.owner_ID.contact_number = state.extractedInfo.telephone_no_contact_details
+      state.finalVehicle.name = state.extractedInfo.complete_owners_name
+      state.finalVehicle.address = state.extractedInfo.complete_address
+      state.finalVehicle.contact_number = state.extractedInfo.telephone_no_contact_details
       state.finalVehicle.plate_number = state.extractedInfo.plate_no
       state.finalVehicle.make = state.extractedInfo.make
       state.finalVehicle.color = state.extractedInfo.color
@@ -64,13 +62,13 @@ export const infoSliceCOR = createSlice({
     },
     // set manually
     setOwnerName: (state, action) => {
-      state.finalVehicle.owner_ID.name = action.payload
+      state.finalVehicle.name = action.payload
     },
     setOwnerAddress: (state, action) => {
-      state.finalVehicle.owner_ID.address = action.payload
+      state.finalVehicle.address = action.payload
     },
     setOwnerContactNumber: (state, action) => {
-      state.finalVehicle.owner_ID.contact_number = action.payload
+      state.finalVehicle.contact_number = action.payload
     },
     setPlateNumber: (state, action) => {
       state.finalVehicle.plate_number = action.payload
@@ -90,6 +88,9 @@ export const infoSliceCOR = createSlice({
     setVehicleModel: (state, action) => {
       state.finalVehicle.vehicle_model = action.payload
     },
+    setGetFinalVehicle: (state, action) => {
+      state.finalVehicle = action.payload
+    }
 
 
   },
@@ -110,6 +111,7 @@ export const {
   setVehicleClass,
   setBodyMarkings,
   setVehicleModel,
+  setGetFinalVehicle
 } = infoSliceCOR.actions;
 
 export default infoSliceCOR.reducer;
