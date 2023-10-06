@@ -88,8 +88,13 @@ export const infoSliceCOR = createSlice({
     setVehicleModel: (state, action) => {
       state.finalVehicle.vehicle_model = action.payload
     },
+    setManualDriverID: (state, action) => {
+      state.finalVehicle.driverID = action.payload
+    },
     setGetFinalVehicle: (state, action) => {
       state.finalVehicle = action.payload
+
+      console.log(state.finalVehicle)
     }
 
 
@@ -111,7 +116,8 @@ export const {
   setVehicleClass,
   setBodyMarkings,
   setVehicleModel,
-  setGetFinalVehicle
+  setGetFinalVehicle,
+  setManualDriverID
 } = infoSliceCOR.actions;
 
 export default infoSliceCOR.reducer;

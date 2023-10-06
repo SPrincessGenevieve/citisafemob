@@ -184,17 +184,9 @@ export default function CameraScan() {
             name: concatenatedFields.last_name_first_name_middle_name,
             licenseNumber: concatenatedFields.license_no,
             dateOfBirth: concatenatedFields.date_of_birth,
-            bloodType: concatenatedFields.blood_type,
             nationality: concatenatedFields.nationality,
             sex: concatenatedFields.sex,
-            weight: concatenatedFields.weight,
-            height: concatenatedFields.height,
             address: concatenatedFields.address,
-            dl_codes: concatenatedFields.dl_codes,
-            expirationDate: concatenatedFields.expiration_date,
-            agency_code: concatenatedFields.agency_code,
-            conditions: concatenatedFields.conditions,
-            restrictions: concatenatedFields.restrictions,
           })
         );
 
@@ -222,14 +214,6 @@ export default function CameraScan() {
             address: driverExists.address,
             birthdate: driverExists.birthdate,
             nationality: driverExists.nationality,
-            gender: driverExists.gender,
-            weight: driverExists.weight,
-            height: driverExists.height,
-            expiration_date: driverExists.expiration_date,
-            blood_type: driverExists.blood_type,
-            agency_code: driverExists.agency_code,
-            dl_codes: driverExists.dl_codes,
-            condition: driverExists.condition,
             classification: classificationString,
           }))
           // vehicle slice

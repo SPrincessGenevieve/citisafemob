@@ -19,10 +19,11 @@ import Feather from "@expo/vector-icons/Feather";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "../../plugins/axios";
 import * as ImagePicker from "expo-image-picker";
-import { setFinalVehicle, setIsCarRegistered, setRecognizedText, setVehicleID } from "./camera/infoSliceCOR";
+import { setFinalVehicle, setGetFinalVehicle, setIsCarRegistered, setRecognizedText, setVehicleID } from "./camera/infoSliceCOR";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import corners from "./../../assets/cornersOCR.png";
+import { setGetFinalDriver } from "./camera/infoSlice";
 
 export default function CameraScanCOR() {
   const [cameraMode, setCameraMode] = useState(CameraType.back);
@@ -176,7 +177,7 @@ export default function CameraScanCOR() {
         );
 
               // Check if the driver exists
-        const vehicleExists = vehicle.some(
+        const vehicleExists = vehicle.find(
           (vehicles) => vehicles.plate_number === concatenatedFields.plate_no
         );
           
@@ -185,8 +186,23 @@ export default function CameraScanCOR() {
           navigation.navigate("FormScreen");
 
           const vehicleID = vehicleExists.id;
+          const driverIDString = vehicleExists.driverID.toString();
+          console.log(vehicleExists.body_markings)
           dispatch(setIsCarRegistered());
           dispatch(setVehicleID(vehicleID));
+          dispatch(setGetFinalVehicle({
+            ...vehicleExists,
+            name: vehicleExists.name,
+            address: vehicleExists.address,
+            contact_number: vehicleExists.contact_number,
+            plate_number: vehicleExists.plate_number,
+            make: vehicleExists.make,
+            color: vehicleExists.color,
+            vehicle_class: vehicleExists.vehicle_class,
+            body_markings: vehicleExists.body_markings,
+            vehicle_model: vehicleExists.vehicle_model,
+            driverID: driverIDString,
+          }))
 
         }else {
           console.log(`Vehicle Not found: ${concatenatedFields.plate_no}`);

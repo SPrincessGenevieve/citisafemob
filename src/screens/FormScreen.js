@@ -30,7 +30,7 @@ import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
 import axios from '../../plugins/axios'
 import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setExpirationDate, setFirstName, setGender, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
-import { setBodyMarkings, setColor, setMake, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel } from "../components/camera/infoSliceCOR";
+import { setBodyMarkings, setColor, setFinalVehicle, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -232,10 +232,6 @@ function FormScreen({ navigation, route }) {
 
 
   const handleNextButton = () => {
-    // Keyboard.dismiss(); // Dismiss the keyboard
-    // scrollToTop(); // Scroll to the top
-    // setViolation(!violation);
-
     // check if the driver and vehicle registered
     const isDriverExist = driver.isDriverRegisterd
     const isVehicleExist = vehicle.isCarRegistered
@@ -254,6 +250,7 @@ function FormScreen({ navigation, route }) {
         }
       }).then((response) => {
           const id = response.data.id
+          dispatch(setManualDriverID(id))
           dispatch(setDriverID(id))
           console.log(drivers)
           alert('Successfully Register Driver')
@@ -288,14 +285,10 @@ function FormScreen({ navigation, route }) {
           console.log(error)
           console.log(vehicles)
         })
-
-
-
-
     }
-
-    console.log(vehicle)
-    console.log(driver)
+    Keyboard.dismiss(); // Dismiss the keyboard
+    scrollToTop(); // Scroll to the top
+    setViolation(!violation);
 
   }
 
@@ -305,19 +298,10 @@ function FormScreen({ navigation, route }) {
 
   const handlePreviewTicket = () => {
 
-    setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
     
     
     const driverID = driver.id
     const vehicleID = vehicle.id
-
-    const formData = new FormData();
-    formData.append('vehicle', vehicleID)
-    formData.append('driver_id', driverID)
-    formData.append('violations', trafficViolationID)
-    formData.append('place_violation', selectedPin)
-    formData.append('ticket_status', 'PENDING')
-
 
     // first post the traffic violation
     axios.post('ticket/trafficviolation/', violationIDs,{
@@ -329,9 +313,44 @@ function FormScreen({ navigation, route }) {
       const traffic_violationID = response.data.id
       setTrafficViolationID(trafficViolationID)
       console.log(response.data)
+
+      const formData = {
+        vehicle: vehicleID,
+        driver_ID: driverID,
+        violations: traffic_violationID,
+        place_violation: selectedPin.address,
+        ticket_status: 'PENDING',
+      }
+  
+
+      axios.post('ticket/register/', JSON.stringify(formData), {
+        headers: {
+          Authorization: `token ${Token}`
+        }
+      }).then((response) => {
+        alert("Successfully Cited")
+        console.log(response.data)
+
+
+        setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
+
+
+      }).catch((error) => {
+        console.log(error)
+        console.log(formData)
+      })
+
+
+
+
     }).catch((error) => {
       console.log(error)
     })
+
+
+
+
+
   }
 
   return (
@@ -881,8 +900,8 @@ function FormScreen({ navigation, route }) {
                           }}
                           text="First Name"
                           required
-                          editable={false}
                         ></ConstInput>
+                        {/* make validation */}
                         <ConstInput
                           borderRadius={10}
                           height={40}
@@ -890,9 +909,8 @@ function FormScreen({ navigation, route }) {
                           onChangeText={(text) => {
                             dispatch(setMiddleInitial(text))
                           }}
-                          text="Middle Name"
+                          text="Middle Initial"
                           required
-                          editable={false}
                         ></ConstInput>
                         <ConstInput
                           borderRadius={10}
@@ -903,7 +921,6 @@ function FormScreen({ navigation, route }) {
                             dispatch(setLastName(text));
                           }}
                           required
-                          editable={false}
                         ></ConstInput>         
                         <ConstInput
                           borderRadius={10}
@@ -939,73 +956,8 @@ function FormScreen({ navigation, route }) {
                           marginTop={25}
                           required
                         ></ConstInput>                        
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Sex*"}
-                          value={ocrText.gender}
-                          onChangeText={(text) => {
-                            dispatch(setGender(text));
-                          }}                          
-                          marginTop={25}
-                          required
-                        ></ConstInput>
-
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Weight*"}
-                          value={ocrText.weight}
-                          onChangeText={(text) => {
-                            dispatch(setWeight(text));
-                          }}
-                          marginTop={25}
-                          required
-                        ></ConstInput>
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Height*"}
-                          value={ocrText.height}
-                          onChangeText={(text) => {
-                            dispatch(setHeight(text));
-                          }}                          
-                          marginTop={25}
-                          required
-                        ></ConstInput>                        
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Expiration Date"}
-                          value={ocrText.expiration_date}
-                          onChangeText={(text) => {
-                            dispatch(setExpirationDate(text));
-                          }}
-                          marginTop={25}
-                          required
-                        ></ConstInput>
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Blood Type"}
-                          value={ocrText.blood_type}
-                          onChangeText={(text) => {
-                            dispatch(setBloodTypes(text));
-                          }}                          
-                          marginTop={25}
-                          required
-                        ></ConstInput>     
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"Agency Code"}
-                          value={ocrText.agency_code}
-                          onChangeText={(text) => {
-                            dispatch(setAgencyCodes(text));
-                          }}                          
-                          marginTop={25}
-                          required
-                        ></ConstInput>   
+                                         
+                      
                               {/* if possible, selection ra sya */}
                         <ConstInput
                           borderRadius={10}
@@ -1017,22 +969,9 @@ function FormScreen({ navigation, route }) {
                             dispatch(setDriverClassification(text))
                           }}
                           marginTop={25}
-                          required
-                        ></ConstInput>                           
-
-                        <ConstInput
-                          borderRadius={10}
-                          height={40}
-                          text={"DL Code"}
-                          value={ocrText.dl_codes}
-                          onChangeText={(text) => {
-                            dispatch(setDLCodes(text));
-                          }}                          
-                          marginTop={25}
                           marginBottom={25}
                           required
-                        ></ConstInput>
-
+                        ></ConstInput>                           
                           {/* if existing user there is button for edit of his/her info */}
 
 
@@ -1133,8 +1072,8 @@ function FormScreen({ navigation, route }) {
                       <ConstInput
                         borderRadius={10}
                         height={40}
-                        text={"Class*"}
                         value={ocrTextOCR.vehicle_class}
+                        text={"Class*"}
                         onChangeText={(text) => {
                           dispatch(setVehicleClass(text));
                         }}
@@ -1143,8 +1082,8 @@ function FormScreen({ navigation, route }) {
                       <ConstInput
                         borderRadius={10}
                         height={40}
-                        text={"Model*"}
                         value={ocrTextOCR.vehicle_model}
+                        text={"Model*"}
                         onChangeText={(text) => {
                           dispatch(setVehicleModel(text));
                         }}
@@ -1153,20 +1092,24 @@ function FormScreen({ navigation, route }) {
                       <ConstInput
                         borderRadius={10}
                         height={40}
+                        value={ocrTextOCR.body_markings}
                         text={"Body Markings*"}
                         onChangeText={(text) => {
                           dispatch(setBodyMarkings(text));
                         }}
                         required
                       ></ConstInput>             
+                            
                       <ConstInput
                         borderRadius={10}
                         height={40}
+                        value={ocrTextOCR.color}
                         text={"Colors*"}
                         onChangeText={(text) => {
                           dispatch(setColor(text));
                         }}
                         required
+                        marginBottom={25}
                       ></ConstInput>                                  
                       <View>
                         {/* <Text

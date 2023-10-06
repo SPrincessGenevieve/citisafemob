@@ -31,14 +31,6 @@ export const infoSlice = createSlice({
       address: '',
       birthdate: '',
       nationality: '',
-      gender: '',
-      weight: '',
-      height: '',
-      expiration_date: '',
-      blood_type: '',
-      agency_code: "",
-      dl_codes: "",
-      condition: "",
       classification: '',
     }
   },
@@ -70,22 +62,6 @@ export const infoSlice = createSlice({
       state.finalDriver.address = state.extractedInfo.address
       state.finalDriver.birthdate = state.extractedInfo.dateOfBirth
       state.finalDriver.nationality = state.extractedInfo.nationality
-      state.finalDriver.gender = state.extractedInfo.sex
-      state.finalDriver.weight = state.extractedInfo.weight
-      state.finalDriver.height = state.extractedInfo.height
-      state.finalDriver.expiration_date = state.extractedInfo.expirationDate
-      state.finalDriver.blood_type = state.extractedInfo.bloodType
-      state.finalDriver.agency_code = state.extractedInfo.agency_code
-      state.finalDriver.dl_codes = state.extractedInfo.dl_codes
-
-      // if condition is empty
-      const condition = state.extractedInfo.conditions
-      if (condition != ''){
-        state.finalDriver.condition = state.extractedInfo.conditions
-      }else {
-        state.finalDriver.condition = state.extractedInfo.restrictions
-      }
-
       state.finalDriver.classification = state.extractedInfo.classification
 
     },
@@ -117,15 +93,7 @@ export const infoSlice = createSlice({
         address: '',
         birthdate: '',
         nationality: '',
-        gender: '',
-        weight: '',
-        height: '',
-        expiration_date: '',
-        blood_type: '',
-        agency_code: "",
-        dl_codes: "",
-        condition: "",
-        classification: null,
+        classification: '',
       }
     },
     setDriverRegisterd: (state) => {
@@ -159,30 +127,7 @@ export const infoSlice = createSlice({
     setNationality: (state, action) => {
       state.finalDriver.nationality = action.payload
     },
-    setGender: (state, action) => {
-      state.finalDriver.gender = action.payload
-    },
-    setWeight: (state, action) => {
-      state.finalDriver.weight = action.payload
-    },
-    setHeight: (state, action) => {
-      state.finalDriver.height = action.payload
-    },
-    setExpirationDate: (state, action) => {
-      state.finalDriver.expiration_date = action.payload
-    },
-    setBloodTypes: (state, action) => {
-      state.finalDriver.blood_type = action.payload
-    },
-    setAgencyCodes: (state, action) => {
-      state.finalDriver.agency_code = action.payload
-    },
-    setDLCodes: (state, action) => {
-      state.finalDriver.dl_codes = action.payload
-    },
-    setCondition: (state, action) => {
-      state.finalDriver.condition = action.payload
-    },
+  
     setGetFinalDriver: (state, action) => {
       state.finalDriver = action.payload
     }
@@ -204,14 +149,6 @@ export const {
   setAddress,
   setBirthDate,
   setNationality,
-  setGender,
-  setWeight,
-  setHeight,
-  setExpirationDate,
-  setBloodTypes,
-  setAgencyCodes,
-  setDLCodes,
-  setCondition,
   setGetFinalDriver
 } = infoSlice.actions;
 
