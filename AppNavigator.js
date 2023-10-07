@@ -24,6 +24,7 @@ import IntroOCR from "./src/components/IntroOCR";
 import Privacy from "./src/screens/Privacy";
 import About from "./src/screens/About";
 import TicketScreen from "./src/screens/TicketScreen";
+import { useSelector } from "react-redux";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,12 +70,17 @@ function TabNavigator() {
 }
 
 function AppNavigator() {
-  return (
-    <Stack.Navigator initialRouteName="FirstScreen" headerMode="none">
-      <Stack.Screen
-        name="FirstScreen"
+
+  const isLoggedin = useSelector((state) => state.auth.setIsLoggedIn)
+
+  if (isLoggedin) {
+    // If the user is logged in, show the TabNavigator
+    return (
+      <Stack.Navigator initialRouteName="HomeScreen" headerMode="none">
+        <Stack.Screen
+        name="HomeScreen"
+        component={TabNavigator}
         options={{ headerShown: false }}
-        component={FirstScreen}
       />
       <Stack.Screen
         name="TicketScreen"
@@ -103,11 +109,7 @@ function AppNavigator() {
         }}
         component={IntroOCR}
       />
-      <Stack.Screen
-        name="HomeScreen"
-        component={TabNavigator}
-        options={{ headerShown: false }}
-      />
+
       <Stack.Screen
         name="PrivacyScreen"
         component={Privacy}
@@ -191,6 +193,17 @@ function AppNavigator() {
         name="ForgotPass"
         options={{ headerShown: false }}
         component={ForgotPass}
+      />
+      </Stack.Navigator>
+    );
+  }
+
+  return (
+    <Stack.Navigator initialRouteName="FirstScreen" headerMode="none">
+      <Stack.Screen
+        name="FirstScreen"
+        options={{ headerShown: false }}
+        component={FirstScreen}
       />
     </Stack.Navigator>
   );

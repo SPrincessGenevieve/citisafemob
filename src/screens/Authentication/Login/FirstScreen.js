@@ -21,7 +21,7 @@ import Title from "../../../components/Title";
 import TextButton from "../../../components/TextButton";
 import axios from '../../../../plugins/axios'
 import { useDispatch } from "react-redux";
-import { setEnforcer, setToken } from "../authSlice";
+import { setEnforcer, setLogin, setToken } from "../authSlice";
 
 
 function FirstScreen({ navigation }) {
@@ -63,7 +63,7 @@ function FirstScreen({ navigation }) {
           })
         }else {
           alert(`Welcome to eTCMF ${role} - ${last_name}`)
-          navigation.navigate("HomeScreen");
+          dispatch(setLogin())
         }
 
       })
