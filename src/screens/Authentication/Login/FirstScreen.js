@@ -23,8 +23,7 @@ import axios from '../../../../plugins/axios'
 import { useDispatch } from "react-redux";
 import { setEnforcer, setLogin, setOnline, setToken } from "../authSlice";
 import NetInfo from '@react-native-community/netinfo'
-
-
+import * as SQLite from 'expo-sqlite'
 
 function FirstScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -35,6 +34,50 @@ function FirstScreen({ navigation }) {
   const [textInputFocused, setTextInputFocused] = useState(false);
   const [animationValue] = useState(new Animated.Value(1));
 
+// offline mode
+  // offline mode
+  useEffect(() => {
+    // Open a database connection
+    const db = SQLite.openDatabase('credentials.db');
+  
+    // Create a table for credentials
+    db.transaction((tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS credentials (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT);',
+        [],
+        () => {
+          console.log('Table created successfully');
+        },
+        (_, error) => {
+          console.error('Error creating table:', error);
+        }
+      );
+    });
+  
+    // Load credentials from the database
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM credentials LIMIT 1;',
+        [],
+        (_, results) => {
+          if (results.rows.length > 0) {
+            const storedCredentials = results.rows.item(0);
+            setCredentials({
+              username: storedCredentials.username,
+              password: storedCredentials.password,
+            });
+          }
+        },
+        (_, error) => {
+          console.error('Error fetching credentials:', error);
+        }
+      );
+    });
+  
+    return () => {
+      db._db.close();
+    };
+  }, []);
 
   const unsubscribe = NetInfo.addEventListener(state => {
     if (state.isConnected === false) {
@@ -56,7 +99,36 @@ function FirstScreen({ navigation }) {
   })
 
   const handleLogin = () => {
-
+    NetInfo.fetch().then(isConnected => {
+      if (!isConnected) {
+        // Offline mode
+        const db = SQLite.openDatabase('credentials.db');
+        db.transaction((tx) => {
+          tx.executeSql(
+            'SELECT * FROM credentials LIMIT 1;',
+            [],
+            (_, results) => {
+              if (results.rows.length > 0) {
+                const storedCredentials = results.rows.item(0);
+                setCredentials({
+                  username: storedCredentials.username,
+                  password: storedCredentials.password,
+                });
+  
+                // You can now use the stored credentials for local login
+                // For example, you might have a function for local authentication
+                dispatch(setLogin());
+              } else {
+                // No stored credentials
+                console.log('No stored credentials');
+              }
+            },
+            (_, error) => {
+              console.error('Error fetching credentials:', error);
+            }
+          );
+        });
+      } else {
     // online
     axios.post("accounts/token/login/", credentials).then((response) => {
 
@@ -68,7 +140,20 @@ function FirstScreen({ navigation }) {
           Authorization: `token ${token}`
         }
       }).then((response) => {
-
+        // Save credentials in the SQLite database
+        const db = SQLite.openDatabase('credentials.db');
+        db.transaction((tx) => {
+          tx.executeSql(
+            'INSERT OR REPLACE INTO credentials (id, username, password) VALUES (?, ?, ?);',
+            [1, credentials.username, credentials.password],
+            () => {
+              console.log('Credentials saved successfully');
+            },
+            (_, error) => {
+              console.error('Error saving credentials:', error);
+            }
+          );
+        });
         const role = response.data.role
         const last_name = response.data.last_name
 
@@ -88,6 +173,10 @@ function FirstScreen({ navigation }) {
       })
 
     })
+      }
+    });
+  
+
 
 
   };
