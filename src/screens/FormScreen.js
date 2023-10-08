@@ -82,7 +82,7 @@ function FormScreen({ navigation, route }) {
     }
   };
 
-  // mao ning violation
+  // mao ning violations
 
   const [violationData1, setViolationData1] = useState([])
 

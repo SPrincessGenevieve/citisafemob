@@ -21,7 +21,7 @@ import Title from "../../../components/Title";
 import TextButton from "../../../components/TextButton";
 import axios from '../../../../plugins/axios'
 import { useDispatch } from "react-redux";
-import { setEnforcer, setLogin, setOnline, setToken } from "../authSlice";
+import { setEnforcer, setLogin, setOffline, setOnline, setToken } from "../authSlice";
 import NetInfo from '@react-native-community/netinfo'
 import * as SQLite from 'expo-sqlite'
 
@@ -33,6 +33,7 @@ function FirstScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(true);
   const [textInputFocused, setTextInputFocused] = useState(false);
   const [animationValue] = useState(new Animated.Value(1));
+
 
 // offline mode
   // offline mode
@@ -82,6 +83,7 @@ function FirstScreen({ navigation }) {
   const unsubscribe = NetInfo.addEventListener(state => {
     if (state.isConnected === false) {
       console.log("No Internet")
+      dispatch(setOffline())
     } else if (state.isConnected === true) {
       console.log('Connected')
       dispatch(setOnline())

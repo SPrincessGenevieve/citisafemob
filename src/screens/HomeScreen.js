@@ -21,11 +21,12 @@ function HomeScreen({ navigation }) {
     "Roboto Light": require("./../../assets/fonts/Roboto-Light.ttf"),
     "Montserrat Bold": require("./../../assets/fonts/Montserrat-Bold.ttf"),
   });
+  const dispatch = useDispatch()
 
   const [cite, setCite] = useState(true);
 
   const user = useSelector((state) => state.auth.enforcer)
-  const dispatch = useDispatch()
+  const isOnline = useSelector((state) => state.auth.Online)
 
   const unsubscribe = NetInfo.addEventListener(state => {
     if (state.isConnected === false) {
@@ -192,13 +193,16 @@ function HomeScreen({ navigation }) {
               width: "80%",
             }}
           >
-            <ConstButton
+
+            {isOnline && (
+              <ConstButton
               onPress={handleIntroLicense}
               name="scan1"
               title="Use OCR"
               marginLeftText={10}
               height={60}
             ></ConstButton>
+            )}
             <ConstButton
               onPress={handleForm}
               name="form"
