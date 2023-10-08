@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,9 @@ import { useFonts } from "expo-font";
 import profile from "./../../assets/default_profile.png";
 import { Image } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import NetInfo from '@react-native-community/netinfo'
+import { setOnline } from "./Authentication/authSlice";
 
 function HomeScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
@@ -23,6 +25,21 @@ function HomeScreen({ navigation }) {
   const [cite, setCite] = useState(true);
 
   const user = useSelector((state) => state.auth.enforcer)
+  const dispatch = useDispatch()
+
+  const unsubscribe = NetInfo.addEventListener(state => {
+    if (state.isConnected === false) {
+      console.log("No Internet")
+    } else if (state.isConnected === true) {
+      console.log('Connected')
+      dispatch(setOnline())
+    }
+
+  });
+
+  useEffect(() => {
+    unsubscribe()
+  })
 
   if (!fontsLoaded) {
     return null;
@@ -94,7 +111,7 @@ function HomeScreen({ navigation }) {
                 fontWeight: "bold",
               }}
             >
-              {user.last_name}, {user.first_name}
+            {`${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}, ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`}
             </Text>
           </Text>
         </View>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Dimensions } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AppNavigator from "./AppNavigator";

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -24,7 +24,8 @@ import IntroOCR from "./src/components/IntroOCR";
 import Privacy from "./src/screens/Privacy";
 import About from "./src/screens/About";
 import TicketScreen from "./src/screens/TicketScreen";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import NetInfo from '@react-native-community/netinfo'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -71,9 +72,13 @@ function TabNavigator() {
 
 function AppNavigator() {
 
+
+  const dispatch = useDispatch()
   const isLoggedin = useSelector((state) => state.auth.setIsLoggedIn)
 
+
   if (isLoggedin) {
+    
     // If the user is logged in, show the TabNavigator
     return (
       <Stack.Navigator initialRouteName="HomeScreen" headerMode="none">

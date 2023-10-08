@@ -21,7 +21,9 @@ import Title from "../../../components/Title";
 import TextButton from "../../../components/TextButton";
 import axios from '../../../../plugins/axios'
 import { useDispatch } from "react-redux";
-import { setEnforcer, setLogin, setToken } from "../authSlice";
+import { setEnforcer, setLogin, setOnline, setToken } from "../authSlice";
+import NetInfo from '@react-native-community/netinfo'
+
 
 
 function FirstScreen({ navigation }) {
@@ -33,12 +35,29 @@ function FirstScreen({ navigation }) {
   const [textInputFocused, setTextInputFocused] = useState(false);
   const [animationValue] = useState(new Animated.Value(1));
 
+
+  const unsubscribe = NetInfo.addEventListener(state => {
+    if (state.isConnected === false) {
+      console.log("No Internet")
+    } else if (state.isConnected === true) {
+      console.log('Connected')
+      dispatch(setOnline())
+    }
+
+  });
+
+  useEffect(() => {
+    unsubscribe()
+  })
+
   const [credentials, setCredentials] = useState({
     username: 'mobile',
     password: 'dario100'
   })
 
   const handleLogin = () => {
+
+    // online
     axios.post("accounts/token/login/", credentials).then((response) => {
 
       const token = response.data.auth_token
@@ -72,6 +91,14 @@ function FirstScreen({ navigation }) {
 
 
   };
+
+  useEffect(() => {
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+  
+
   const handleForgotPass = () => {
     navigation.navigate("ForgotPass");
   };
