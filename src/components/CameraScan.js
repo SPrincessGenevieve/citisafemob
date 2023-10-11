@@ -242,7 +242,6 @@ export default function CameraScan() {
           navigation.navigate("CameraScanOCR");
 
         } else {
-          // POST HERE THE NEW DRIVER AND GET THE ID
           console.log(`Driver not found: ${concatenatedFields.license_no}`);
           alert(`New Driver: ${concatenatedFields.license_no}`)
           dispatch(setFinalDriver());

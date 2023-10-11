@@ -29,7 +29,7 @@ import violationData from "./../components/ViolationList.json";
 import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
 import axios from '../../plugins/axios'
-import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
+import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setDriverRegisterd, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setGetFinalDriver, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
 import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
 
 function FormScreen({ navigation, route }) {
@@ -354,11 +354,25 @@ function FormScreen({ navigation, route }) {
       console.log(error)
     })
 
-
-
-
-
   }
+
+  // FOR MANUAL  ENTRY
+  // registered driver
+  const [drivers, getDrivers] = useState([])
+
+  useEffect(() => {
+
+    axios.get('drivers/register/', {
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      getDrivers(response.data)
+    }).catch((error) => {
+      console.log(`Error Fetch Driver's Data: ${error}`)
+    })
+
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -881,6 +895,36 @@ function FormScreen({ navigation, route }) {
                           value={ocrText.license_number}
                           onChangeText={(text) => {
                             dispatch(setLicenseNumber(text))
+
+                            
+                            // CHECK IF THE DRIVER IS EXIST
+                            const driverExists = drivers.find(
+                              (driver) => driver.license_number === text
+                            );
+                              
+                            if (text.length === 13) {
+                              if (driverExists) {
+                                alert(`Existing Driver: ${text}`)
+                                const driverId = driverExists.id;
+                                const classificationString = driverExists.classification.toString();
+                                dispatch(setDriverRegisterd())
+                                dispatch(setdriverID(driverId))                              
+                                dispatch(setGetFinalDriver({
+                                  ...driverExists, 
+                                  license_number: driverExists.license_number,
+                                  first_name: driverExists.first_name,
+                                  middle_initial: driverExists.middle_initial,
+                                  last_name: driverExists.last_name,
+                                  address: driverExists.address,
+                                  birthdate: driverExists.birthdate,
+                                  nationality: driverExists.nationality,
+                                  classification: classificationString,
+                                }))
+                                dispatch(setdriverID(driverId))
+                              }else{
+                                alert(`New Driver: ${text}`)
+                              }
+                            }
                           }}
                           marginTop={25}
                           marginBottom={25}
