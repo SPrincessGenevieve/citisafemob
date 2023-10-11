@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ function RecordDetails({ navigation }) {
   const handleForm = () => {
     navigation.navigate("FormScreen");
   };
+
 
   const header = ["", ""];
   const data = [
@@ -49,6 +50,9 @@ function RecordDetails({ navigation }) {
     ["Status", "Overdue"],
     ["Fine", "$100"],
   ];
+
+
+
 
   return (
     <View style={{ height: 900 }}>

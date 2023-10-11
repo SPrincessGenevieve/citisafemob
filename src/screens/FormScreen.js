@@ -919,7 +919,7 @@ function FormScreen({ navigation, route }) {
                               (driver) => driver.license_number === text
                             );
                               
-                            if (text.length === 13) {
+                            if (driverExists.license_number === text) {
                               if (driverExists) {
                                 alert(`Existing Driver: ${text}`)
                                 const driverId = driverExists.id;
@@ -1087,7 +1087,7 @@ function FormScreen({ navigation, route }) {
                             (vehicles) => vehicles.plate_number === text
                           );
 
-                          if (text.length === 7) {
+                          if (vehicleExists.plate_number === text) {
 
                             if (vehicleExists) {
                               alert(`Existing Vehicle: ${text}`)

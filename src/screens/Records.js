@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -15,17 +15,26 @@ import Icon from "react-native-vector-icons/AntDesign";
 import Icon2 from "react-native-vector-icons/Octicons";
 import PreviewComponent from "../components/PreviewComponent";
 import ConstButton from "../components/ConstButton";
+import axios from '../../plugins/axios'
+import { useSelector } from "react-redux";
+
 
 function Records({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [sortAsc, setSortAsc] = useState(true);
   const [preview, setPreview] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+
+
   const toggleSortIcon = () => {
     setSortAsc(!sortAsc); // Toggle the state between true and false
   };
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const containerStyle = { backgroundColor: "white", padding: 20 };
+  const Token = useSelector((state) => state.auth.token)
+
+
   const handleDetails = () => {
     navigation.navigate("RecordDetails");
   };
@@ -34,6 +43,51 @@ function Records({ navigation }) {
     navigation.navigate("TicketScreen");
   };
 
+    // get all ticket
+  const [ticket, getTicket] = useState([])
+
+  useEffect(() => {
+
+    axios.get('ticket/register/', {
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      getTicket(response.data)
+      console.log(response.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+
+  }, [])
+
+  const handleTicketClick = (ticketItem) => {
+    setSelectedTicket(ticketItem);
+    setPreview(true);
+  };
+
+  const renderTicketList = () => {
+    return ticket.map((ticketItem) => (
+      <TouchableOpacity key={ticketItem.id} onPress={() => handleTicketClick(ticketItem)}>
+        <View
+          style={{
+            // your styles
+          }}
+        >
+          {/* your existing ticket item rendering */}
+        </View>
+      </TouchableOpacity>
+    ));
+  };
+
+  const renderPreview = () => {
+    if (!selectedTicket) {
+      return null;
+    }
+
+    return (
+    );
+  };
   return (
     <View style={{ backgroundColor: "white", height: "100%", width: "100%" }}>
       <KeyboardWithoutWrapper>
@@ -315,7 +369,8 @@ function Records({ navigation }) {
                         height: "auto",
                       }}
                     >
-                      <TouchableOpacity onPress={() => setPreview(!preview)}>
+                      {ticket.map((ticketItem) => (
+                      <TouchableOpacity key={ticketItem.id} onPress={() => setPreview(!preview)}>
                         <View
                           style={{
                             width: "100%",
@@ -332,7 +387,7 @@ function Records({ navigation }) {
                           <Text
                             style={{ marginLeft: "75%", fontWeight: "bold" }}
                           >
-                            02-10-2023
+                            {ticketItem.date_issued}
                           </Text>
 
                           <Text
@@ -342,14 +397,14 @@ function Records({ navigation }) {
                               color: "green",
                             }}
                           >
-                            202030803
+                            {ticketItem.MFRTA_TCT_NO}
                           </Text>
 
-                          <Text style={{ fontSize: 15, marginTop: 5 }}>
-                            Anna Nicole Gabriento
+                          <Text style={{ fontSize: 15, marginTop: 5, textTransform: 'capitalize'}}>
+                            `{ticketItem.user_ID.first_name} {ticketItem.user_ID.middle_name} {ticketItem.user_ID.last_name}`
                           </Text>
                           <Text style={{ fontSize: 15, marginTop: 5 }}>
-                            GA23-3233322-SADF1
+                            {}
                           </Text>
                           <View
                             style={{
@@ -360,11 +415,23 @@ function Records({ navigation }) {
                               marginTop: 5,
                             }}
                           >
-                            <Icon name="right"></Icon>
-                            <Text>Driving without a helmet</Text>
+                            <Text>
+                              {ticketItem.violation_info.violations_info.map((violation, index) => (
+                                
+                                <Text key={index}>
+                                  <Icon name="right"></Icon>
+                                  {violation}
+                                  {index < ticketItem.violation_info.violations_info.length - 1 && '\n'}
+                                </Text>
+                              ))}
+                            </Text>
                           </View>
                         </View>
                       </TouchableOpacity>
+
+                      ))}
+
+
                     </View>
                   </View>
                 </View>
