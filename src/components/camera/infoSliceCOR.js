@@ -95,6 +95,33 @@ export const infoSliceCOR = createSlice({
       state.finalVehicle = action.payload
 
       console.log(state.finalVehicle)
+    },
+    setEmptyextractedInfo: (state) => {
+      state.extractedInfo = {
+        plate_no: "",
+        make: "",
+        date: "",
+        series: "",
+        body_markings: "",
+        complete_owners_name: "",
+        complete_address: "",
+        telephone_no_contact_details: "",
+        class: ''
+      }
+    },
+    setEmptyFinalVehicle: (state) => {
+      state.finalVehicle = {
+        name: '',
+        address: '',
+        contact_number: '',
+        plate_number: '',
+        make: '',
+        color: '',
+        vehicle_class: '',
+        body_markings: '',
+        vehicle_model: '',
+        driverID: '',
+      }
     }
 
 
@@ -117,7 +144,9 @@ export const {
   setBodyMarkings,
   setVehicleModel,
   setGetFinalVehicle,
-  setManualDriverID
+  setManualDriverID,
+  setEmptyFinalVehicle,
+  setEmptyextractedInfo,
 } = infoSliceCOR.actions;
 
 export default infoSliceCOR.reducer;

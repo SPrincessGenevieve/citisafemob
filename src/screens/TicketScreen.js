@@ -8,6 +8,8 @@ import ConstButton from "../components/ConstButton";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 
 function TicketScreen({ navigation }) {
+
+  
   const handleCite = () => {
     navigation.navigate("HomeScreen");
   };

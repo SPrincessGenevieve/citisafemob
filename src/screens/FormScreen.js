@@ -29,8 +29,8 @@ import violationData from "./../components/ViolationList.json";
 import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
 import axios from '../../plugins/axios'
-import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setExpirationDate, setFirstName, setGender, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
-import { setBodyMarkings, setColor, setFinalVehicle, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
+import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
+import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -61,6 +61,8 @@ function FormScreen({ navigation, route }) {
   const driver = useSelector((state) => state.infoText)
   // vehicel details
   const vehicle = useSelector((state) => state.infoTextOCR)
+  // enforcer details
+  const user = useSelector((state) => state.auth.enforcer)
 
 
 
@@ -93,12 +95,12 @@ function FormScreen({ navigation, route }) {
       }
     }).then((response) => {
       // Filter out only the active penalties
-      const activePenalties = response.data.filter(item => item.penalty_ID.status === 'Active');
+      const activePenalties = response.data.filter(item => item.penalty_info.status === 'Active');
       setViolationData1(activePenalties);
     }).catch(error => {
       console.log(error);
     });
-  }, []);
+  }, [handleNextButton]);
 
 
   const filteredData = violationData1.filter((item) =>
@@ -331,6 +333,11 @@ function FormScreen({ navigation, route }) {
         alert("Successfully Cited")
         console.log(response.data)
 
+        // // clear all data here
+        // dispatch(setEmptyFinalDriver());
+        // dispatch(setEmptyRecognizedText());
+        // dispatch(setEmptyextractedInfo());
+        // dispatch(setEmptyFinalVehicle());
 
         setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
 
@@ -455,27 +462,15 @@ function FormScreen({ navigation, route }) {
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"LAST NAME, FIRST NAME, MIDDLE NAME"}
-                        value={ocrText.name}
+                        value={`${ocrText.last_name}, ${ocrText.first_name} ${ocrText.middle_initial}.`}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"DATE OF BIRTH"}
-                        value={ocrText.dateOfBirth}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"SEX"}
-                        value={ocrText.sex}
+                        value={ocrText.birthdate}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"NATIONALITY"}
                         value={ocrText.nationality}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"WEIGHT"}
-                        value={ocrText.weight}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"HEIGHT"}
-                        value={ocrText.height}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"ADDRESS"}
@@ -483,7 +478,7 @@ function FormScreen({ navigation, route }) {
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"LICENSE NO."}
-                        value={ocrText.licenseNumber}
+                        value={ocrText.license_number}
                       ></PreviewComponent>
                     </View>
                   </View>
@@ -502,11 +497,11 @@ function FormScreen({ navigation, route }) {
                     <View style={{ marginBottom: 20 }}>
                       <PreviewComponent
                         title={"REGISTERED OWNER"}
-                        value={ocrTextOCR.complete_owners_name}
+                        value={ocrTextOCR.name}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"PLATE NO."}
-                        value={ocrTextOCR.plate_no}
+                        value={ocrTextOCR.plate_number}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"MAKE"}
@@ -514,23 +509,23 @@ function FormScreen({ navigation, route }) {
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"CLASS"}
-                        value={"E CONNECT PANI"}
+                        value={ocrTextOCR.vehicle_class}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"MODEL"}
-                        value={ocrTextOCR.series}
+                        value={ocrTextOCR.vehicle_model}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"CONTACT NO."}
-                        value={ocrTextOCR.telephone_no_contact_details}
+                        value={ocrTextOCR.contact_number}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"COLOR"}
-                        value={"E CONNECT PANI"}
+                        value={ocrTextOCR.color}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"BODY MARKS"}
-                        value={"E CONNECT PANI"}
+                        value={ocrTextOCR.body_markings}
                       ></PreviewComponent>
                     </View>
                   </View>
@@ -549,7 +544,7 @@ function FormScreen({ navigation, route }) {
                     <View style={{}}>
                       <PreviewComponent
                         title={"APPREHENDING OFFICER"}
-                        value={"E CONNECT PANI"}
+                        value={`${user.first_name} ${user.middle_name}. ${user.last_name}`}
                       ></PreviewComponent>
                       <PreviewComponent
                         title={"TIME"}
@@ -1215,6 +1210,11 @@ function FormScreen({ navigation, route }) {
                           marginBottom={25}
                           required
                           value={selectedPin ? selectedPin.address : "N/A"}
+                          onChangeText={(text) => {
+                            setSelectedPin({
+                              ...selectedPin, address: text
+                            })
+                          }}
                           multiline={true}
                         ></ConstInput>
                       </View>

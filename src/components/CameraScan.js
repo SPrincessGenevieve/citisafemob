@@ -219,12 +219,54 @@ export default function CameraScan() {
           // vehicle slice
           dispatch(setdriverID(driverId))
           // if there is changes
+
+          // clear setData
+          setData({
+            type: "",
+            first_name: "",
+            last_name: "",
+            middle_name: "",
+            nationality: "",
+            sex: "",
+            date_of_birth: "",
+            weight: "",
+            height: "",
+            address: "",
+            license_no: "",
+            expiration_date: "",
+            dl_codes: "",
+            conditions: "",
+            agency_code: "",
+            restrictions: "",
+          })
           navigation.navigate("CameraScanOCR");
+
         } else {
           // POST HERE THE NEW DRIVER AND GET THE ID
           console.log(`Driver not found: ${concatenatedFields.license_no}`);
           alert(`New Driver: ${concatenatedFields.license_no}`)
           dispatch(setFinalDriver());
+
+
+          // clear setData
+          setData({
+            type: "",
+            first_name: "",
+            last_name: "",
+            middle_name: "",
+            nationality: "",
+            sex: "",
+            date_of_birth: "",
+            weight: "",
+            height: "",
+            address: "",
+            license_no: "",
+            expiration_date: "",
+            dl_codes: "",
+            conditions: "",
+            agency_code: "",
+            restrictions: "",
+          })          
           navigation.navigate("CameraScanOCR");
         }
 

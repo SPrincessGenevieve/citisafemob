@@ -35,7 +35,6 @@ function FirstScreen({ navigation }) {
   const [animationValue] = useState(new Animated.Value(1));
 
 
-// offline mode
   // offline mode
   useEffect(() => {
     // Open a database connection
