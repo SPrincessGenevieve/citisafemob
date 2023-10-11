@@ -183,11 +183,9 @@ export default function CameraScanCOR() {
           
         if (vehicleExists) {
           alert(`Existing Vehicle: ${concatenatedFields.plate_no}`)
-          navigation.navigate("FormScreen");
 
           const vehicleID = vehicleExists.id;
           const driverIDString = vehicleExists.driverID.toString();
-          console.log(vehicleExists.body_markings)
           dispatch(setIsCarRegistered());
           dispatch(setVehicleID(vehicleID));
           dispatch(setGetFinalVehicle({
@@ -203,6 +201,7 @@ export default function CameraScanCOR() {
             vehicle_model: vehicleExists.vehicle_model,
             driverID: driverIDString,
           }))
+          navigation.navigate("FormScreen");
 
         }else {
           console.log(`Vehicle Not found: ${concatenatedFields.plate_no}`);

@@ -30,7 +30,7 @@ import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
 import axios from '../../plugins/axios'
 import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setDriverRegisterd, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setGetFinalDriver, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
-import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
+import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setGetFinalVehicle, setIsCarRegistered, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -370,6 +370,23 @@ function FormScreen({ navigation, route }) {
       getDrivers(response.data)
     }).catch((error) => {
       console.log(`Error Fetch Driver's Data: ${error}`)
+    })
+
+  }, []);
+  const [vehicles, getVehicles] = useState([])
+  // registered vehicle
+
+  useEffect(() => {
+
+    axios.get('vehicles/register/', {
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      getVehicles(response.data)
+
+    }).catch((error) => {
+      console.log('error dong')
     })
 
   }, []);
@@ -1064,6 +1081,44 @@ function FormScreen({ navigation, route }) {
                         value={ocrTextOCR.plate_number}
                         onChangeText={(text) => {
                           dispatch(setPlateNumber(text));
+
+                          // Check if the driver exists
+                          const vehicleExists = vehicles.find(
+                            (vehicles) => vehicles.plate_number === text
+                          );
+
+                          if (text.length === 7) {
+
+                            if (vehicleExists) {
+                              alert(`Existing Vehicle: ${text}`)
+                              const vehicleID = vehicleExists.id;
+                              const driverIDString = vehicleExists.driverID.toString();
+                              dispatch(setIsCarRegistered());
+                              dispatch(setVehicleID(vehicleID));
+                              dispatch(setGetFinalVehicle({
+                                ...vehicleExists,
+                                name: vehicleExists.name,
+                                address: vehicleExists.address,
+                                contact_number: vehicleExists.contact_number,
+                                plate_number: vehicleExists.plate_number,
+                                make: vehicleExists.make,
+                                color: vehicleExists.color,
+                                vehicle_class: vehicleExists.vehicle_class,
+                                body_markings: vehicleExists.body_markings,
+                                vehicle_model: vehicleExists.vehicle_model,
+                                driverID: driverIDString,
+                              }))                              
+                            }else {
+                              alert(`New Vehicle: ${text}`)
+                              dispatch(setFinalVehicle())
+                            }
+
+
+
+                          }
+
+
+
                         }}
                         required
                       ></ConstInput>
