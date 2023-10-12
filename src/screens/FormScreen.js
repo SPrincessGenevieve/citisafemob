@@ -919,8 +919,8 @@ function FormScreen({ navigation, route }) {
                               (driver) => driver.license_number === text
                             );
                               
-                            if (driverExists.license_number === text) {
-                              if (driverExists) {
+                            if (driverExists) {
+                              if (driverExists.license_number === text) {
                                 alert(`Existing Driver: ${text}`)
                                 const driverId = driverExists.id;
                                 const classificationString = driverExists.classification.toString();
@@ -938,10 +938,11 @@ function FormScreen({ navigation, route }) {
                                   classification: classificationString,
                                 }))
                                 dispatch(setdriverID(driverId))
-                              }else{
+                              } else {
                                 alert(`New Driver: ${text}`)
                               }
                             }
+                            
                           }}
                           marginTop={25}
                           marginBottom={25}
@@ -1087,9 +1088,9 @@ function FormScreen({ navigation, route }) {
                             (vehicles) => vehicles.plate_number === text
                           );
 
-                          if (vehicleExists.plate_number === text) {
+                          if (vehicleExists) {
 
-                            if (vehicleExists) {
+                            if (vehicleExists.plate_number === text) {
                               alert(`Existing Vehicle: ${text}`)
                               const vehicleID = vehicleExists.id;
                               const driverIDString = vehicleExists.driverID.toString();
@@ -1112,9 +1113,8 @@ function FormScreen({ navigation, route }) {
                               alert(`New Vehicle: ${text}`)
                               dispatch(setFinalVehicle())
                             }
-
-
-
+                          }else {
+                            dispatch(setPlateNumber(text));
                           }
 
 
