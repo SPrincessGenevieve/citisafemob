@@ -28,68 +28,69 @@ function TicketScreen({ navigation }) {
 //  print
   const printTicket = async () => {
     const htmlContent = `
-      <html>
-        <head>
+    <html>
+      <head>
         <style>
           body {
             font-family: Arial, sans-serif;
           }
           .section {
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Adjusted margin */
           }
           .title {
-            font-size: 20px;
+            font-size: 14px; /* Adjusted font size */
             font-weight: bold;
           }
           .value {
-            font-size: 16px;
+            font-size: 12px; /* Adjusted font size */
           }
         </style>
-        </head>
-        <body>
-         <div style="font-size: 20px; font-weight: bold; text-align: center;">MFTRTA Ticket No: ${ticket.MFRTA_TCT_NO}</div>
-          
-          <!-- Personal Information -->
-          <div class="section">
-            <div class="title">PERSONAL INFORMATION</div>
-            <div class="value">LAST NAME, FIRST NAME, MIDDLE NAME: ${ticket.driver_info.last_name}, ${ticket.driver_info.first_name} ${ticket.driver_info.middle_initial}.</div>
-            <div class="value">DATE OF BIRTH: ${ticket.driver_info.birthdate}</div>
-            <div class="value">NATIONALITY: ${ticket.driver_info.nationality}</div>
-            <div class="value">ADDRESS: ${ticket.driver_info.address}</div>
-            <div class="value">LICENSE NO.: ${ticket.driver_info.license_number !== 'undefined' ? ticket.driver_info.license_number : "No License Number"}</div>
-          </div>
-          
-          <!-- Vehicle Information -->
-          <div class="section">
-            <div class="title">VEHICLE INFORMATION</div>
-            <div class="value">REGISTERED OWNER: ${ticket.vehicle_info.name}</div>
-            <div class="value">PLATE NO.: ${ticket.vehicle_info.plate_number}</div>
-            <div class="value">MAKE: ${ticket.vehicle_info.make}</div>
-            <div class="value">CLASS: ${ticket.vehicle_info.vehicle_class}</div>
-            <div class="value">MODEL: ${ticket.vehicle_info.vehicle_model}</div>
-            <div class="value">CONTACT NO.: ${ticket.vehicle_info.contact_number}</div>
-            <div class="value">COLOR: ${ticket.vehicle_info.color}</div>
-            <div class="value">BODY MARKS: ${ticket.vehicle_info.body_markings}</div>
-          </div>
+      </head>
+      <body>
+        <div style="font-size: 14px; font-weight: bold; text-align: center;">MFTRTA Ticket No: ${ticket.MFRTA_TCT_NO}</div>
+        
+        <!-- Personal Information -->
+        <div class="section">
+          <div class="title">PERSONAL INFORMATION</div>
+          <!-- Adjusted font size for personal information -->
+          <div class="value">LAST NAME, FIRST NAME, MIDDLE NAME: ${ticket.driver_info.last_name}, ${ticket.driver_info.first_name} ${ticket.driver_info.middle_initial}.</div>
+          <div class="value">DATE OF BIRTH: ${ticket.driver_info.birthdate}</div>
+          <div class="value">NATIONALITY: ${ticket.driver_info.nationality}</div>
+          <div class="value">ADDRESS: ${ticket.driver_info.address}</div>
+          <div class="value">LICENSE NO.: ${ticket.driver_info.license_number !== 'undefined' ? ticket.driver_info.license_number : "No License Number"}</div>
+        </div>
 
-          <!-- Violation Information -->
-          <div class="section">
-            <div class="title">VIOLATION INFORMATION</div>
-            <div class="value">APPREHENDING OFFICER: ${ticket.user_ID.first_name}, ${ticket.user_ID.middle_name} ${ticket.user_ID.last_name}.</div>
-            <div class="value">DATE AND TIME: ${ticket.date_issued}</div>
-            <div class="value">PLACE OF VIOLATION: ${ticket.place_violation}</div>
-            <div class="title">TRAFFIC RULES VIOLATION</div>
-            
-            <!-- Map over violations_info array and display each violation -->
-            ${ticket.violation_info.violations_info.map((violation, index) => `
+        <!-- Vehicle Information -->
+        <div class="section">
+          <div class="title">VEHICLE INFORMATION</div>
+          <!-- Adjusted font size for vehicle information -->
+          <div class="value">REGISTERED OWNER: ${ticket.vehicle_info.name}</div>
+          <div class="value">PLATE NO.: ${ticket.vehicle_info.plate_number}</div>
+          <div class="value">MAKE: ${ticket.vehicle_info.make}</div>
+          <div class="value">CLASS: ${ticket.vehicle_info.vehicle_class}</div>
+          <div class="value">MODEL: ${ticket.vehicle_info.vehicle_model}</div>
+          <div class="value">CONTACT NO.: ${ticket.vehicle_info.contact_number}</div>
+          <div class="value">COLOR: ${ticket.vehicle_info.color}</div>
+          <div class="value">BODY MARKS: ${ticket.vehicle_info.body_markings}</div>
+        </div>
+
+        <!-- Violation Information -->
+        <div class="section">
+          <div class="title">VIOLATION INFORMATION</div>
+          <div class="value">APPREHENDING OFFICER: ${ticket.user_ID.first_name}, ${ticket.user_ID.middle_name} ${ticket.user_ID.last_name}.</div>
+          <div class="value">DATE AND TIME: ${ticket.date_issued}</div>
+          <div class="value">PLACE OF VIOLATION: ${ticket.place_violation}</div>
+          <div class="title">TRAFFIC RULES VIOLATION</div>
+          
+          <!-- Map over violations_info array and display each violation -->
+          ${ticket.violation_info.violations_info.map((violation, index) => `
             <div class="value">${index + 1}. ${violation}</div>
           `).join('')}
-          </div>
-          
-        </body>
-      </html>
-    `;
-
+        </div>
+        
+      </body>
+    </html>
+  `;
     try {
       // On iOS/android prints the given html. On web prints the HTML from the current page.
       const { uri } = await Print.printToFileAsync({ html: htmlContent });
