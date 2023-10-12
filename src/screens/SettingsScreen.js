@@ -15,19 +15,16 @@ import ConstButtonShort from "../components/ConstButtonShort";
 function SettingsScreen({ navigation }) {
   const [logout, setLogout] = useState(false);
 
-  handlePrivacy = () => {
+  const handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
   };
 
-  handleAbout = () => {
+  const handleAbout = () => {
     navigation.navigate("AboutScreen");
   };
 
-  handleLogout = () => {
+  const handleLogout = () => {
     navigation.navigate("FirstScreen");
-
-
-
   };
 
   return (
@@ -40,13 +37,12 @@ function SettingsScreen({ navigation }) {
             justifyContent: "center",
           }}
         >
-          <Image
-            style={{ height: 90, width: 90, borderRadius: 30 }}
-            source={profile}
-          ></Image>
-
-
-          
+          <View style={{ position: "absolute" }}>
+            <Image
+              style={{ height: 90, width: 90, borderRadius: 30 }}
+              source={profile}
+            ></Image>
+          </View>
           <View
             style={{
               position: "absolute",
@@ -65,14 +61,9 @@ function SettingsScreen({ navigation }) {
               <Icon style={{ fontSize: 20, color: "white" }} name="edit"></Icon>
             </TouchableOpacity>
           </View>
-          <View
-            style={{
-              position: "absolute",
-              height: "100%",
-            }}
-          >
-            <Text style={{ marginTop: 180, fontWeight: "bold", fontSize: 20 }}>
-              John B. Doe
+          <View style={{ marginTop: "35%" }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              Jayde Engracia
             </Text>
           </View>
         </View>
@@ -125,14 +116,13 @@ function SettingsScreen({ navigation }) {
                 style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
               ></Icon>
             </TouchableOpacity>
-            
           </View>
           <View
             style={{
               alignItems: "center",
               justifyContent: "center",
               width: "100%",
-              marginTop: "80%",
+              marginTop: "50%",
             }}
           >
             <View
@@ -142,7 +132,11 @@ function SettingsScreen({ navigation }) {
                 width: "40%",
               }}
             >
-
+              <ConstButton
+                onPress={() => setLogout(!logout)}
+                title={"Logout"}
+                height={50}
+              ></ConstButton>
             </View>
           </View>
         </View>
@@ -210,7 +204,22 @@ function SettingsScreen({ navigation }) {
                     >
                       <Text>Cancel</Text>
                     </TouchableOpacity>
-
+                    <TouchableOpacity
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "65%",
+                        backgroundColor: "#3E7C1F",
+                        borderWidth: 2,
+                        borderColor: "green",
+                        borderRadius: 10,
+                        marginRight: 20,
+                      }}
+                      onPress={handleLogout}
+                    >
+                      <Text style={{ color: "white" }}>Logout</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
