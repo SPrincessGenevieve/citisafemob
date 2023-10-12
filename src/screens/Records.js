@@ -24,6 +24,8 @@ function Records({ navigation }) {
   const [sortAsc, setSortAsc] = useState(true);
   const [preview, setPreview] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
+// search 
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   const toggleSortIcon = () => {
@@ -41,6 +43,10 @@ function Records({ navigation }) {
 
   handlePrint = () => {
     navigation.navigate("TicketScreen");
+
+
+
+
   };
 
     // get all ticket
@@ -54,7 +60,6 @@ function Records({ navigation }) {
       }
     }).then((response) => {
       getTicket(response.data)
-      console.log(response.data)
     }).catch((error) => {
       console.log(error)
     })
@@ -88,7 +93,29 @@ function Records({ navigation }) {
   
 
   const renderTicketList = () => {
-    return ticket.map((ticketItem) => (
+    const filteredTickets = ticket.filter((ticketItem) => {
+      const ticketNumber = ticketItem.MFRTA_TCT_NO?.toString();
+  
+      return (
+        ticketNumber && ticketNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+  
+    // Sort the filteredTickets based on the sortAsc state
+    const sortedTickets = [...filteredTickets].sort((a, b) => {
+      const ticketANumber = a.MFRTA_TCT_NO?.toString() || '';
+      const ticketBNumber = b.MFRTA_TCT_NO?.toString() || '';
+    
+      if (sortAsc) {
+        // Sort in ascending order
+        return ticketANumber.localeCompare(ticketBNumber);
+      } else {
+        // Sort in descending order
+        return ticketBNumber.localeCompare(ticketANumber);
+      }
+    });
+    
+    return sortedTickets.map((ticketItem) => (
       <TouchableOpacity key={ticketItem.id} onPress={() => handleTicketClick(ticketItem)}>
         <View
           style={{
@@ -120,7 +147,7 @@ function Records({ navigation }) {
           </Text>
   
           <Text style={{ fontSize: 15, marginTop: 5, textTransform: 'capitalize'}}>
-            {ticketItem.user_ID.first_name} {ticketItem.user_ID.middle_name} {ticketItem.user_ID.last_name}
+            {ticketItem.driver_info.first_name} {ticketItem.driver_info.middle_initial} {ticketItem.driver_info.last_name}
           </Text>
           <Text style={{ fontSize: 15, marginTop: 5 }}>
             {}
@@ -358,9 +385,13 @@ function Records({ navigation }) {
                   backgroundColor: "#E0E0E0",
                   textAlign: "left",
                 }}
-              >
+                placeholder="Search by MFRTA_TCT_NO"
+                value={searchTerm}
+                onChangeText={(text) => setSearchTerm(text)}
+              />
+              <TouchableOpacity onPress={toggleSortIcon}>
                 <Icon name="search1" style={{ fontSize: 25 }}></Icon>
-              </TextInput>
+              </TouchableOpacity>
               <TouchableOpacity onPress={toggleSortIcon}>
                 <Icon2
                   name={sortAsc ? "sort-asc" : "sort-desc"}
@@ -369,6 +400,7 @@ function Records({ navigation }) {
                 />
               </TouchableOpacity>
             </View>
+
             <View
               style={{
                 marginBottom: 10,
