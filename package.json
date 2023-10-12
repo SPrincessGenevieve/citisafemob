@@ -56,7 +56,9 @@
     "redux": "^4.2.1",
     "xml-js": "^1.6.11",
     "xml2js": "^0.6.2",
-    "expo-sqlite": "~11.3.3"
+    "expo-sqlite": "~11.3.3",
+    "expo-print": "~12.4.2",
+    "expo-sharing": "~11.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

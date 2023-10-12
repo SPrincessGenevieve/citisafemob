@@ -2,11 +2,13 @@ import React from "react";
 import { Text } from "react-native";
 import { View } from "react-native";
 import PreviewComponent from "../components/PreviewComponent";
-import Icon from "react-native-vector-icons/AntDesign";
-import Icon2 from "react-native-vector-icons/Octicons";
+import Icon from "react-native-vector-icons/Octicons";
 import ConstButton from "../components/ConstButton";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import { useDispatch, useSelector } from "react-redux";
+import * as Print from 'expo-print';
+import {shareAsync} from 'expo-sharing'
+
 
 function TicketScreen({ navigation }) {
 
@@ -15,10 +17,6 @@ function TicketScreen({ navigation }) {
   const ticket = useSelector((state) => state.ticket.ticketInfo)
 
   const handleCite = () => {
-
-
-
-
     navigation.navigate("HomeScreen");
   };
 
@@ -27,6 +25,89 @@ function TicketScreen({ navigation }) {
   const currentDate = new Date();
   const formattedDate = `${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
 
+//  print
+  const printTicket = async () => {
+    const htmlContent = `
+      <html>
+        <head>
+          <style>
+            /* Include any additional styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .section {
+              margin-bottom: 20px;
+            }
+            .title {
+              font-size: 25px;
+              font-weight: bold;
+              margin-bottom: 10px;
+            }
+            .value {
+              font-size: 20px;
+            }
+          </style>
+        </head>
+        <body>
+          <div style="font-size: 20px; font-weight: bold; text-align: center;">MFTRTA Ticket</div>
+          
+          <!-- Personal Information -->
+          <div class="section">
+            <div class="title">PERSONAL INFORMATION</div>
+            <div class="value">LAST NAME, FIRST NAME, MIDDLE NAME: ${ticket.last_name}, ${ticket.first_name} ${ticket.middle_initial}.</div>
+            <div class="value">DATE OF BIRTH: ${ticket.driver_info.birthdate}</div>
+            <div class="value">NATIONALITY: ${ticket.driver_info.nationality}</div>
+            <div class="value">ADDRESS: ${ticket.driver_info.address}</div>
+            <div class="value">LICENSE NO.: ${ticket.driver_info.license_number !== 'undefined' ? ticket.driver_info.license_number : "No License Number"}</div>
+          </div>
+          
+          <!-- Vehicle Information -->
+          <div class="section">
+            <div class="title">VEHICLE INFORMATION</div>
+            <div class="value">REGISTERED OWNER: ${ticket.vehicle_info.name}</div>
+            <div class="value">PLATE NO.: ${ticket.vehicle_info.plate_number}</div>
+            <div class="value">MAKE: ${ticket.vehicle_info.make}</div>
+            <div class="value">CLASS: ${ticket.vehicle_info.vehicle_class}</div>
+            <div class="value">MODEL: ${ticket.vehicle_info.vehicle_model}</div>
+            <div class="value">CONTACT NO.: ${ticket.vehicle_info.contact_number}</div>
+            <div class="value">COLOR: ${ticket.vehicle_info.color}</div>
+            <div class="value">BODY MARKS: ${ticket.vehicle_info.body_markings}</div>
+          </div>
+
+          <!-- Violation Information -->
+          <div class="section">
+            <div class="title">VIOLATION INFORMATION</div>
+            <div class="value">APPREHENDING OFFICER: ${ticket.user_ID.first_name}, ${ticket.user_ID.middle_name} ${ticket.user_ID.last_name}.</div>
+            <div class="value">DATE AND TIME: ${ticket.date_issued}</div>
+            <div class="value">PLACE OF VIOLATION: ${ticket.place_violation}</div>
+            <div class="value" style="color: grey; margin-top: 20;">TRAFFIC RULES VIOLATION</div>
+            
+            <!-- Map over violations_info array and display each violation -->
+            ${ticket.violation_info.violations_info.map((violation, index) => `
+              <div style="display: flex; align-items: center; margin-left: 20px; margin-top: 10px;">
+                <div style="margin-right: 10px;"><span style="font-size: 20px; font-weight: bold;">•</span></div>
+                <div style="font-size: 20px; font-weight: bold;">${violation}</div>
+              </div>
+            `).join('')}
+          </div>
+          
+        </body>
+      </html>
+    `;
+
+    try {
+      // On iOS/android prints the given html. On web prints the HTML from the current page.
+      const { uri } = await Print.printToFileAsync({ html: htmlContent });
+      console.log('File has been saved to:', uri);
+
+      // Share the generated PDF file
+      await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+      navigation.navigate("HomeScreen");
+
+    } catch (error) {
+      console.error('Error while printing:', error);
+    }
+  };
 
   return (
     <KeyboardWithoutWrapper>
@@ -111,7 +192,7 @@ function TicketScreen({ navigation }) {
                 >
                   <PreviewComponent
                     title={"LAST NAME, FIRST NAME, MIDDLE NAME"}
-                    value={`${ticket.last_name}, ${ticket.first_name} ${ticket.middle_initial}.`}
+                    value={`${ticket.driver_info.last_name}, ${ticket.driver_info.first_name} ${ticket.driver_info.middle_initial}.`}
                     ></PreviewComponent>
                   <PreviewComponent
                     title={"DATE OF BIRTH"}
@@ -241,7 +322,7 @@ function TicketScreen({ navigation }) {
                       name={"printer"}
                       title={"PRINT"}
                       height={50}
-                      onPress={handleCite}
+                      onPress={printTicket}
                     ></ConstButton>
                   </View>
                 </View>

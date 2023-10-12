@@ -16,9 +16,11 @@ import Icon2 from "react-native-vector-icons/Octicons";
 import PreviewComponent from "../components/PreviewComponent";
 import ConstButton from "../components/ConstButton";
 import axios from "../../plugins/axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setTicketInfo } from "../components/camera/ticketSlice";
 
 function Records({ navigation }) {
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false);
   const [sortAsc, setSortAsc] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -62,6 +64,7 @@ function Records({ navigation }) {
 
   const handleTicketClick = (ticketItem) => {
     setSelectedTicket(ticketItem);
+    dispatch(setTicketInfo(ticketItem));
     setPreview(true);
   };
 
