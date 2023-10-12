@@ -25,6 +25,9 @@ function SettingsScreen({ navigation }) {
 
   handleLogout = () => {
     navigation.navigate("FirstScreen");
+
+
+
   };
 
   return (
@@ -41,6 +44,9 @@ function SettingsScreen({ navigation }) {
             style={{ height: 90, width: 90, borderRadius: 30 }}
             source={profile}
           ></Image>
+
+
+          
           <View
             style={{
               position: "absolute",
@@ -119,6 +125,7 @@ function SettingsScreen({ navigation }) {
                 style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
               ></Icon>
             </TouchableOpacity>
+            
           </View>
           <View
             style={{
@@ -135,11 +142,7 @@ function SettingsScreen({ navigation }) {
                 width: "40%",
               }}
             >
-              <ConstButton
-                onPress={() => setLogout(!logout)}
-                height={45}
-                title={"Logout"}
-              ></ConstButton>
+
             </View>
           </View>
         </View>
@@ -207,11 +210,7 @@ function SettingsScreen({ navigation }) {
                     >
                       <Text>Cancel</Text>
                     </TouchableOpacity>
-                    <ConstButton
-                      onPress={handleLogout}
-                      height={45}
-                      title={"Logout"}
-                    ></ConstButton>
+
                   </View>
                 </View>
               </View>
