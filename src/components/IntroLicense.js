@@ -38,7 +38,7 @@ function IntroLicense({ navigation }) {
       <View
         style={{
           display: "flex",
-          marginTop: "90%",
+          marginTop: "80%",
         }}
       >
         <Text style={styles.subtitlebottom}>
@@ -48,7 +48,7 @@ function IntroLicense({ navigation }) {
           The information will be encrypted and secured
         </Text>
       </View>
-      <View style={{ width: "90%", marginTop: 70 }}>
+      <View style={{ width: "90%", marginTop: 10 }}>
         <ConstButton
           onPress={handleOCRSreen}
           title={"Start Identification"}
