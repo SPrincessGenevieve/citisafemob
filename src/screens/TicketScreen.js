@@ -6,13 +6,27 @@ import Icon from "react-native-vector-icons/AntDesign";
 import Icon2 from "react-native-vector-icons/Octicons";
 import ConstButton from "../components/ConstButton";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
+import { useDispatch, useSelector } from "react-redux";
 
 function TicketScreen({ navigation }) {
 
-  
+  const dispatch = useDispatch();
+
+  const ticket = useSelector((state) => state.ticket.ticketInfo)
+
   const handleCite = () => {
+
+
+
+
     navigation.navigate("HomeScreen");
   };
+
+// DATE
+  // Get the current date
+  const currentDate = new Date();
+  const formattedDate = `${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
+
 
   return (
     <KeyboardWithoutWrapper>
@@ -39,7 +53,7 @@ function TicketScreen({ navigation }) {
           >
             MFTRTA
           </Text>
-          <Text style={{ textAlign: "center" }}>09-10-2023</Text>
+          <Text style={{ textAlign: "center" }}>{formattedDate}</Text>
           <View
             style={{
               borderWidth: 2,
@@ -65,7 +79,7 @@ function TicketScreen({ navigation }) {
             <Text
               style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}
             >
-              2020083
+              {ticket.MFRTA_TCT_NO}
             </Text>
           </View>
           <View
@@ -97,36 +111,24 @@ function TicketScreen({ navigation }) {
                 >
                   <PreviewComponent
                     title={"LAST NAME, FIRST NAME, MIDDLE NAME"}
-                    value={"ANNA NICOLE GABRIENTO"}
-                  ></PreviewComponent>
+                    value={`${ticket.last_name}, ${ticket.first_name} ${ticket.middle_initial}.`}
+                    ></PreviewComponent>
                   <PreviewComponent
                     title={"DATE OF BIRTH"}
-                    value={"09-12-2001"}
-                  ></PreviewComponent>
-                  <PreviewComponent
-                    title={"SEX"}
-                    value={"F"}
+                    value={ticket.driver_info.birthdate}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"NATIONALITY"}
-                    value={"PHL"}
-                  ></PreviewComponent>
-                  <PreviewComponent
-                    title={"WEIGHT"}
-                    value={"50"}
-                  ></PreviewComponent>
-                  <PreviewComponent
-                    title={"HEIGHT"}
-                    value={"1.2"}
+                    value={ticket.driver_info.nationality}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"ADDRESS"}
-                    value={"GUSA, CAGAYAN DE ORO CITY"}
+                    value={ticket.driver_info.address}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"LICENSE NO."}
-                    value={"GA23-3233322-SADF1"}
-                  ></PreviewComponent>
+                    value={ticket.driver_info.license_number !== 'undefined' ? ticket.driver_info.license_number : "No License Number"}
+                    ></PreviewComponent>
                 </View>
               </View>
               <View>
@@ -150,35 +152,35 @@ function TicketScreen({ navigation }) {
                 >
                   <PreviewComponent
                     title={"REGISTERED OWNER"}
-                    value={"ALDUIN MAGALLONES"}
+                    value={ticket.vehicle_info.name}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"PLATE NO."}
-                    value={"ABC123"}
+                    value={ticket.vehicle_info.plate_number}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"MAKE"}
-                    value={"TOYOTA"}
+                    value={ticket.vehicle_info.make}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"CLASS"}
-                    value={"E CONNECT PANI"}
+                    value={ticket.vehicle_info.vehicle_class}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"MODEL"}
-                    value={"ISUZU"}
+                    value={ticket.vehicle_info.vehicle_model}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"CONTACT NO."}
-                    value={"09992837465"}
+                    value={ticket.vehicle_info.contact_number}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"COLOR"}
-                    value={"E CONNECT PANI"}
+                    value={ticket.vehicle_info.color}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"BODY MARKS"}
-                    value={"E CONNECT PANI"}
+                    value={ticket.vehicle_info.body_markings}
                   ></PreviewComponent>
                 </View>
               </View>
@@ -197,40 +199,43 @@ function TicketScreen({ navigation }) {
                 <View style={{}}>
                   <PreviewComponent
                     title={"APPREHENDING OFFICER"}
-                    value={"E CONNECT PANI"}
+                    value={`${ticket.user_ID.first_name}, ${ticket.user_ID.middle_name} ${ticket.user_ID.last_name}.`}
                   ></PreviewComponent>
                   <PreviewComponent
-                    title={"TIME"}
-                    value={"4:11 PM"}
+                    title={"DATE AND TIME"}
+                    value={ticket.date_issued}
                   ></PreviewComponent>
                   <PreviewComponent
                     title={"PLACE OF VIOLATION"}
-                    value={"Lapasan, Cagayan de Oro City"}
+                    value={ticket.place_violation}
                   ></PreviewComponent>
                   <Text style={{ color: "grey", marginTop: 20 }}>
                     TRAFFIC RULES VIOLATION
                   </Text>
-
+                  {ticket.violation_info.violations_info.map((violation, index) => (
                   <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginLeft: 20,
-                      marginTop: 10,
-                    }}
-                  >
-                    <Icon
-                      name="car"
-                      style={{
-                        marginRight: 10,
-                        marginTop: 3,
-                        fontSize: 25,
-                      }}
-                    ></Icon>
-                    <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                      {"Driving without a helmet"}
-                    </Text>
-                  </View>
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 20,
+                    marginTop: 10,
+                  }}
+                  > 
+                          <Icon
+                            name="dot-fill"
+                            style={{ marginRight: 10, marginTop: 3 }}
+                          ></Icon>
+                          <Text
+                            style={{ fontSize: 20, fontWeight: "bold" }}
+                            key={index}
+                          >
+                            {violation}
+                          </Text>                
+                 </View>                    
+                  ))}
+
+
+
                   <View style={{ marginTop: 40 }}>
                     <ConstButton
                       name={"printer"}

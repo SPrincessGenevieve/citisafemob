@@ -31,6 +31,7 @@ import PreviewComponent from "../components/PreviewComponent";
 import axios from '../../plugins/axios'
 import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setDriverRegisterd, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setGetFinalDriver, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
 import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setGetFinalVehicle, setIsCarRegistered, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
+import { setTicketInfo } from "../components/camera/ticketSlice";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -229,7 +230,49 @@ function FormScreen({ navigation, route }) {
 // final screen
 
   const handleTicket = () => {
-    navigation.navigate("TicketScreen");
+    const driverID = driver.id
+    const vehicleID = vehicle.id
+
+    // first post the traffic violation
+    axios.post('ticket/trafficviolation/', violationIDs,{
+      headers: {
+        Authorization: `token ${Token}`
+      }
+    }).then((response) => {
+      // traffic violation id
+      const traffic_violationID = response.data.id
+      setTrafficViolationID(trafficViolationID)
+      console.log(response.data)
+
+      const formData = {
+        vehicle: vehicleID,
+        driver_ID: driverID,
+        violations: traffic_violationID,
+        place_violation: selectedPin.address,
+        ticket_status: 'PENDING',
+      }
+  
+
+      axios.post('ticket/register/', JSON.stringify(formData), {
+        headers: {
+          Authorization: `token ${Token}`
+        }
+      }).then((response) => {
+        alert("Successfully Cited")
+        dispatch(setTicketInfo(response.data))
+        navigation.navigate("TicketScreen");
+      }).catch((error) => {
+        console.log(error)
+        console.log(formData)
+      })
+
+    }).catch((error) => {
+      console.log(error)
+    })
+
+
+
+
   };
 
 
@@ -299,60 +342,8 @@ function FormScreen({ navigation, route }) {
   const [trafficViolationID, setTrafficViolationID] = useState("")
 
   const handlePreviewTicket = () => {
+    setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
 
-    
-    
-    const driverID = driver.id
-    const vehicleID = vehicle.id
-
-    // first post the traffic violation
-    axios.post('ticket/trafficviolation/', violationIDs,{
-      headers: {
-        Authorization: `token ${Token}`
-      }
-    }).then((response) => {
-      // traffic violation id
-      const traffic_violationID = response.data.id
-      setTrafficViolationID(trafficViolationID)
-      console.log(response.data)
-
-      const formData = {
-        vehicle: vehicleID,
-        driver_ID: driverID,
-        violations: traffic_violationID,
-        place_violation: selectedPin.address,
-        ticket_status: 'PENDING',
-      }
-  
-
-      axios.post('ticket/register/', JSON.stringify(formData), {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-        alert("Successfully Cited")
-        console.log(response.data)
-
-        // // clear all data here
-        // dispatch(setEmptyFinalDriver());
-        // dispatch(setEmptyRecognizedText());
-        // dispatch(setEmptyextractedInfo());
-        // dispatch(setEmptyFinalVehicle());
-
-        setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
-
-
-      }).catch((error) => {
-        console.log(error)
-        console.log(formData)
-      })
-
-
-
-
-    }).catch((error) => {
-      console.log(error)
-    })
 
   }
 
