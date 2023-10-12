@@ -16,14 +16,20 @@ import {
 } from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
-import { setDriverID, setDriverRegisterd, setFinalDriver, setGetFinalDriver, setRecognizedText } from "./camera/infoSlice";
+import {
+  setDriverID,
+  setDriverRegisterd,
+  setFinalDriver,
+  setGetFinalDriver,
+  setRecognizedText,
+} from "./camera/infoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
 import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import corners from "./../../assets/corners.png";
-import axios from '../../plugins/axios'
+import axios from "../../plugins/axios";
 import { setdriverID } from "./camera/infoSliceCOR";
 
 export default function CameraScan() {
@@ -37,7 +43,7 @@ export default function CameraScan() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const Token = useSelector((state) => state.auth.token)
+  const Token = useSelector((state) => state.auth.token);
 
   const toggleFlash = () => {
     setFlash((currentFlash) =>
@@ -67,22 +73,22 @@ export default function CameraScan() {
     restrictions: "",
   });
 
-
   // registered driver
-  const [drivers, getDrivers] = useState([])
+  const [drivers, getDrivers] = useState([]);
 
   useEffect(() => {
-
-    axios.get('drivers/register/', {
-      headers: {
-        Authorization: `token ${Token}`
-      }
-    }).then((response) => {
-      getDrivers(response.data)
-    }).catch((error) => {
-      console.log(`Error Fetch Driver's Data: ${error}`)
-    })
-
+    axios
+      .get("drivers/register/", {
+        headers: {
+          Authorization: `token ${Token}`,
+        },
+      })
+      .then((response) => {
+        getDrivers(response.data);
+      })
+      .catch((error) => {
+        console.log(`Error Fetch Driver's Data: ${error}`);
+      });
   }, []);
 
   useEffect(() => {
@@ -190,34 +196,35 @@ export default function CameraScan() {
           })
         );
 
-
         // check if the driver is exist
         const driverExists = drivers.find(
           (driver) => driver.license_number === concatenatedFields.license_no
         );
-  
+
         if (driverExists) {
-          alert(`Existing Driver: ${concatenatedFields.license_no}`)
-          
+          alert(`Existing Driver: ${concatenatedFields.license_no}`);
+
           const driverId = driverExists.id;
           const classificationString = driverExists.classification.toString();
-          dispatch(setDriverRegisterd())
-          dispatch(setDriverID(driverId))
+          dispatch(setDriverRegisterd());
+          dispatch(setDriverID(driverId));
 
           // for editing soon
-          dispatch(setGetFinalDriver({
-            ...driverExists, 
-            license_number: driverExists.license_number,
-            first_name: driverExists.first_name,
-            middle_initial: driverExists.middle_initial,
-            last_name: driverExists.last_name,
-            address: driverExists.address,
-            birthdate: driverExists.birthdate,
-            nationality: driverExists.nationality,
-            classification: classificationString,
-          }))
+          dispatch(
+            setGetFinalDriver({
+              ...driverExists,
+              license_number: driverExists.license_number,
+              first_name: driverExists.first_name,
+              middle_initial: driverExists.middle_initial,
+              last_name: driverExists.last_name,
+              address: driverExists.address,
+              birthdate: driverExists.birthdate,
+              nationality: driverExists.nationality,
+              classification: classificationString,
+            })
+          );
           // vehicle slice
-          dispatch(setdriverID(driverId))
+          dispatch(setdriverID(driverId));
           // if there is changes
 
           // clear setData
@@ -238,14 +245,12 @@ export default function CameraScan() {
             conditions: "",
             agency_code: "",
             restrictions: "",
-          })
+          });
           navigation.navigate("CameraScanOCR");
-
         } else {
           console.log(`Driver not found: ${concatenatedFields.license_no}`);
-          alert(`New Driver: ${concatenatedFields.license_no}`)
+          alert(`New Driver: ${concatenatedFields.license_no}`);
           dispatch(setFinalDriver());
-
 
           // clear setData
           setData({
@@ -265,11 +270,9 @@ export default function CameraScan() {
             conditions: "",
             agency_code: "",
             restrictions: "",
-          })          
+          });
           navigation.navigate("CameraScanOCR");
         }
-
-
       } else {
         Alert.alert("Text extraction failed. Please try again later.");
       }
@@ -496,8 +499,9 @@ const styles = StyleSheet.create({
     bottom: 50,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 10,
-    paddingHorizontal: 20,
+    padding: 15,
+    paddingHorizontal: 50,
+    marginLeft: -50,
     left: 95,
   },
   nextText: {
@@ -509,8 +513,9 @@ const styles = StyleSheet.create({
     bottom: 50,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 10,
-    right: 95,
+    padding: 15,
+    right: 40,
+    paddingHorizontal: 50,
   },
   cancelText: {
     color: "red",
