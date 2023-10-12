@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 
 function Records({ navigation }) {
   const [visible, setVisible] = useState(false);
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortAsc, setSortAsc] = useState(false);
   const [preview, setPreview] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
 // search 
