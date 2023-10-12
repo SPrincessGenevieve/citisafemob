@@ -18,7 +18,7 @@ function Privacy(props) {
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          marginTop: 150,
+          marginTop: "20%",
         }}
       >
         <View style={{ marginBottom: 40 }}>
