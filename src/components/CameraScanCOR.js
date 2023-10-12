@@ -293,19 +293,13 @@ export default function CameraScanCOR() {
           />
         </View>
       ) : (
-        <View style={{ height: "100%", width: "100%" }}>
-          <View
-            style={{
-              height: "100%",
-              width: "100%",
-              backgroundColor: "transparent",
-            }}
-          >
-            <Image
-              style={{ height: 680, width: 412, marginTop: -67 }}
-              source={corners}
-            ></Image>
-          </View>
+        <View
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: "transparent",
+          }}
+        >
           <Camera
             flashMode={flash}
             style={styles.camera}
