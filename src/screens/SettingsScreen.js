@@ -11,9 +11,14 @@ import profile from "./../../assets/profile.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import ConstButton from "../components/ConstButton";
 import ConstButtonShort from "../components/ConstButtonShort";
+import { useDispatch } from "react-redux";
+import { setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
+import { setEmptyFinalDriver } from "../components/camera/infoSlice";
+import { setLogout } from "./Authentication/authSlice";
 
 function SettingsScreen({ navigation }) {
-  const [logout, setLogout] = useState(false);
+  const [logout1, setLogout1] = useState(false);
+  const dispatch = useDispatch();
 
   const handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
@@ -24,7 +29,10 @@ function SettingsScreen({ navigation }) {
   };
 
   const handleLogout = () => {
-    navigation.navigate("FirstScreen");
+    // clear all info
+    dispatch(setEmptyFinalDriver())
+    dispatch(setEmptyFinalVehicle())
+    dispatch(setLogout())
   };
 
   return (
@@ -133,14 +141,14 @@ function SettingsScreen({ navigation }) {
               }}
             >
               <ConstButton
-                onPress={() => setLogout(!logout)}
+                onPress={() => setLogout1(!logout1)}
                 title={"Logout"}
                 height={50}
               ></ConstButton>
             </View>
           </View>
         </View>
-        {logout ? (
+        {logout1 ? (
           <>
             <View
               style={{ width: "100%", height: "100%", position: "absolute" }}
@@ -200,7 +208,7 @@ function SettingsScreen({ navigation }) {
                         borderRadius: 10,
                         marginRight: 20,
                       }}
-                      onPress={() => setLogout(!logout)}
+                      onPress={() => setLogout1(!logout1)}
                     >
                       <Text>Cancel</Text>
                     </TouchableOpacity>

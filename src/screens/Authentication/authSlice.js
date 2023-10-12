@@ -6,9 +6,7 @@ export const authSlice = createSlice({
     Online: true,
     setIsLoggedIn: false,
     token: "",
-    enforcer: {
-
-    },
+    enforcer: {},
 
   },
   reducers: {
@@ -20,6 +18,7 @@ export const authSlice = createSlice({
     },
     setLogout: (state) => {
       state.token = "";
+      state.enforcer = {}
       state.setIsLoggedIn = false;
     },
     setEnforcer: (state, action) => {
