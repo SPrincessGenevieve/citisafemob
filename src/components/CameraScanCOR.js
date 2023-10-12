@@ -19,7 +19,13 @@ import Feather from "@expo/vector-icons/Feather";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "../../plugins/axios";
 import * as ImagePicker from "expo-image-picker";
-import { setFinalVehicle, setGetFinalVehicle, setIsCarRegistered, setRecognizedText, setVehicleID } from "./camera/infoSliceCOR";
+import {
+  setFinalVehicle,
+  setGetFinalVehicle,
+  setIsCarRegistered,
+  setRecognizedText,
+  setVehicleID,
+} from "./camera/infoSliceCOR";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import corners from "./../../assets/cornersOCR.png";
@@ -38,7 +44,7 @@ export default function CameraScanCOR() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const Token = useSelector((state) => state.auth.token)
+  const Token = useSelector((state) => state.auth.token);
 
   const [data, setData] = useState({
     plate_no: "",
@@ -51,24 +57,23 @@ export default function CameraScanCOR() {
     telephone_no_contact_details: "",
   });
 
-  const [vehicle, setVehicle] = useState([])
+  const [vehicle, setVehicle] = useState([]);
   // registered vehicle
 
   useEffect(() => {
-
-    axios.get('vehicles/register/', {
-      headers: {
-        Authorization: `token ${Token}`
-      }
-    }).then((response) => {
-      setVehicle(response.data)
-
-    }).catch((error) => {
-      console.log('error dong')
-    })
-
+    axios
+      .get("vehicles/register/", {
+        headers: {
+          Authorization: `token ${Token}`,
+        },
+      })
+      .then((response) => {
+        setVehicle(response.data);
+      })
+      .catch((error) => {
+        console.log("error dong");
+      });
   }, []);
-
 
   useEffect(() => {
     requestPermission();
@@ -176,43 +181,40 @@ export default function CameraScanCOR() {
           })
         );
 
-              // Check if the driver exists
+        // Check if the driver exists
         const vehicleExists = vehicle.find(
           (vehicles) => vehicles.plate_number === concatenatedFields.plate_no
         );
-          
+
         if (vehicleExists) {
-          alert(`Existing Vehicle: ${concatenatedFields.plate_no}`)
+          alert(`Existing Vehicle: ${concatenatedFields.plate_no}`);
 
           const vehicleID = vehicleExists.id;
           const driverIDString = vehicleExists.driverID.toString();
           dispatch(setIsCarRegistered());
           dispatch(setVehicleID(vehicleID));
-          dispatch(setGetFinalVehicle({
-            ...vehicleExists,
-            name: vehicleExists.name,
-            address: vehicleExists.address,
-            contact_number: vehicleExists.contact_number,
-            plate_number: vehicleExists.plate_number,
-            make: vehicleExists.make,
-            color: vehicleExists.color,
-            vehicle_class: vehicleExists.vehicle_class,
-            body_markings: vehicleExists.body_markings,
-            vehicle_model: vehicleExists.vehicle_model,
-            driverID: driverIDString,
-          }))
+          dispatch(
+            setGetFinalVehicle({
+              ...vehicleExists,
+              name: vehicleExists.name,
+              address: vehicleExists.address,
+              contact_number: vehicleExists.contact_number,
+              plate_number: vehicleExists.plate_number,
+              make: vehicleExists.make,
+              color: vehicleExists.color,
+              vehicle_class: vehicleExists.vehicle_class,
+              body_markings: vehicleExists.body_markings,
+              vehicle_model: vehicleExists.vehicle_model,
+              driverID: driverIDString,
+            })
+          );
           navigation.navigate("FormScreen");
-
-        }else {
+        } else {
           console.log(`Vehicle Not found: ${concatenatedFields.plate_no}`);
-          alert(`New Vehicle: ${concatenatedFields.plate_no}`)
-          dispatch(setFinalVehicle())
+          alert(`New Vehicle: ${concatenatedFields.plate_no}`);
+          dispatch(setFinalVehicle());
           navigation.navigate("FormScreen");
-
         }
-
-
-
       } else {
         Alert.alert("Text extraction failed. Please try again later.");
       }
@@ -292,7 +294,18 @@ export default function CameraScanCOR() {
         </View>
       ) : (
         <View style={{ height: "100%", width: "100%" }}>
-          <Image style={styles.corners} source={corners}></Image>
+          <View
+            style={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: "transparent",
+            }}
+          >
+            <Image
+              style={{ height: 680, width: 412, marginTop: -67 }}
+              source={corners}
+            ></Image>
+          </View>
           <Camera
             flashMode={flash}
             style={styles.camera}
@@ -408,8 +421,8 @@ const styles = StyleSheet.create({
   corners: {
     width: "100%",
     height: "100%",
-    position: "absolute",
     zIndex: 1,
+    marginTop: -20,
   },
   picture: {
     width: "100%",
@@ -421,8 +434,9 @@ const styles = StyleSheet.create({
     bottom: 50,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 10,
-    paddingHorizontal: 20,
+    padding: 15,
+    paddingHorizontal: 50,
+    marginLeft: -50,
     left: 95,
   },
   nextText: {
@@ -434,8 +448,9 @@ const styles = StyleSheet.create({
     bottom: 50,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 10,
-    right: 95,
+    padding: 15,
+    right: 40,
+    paddingHorizontal: 50,
   },
   cancelText: {
     color: "red",

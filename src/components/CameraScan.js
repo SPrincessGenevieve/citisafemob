@@ -246,7 +246,7 @@ export default function CameraScan() {
             agency_code: "",
             restrictions: "",
           });
-          navigation.navigate("CameraScanOCR");
+          navigation.navigate("IntroOCR");
         } else {
           console.log(`Driver not found: ${concatenatedFields.license_no}`);
           alert(`New Driver: ${concatenatedFields.license_no}`);
@@ -271,7 +271,7 @@ export default function CameraScan() {
             agency_code: "",
             restrictions: "",
           });
-          navigation.navigate("CameraScanOCR");
+          navigation.navigate("IntroOCR");
         }
       } else {
         Alert.alert("Text extraction failed. Please try again later.");

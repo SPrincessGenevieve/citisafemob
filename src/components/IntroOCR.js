@@ -31,14 +31,14 @@ function IntroOCR({ navigation }) {
       </View>
       <View style={styles.id}>
         <Image
-          style={{ marginTop: 150, width: 285, height: 355 }}
+          style={{ marginTop: 150, width: 225, height: 280 }}
           source={OCRImage}
         ></Image>
       </View>
       <View
         style={{
           display: "flex",
-          marginTop: "110%",
+          marginTop: "80%",
         }}
       >
         <Text style={styles.subtitlebottom}>
