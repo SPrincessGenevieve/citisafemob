@@ -9,6 +9,18 @@ import ConstButton from "../../../components/ConstButton";
 function ForgotPass(props) {
   const [visible, isVisivle] = useState(false);
 
+  const [mail, setMail] = useState({
+    email: ''
+  })
+
+  const handleForgotPassword = () => {
+
+    
+
+
+
+  }
+
   return (
     <KeyboardWithoutWrapper>
       <View style={{ height: 890, width: "100%", flex: 1 }}>
@@ -43,6 +55,12 @@ function ForgotPass(props) {
             marginBottom={30}
             placeholder="Please enter your email"
             borderRadius={10}
+            value={mail.email}
+            onChangeText={(text) => {
+              setMail({
+                ...mail, email: text
+              })
+            }}
           ></ConstInput>
           <Text>Resend Email</Text>
           <ConstButton

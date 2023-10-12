@@ -194,11 +194,7 @@ function AppNavigator() {
         options={{ headerShown: false }}
         component={MapLocation}
       />
-      <Stack.Screen
-        name="ForgotPass"
-        options={{ headerShown: false }}
-        component={ForgotPass}
-      />
+
       </Stack.Navigator>
     );
   }
@@ -210,6 +206,11 @@ function AppNavigator() {
         options={{ headerShown: false }}
         component={FirstScreen}
       />
+      <Stack.Screen
+        name="ForgotPass"
+        options={{ headerShown: false }}
+        component={ForgotPass}
+      />      
     </Stack.Navigator>
   );
 }
