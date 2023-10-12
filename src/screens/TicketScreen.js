@@ -30,31 +30,29 @@ function TicketScreen({ navigation }) {
     const htmlContent = `
       <html>
         <head>
-          <style>
-            /* Include any additional styles here */
-            body {
-              font-family: Arial, sans-serif;
-            }
-            .section {
-              margin-bottom: 20px;
-            }
-            .title {
-              font-size: 25px;
-              font-weight: bold;
-              margin-bottom: 10px;
-            }
-            .value {
-              font-size: 20px;
-            }
-          </style>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+          }
+          .section {
+            margin-bottom: 10px;
+          }
+          .title {
+            font-size: 20px;
+            font-weight: bold;
+          }
+          .value {
+            font-size: 16px;
+          }
+        </style>
         </head>
         <body>
-          <div style="font-size: 20px; font-weight: bold; text-align: center;">MFTRTA Ticket</div>
+         <div style="font-size: 20px; font-weight: bold; text-align: center;">MFTRTA Ticket No: ${ticket.MFRTA_TCT_NO}</div>
           
           <!-- Personal Information -->
           <div class="section">
             <div class="title">PERSONAL INFORMATION</div>
-            <div class="value">LAST NAME, FIRST NAME, MIDDLE NAME: ${ticket.last_name}, ${ticket.first_name} ${ticket.middle_initial}.</div>
+            <div class="value">LAST NAME, FIRST NAME, MIDDLE NAME: ${ticket.driver_info.last_name}, ${ticket.driver_info.first_name} ${ticket.driver_info.middle_initial}.</div>
             <div class="value">DATE OF BIRTH: ${ticket.driver_info.birthdate}</div>
             <div class="value">NATIONALITY: ${ticket.driver_info.nationality}</div>
             <div class="value">ADDRESS: ${ticket.driver_info.address}</div>
@@ -80,15 +78,12 @@ function TicketScreen({ navigation }) {
             <div class="value">APPREHENDING OFFICER: ${ticket.user_ID.first_name}, ${ticket.user_ID.middle_name} ${ticket.user_ID.last_name}.</div>
             <div class="value">DATE AND TIME: ${ticket.date_issued}</div>
             <div class="value">PLACE OF VIOLATION: ${ticket.place_violation}</div>
-            <div class="value" style="color: grey; margin-top: 20;">TRAFFIC RULES VIOLATION</div>
+            <div class="title">TRAFFIC RULES VIOLATION</div>
             
             <!-- Map over violations_info array and display each violation -->
             ${ticket.violation_info.violations_info.map((violation, index) => `
-              <div style="display: flex; align-items: center; margin-left: 20px; margin-top: 10px;">
-                <div style="margin-right: 10px;"><span style="font-size: 20px; font-weight: bold;">•</span></div>
-                <div style="font-size: 20px; font-weight: bold;">${violation}</div>
-              </div>
-            `).join('')}
+            <div class="value">${index + 1}. ${violation}</div>
+          `).join('')}
           </div>
           
         </body>
