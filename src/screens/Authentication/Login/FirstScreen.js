@@ -99,8 +99,8 @@ function FirstScreen({ navigation }) {
   });
 
   const [credentials, setCredentials] = useState({
-    username: "mobile",
-    password: "dario100",
+    username: "",
+    password: "",
   });
 
   const handleLogin = () => {
@@ -123,9 +123,19 @@ function FirstScreen({ navigation }) {
                 // You can now use the stored credentials for local login
                 // For example, you might have a function for local authentication
                 dispatch(setLogin());
+
+                // if done then erase credentials
+                setCredentials({
+                  username: "",
+                  password: "",
+                })
               } else {
                 // No stored credentials
                 console.log("No stored credentials");
+                setCredentials({
+                  username: "",
+                  password: "",
+                })
               }
             },
             (_, error) => {

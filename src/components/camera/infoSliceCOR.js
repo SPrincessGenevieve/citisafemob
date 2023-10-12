@@ -122,6 +122,22 @@ export const infoSliceCOR = createSlice({
         vehicle_model: '',
         driverID: '',
       }
+      state.extractedInfo = {
+        plate_no: "",
+        make: "",
+        date: "",
+        series: "",
+        body_markings: "",
+        complete_owners_name: "",
+        complete_address: "",
+        telephone_no_contact_details: "",
+        class: ''
+      }
+      state.id = ''
+      state.isCarRegistered = false
+      state.driverids = ''
+      state.text = ''
+      
     }
 
 

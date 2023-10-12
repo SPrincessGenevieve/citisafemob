@@ -95,6 +95,27 @@ export const infoSlice = createSlice({
         nationality: '',
         classification: '',
       }
+      state.extractedInfo = {
+        type: "",
+        name: "",
+        licenseNumber: "",
+        dateOfBirth: "",
+        bloodType: "",
+        nationality: "",
+        sex: "",
+        address: "",
+        weight: "",
+        height: "",
+        agency_code: "",
+        dl_codes: "",
+        expirationDate: "",
+        conditions: "",
+        restrictions: "",
+      };
+
+      state.isDriverRegisterd = false
+      state.id = ''
+      state.text = ''
     },
     setDriverRegisterd: (state) => {
       state.isDriverRegisterd = true
