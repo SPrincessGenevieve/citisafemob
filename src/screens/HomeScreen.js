@@ -30,11 +30,25 @@ function HomeScreen({ navigation }) {
 
   const [currentDate, setCurrentDate] = useState('');
   const [currentDay, setCurrentDay] = useState('');
+  const [greeting, setGreeting] = useState('');
 
   useEffect(() => {
     // Function to update the current date
     const updateDate = () => {
       const now = new Date();
+      const hours = now.getHours();
+
+      let greetingText = '';
+      if (hours >= 5 && hours < 12) {
+        greetingText = 'Good morning,';
+      } else if (hours >= 12 && hours < 17) {
+        greetingText = 'Good afternoon,';
+      } else {
+        greetingText = 'Good evening,';
+      }
+
+      setGreeting(greetingText);
+
       const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const dayOfWeek = daysOfWeek[now.getDay()];
 
@@ -45,15 +59,12 @@ function HomeScreen({ navigation }) {
       const formattedDay = `${dayOfWeek}`
       setCurrentDate(formattedDate);
       setCurrentDay(formattedDay);
+      
     };
-
-    // Call the function once to set the initial date
     updateDate();
 
-    // Update the date every minute
     const intervalId = setInterval(updateDate, 60000);
 
-    // Clear the interval when the component is unmounted
     return () => clearInterval(intervalId);
   }, []);
 
@@ -132,7 +143,7 @@ function HomeScreen({ navigation }) {
               fontFamily: "Roboto Light",
             }}
           >
-            Good morning,{" "}
+            {greeting}{" "}
             <Text
               style={{
                 color: "#3E7C1F",
