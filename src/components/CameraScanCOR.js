@@ -258,7 +258,7 @@ export default function CameraScanCOR() {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       {showPicture ? (
         <View
           style={{
@@ -300,27 +300,21 @@ export default function CameraScanCOR() {
             backgroundColor: "transparent",
           }}
         >
+          <Image style={styles.corners} source={corners} />
+
           <Camera
             flashMode={flash}
             style={styles.camera}
             type={type}
-            ratio="18:9"
             ref={(ref) => {
               setCameraRef(ref);
             }}
           ></Camera>
           <View style={styles.controlsContainer}>
+     
+            <View style={styles.control}>
             <TouchableOpacity
-              style={{
-                backgroundColor: "#75B956",
-                width: 70,
-                height: 70,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 50,
-                marginRight: 20,
-              }}
+              style={styles.otherbtn}  
               onPress={pickImage}
             >
               <Icon name="image" size={28} color="white" style={{}} />
@@ -342,15 +336,7 @@ export default function CameraScanCOR() {
             </View>
 
             <TouchableOpacity
-              style={{
-                backgroundColor: "#75B956",
-                width: 70,
-                height: 70,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 50,
-              }}
+              style={styles.otherbtn}
               onPress={toggleFlash}
             >
               <Feather
@@ -361,6 +347,9 @@ export default function CameraScanCOR() {
                 color="white"
               />
             </TouchableOpacity>
+            </View>
+
+
           </View>
         </View>
       )}
@@ -369,9 +358,7 @@ export default function CameraScanCOR() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+
   camera: {
     flex: 1,
   },
@@ -391,33 +378,70 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "black",
   },
+  // ok
   controlsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    display: "flex",
-    position: "absolute",
-    bottom: 50,
     width: "100%",
+    height: '100%',
+    flexDirection: "row",
+    display: "flex",
     justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
     zIndex: 3,
   },
+  control: {
+    width: "100%",
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 20,
+    zIndex: 3,
+  },
+  // done
   takePictureBtn: {
     backgroundColor: "#3E7C1F",
     borderRadius: 50,
     height: 90,
     width: 90,
-    marginVertical: 10,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 20,
+    marginHorizontal: 20,
   },
+  otherbtn: {
+    backgroundColor: "#75B956",
+    width: 70,
+    height: 70,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 50,
+    marginVertical: 10,
+
+  },
+  // ok 
   corners: {
-    width: "100%",
-    height: "100%",
+    width: "100%", 
+    height: "100%", 
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
     zIndex: 1,
-    marginTop: -20,
   },
+  // tan awon 
+  controlText: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 50,
+  },
+
   picture: {
     width: "100%",
     height: "100%",
@@ -450,4 +474,13 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 16,
   },
+
+
+  viewpicture: {
+    backgroundColor: "black",
+    position: "absolute",
+    zIndex: 4,
+    width: "100%",
+    height: "100%",
+  }
 });

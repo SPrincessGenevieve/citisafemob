@@ -844,15 +844,8 @@ export default function CameraScan() {
   return (
     <View>
       {showPicture ? (
-        <View
-          style={{
-            backgroundColor: "black",
-            position: "absolute",
-            zIndex: 4,
-            width: "100%",
-            height: "100%",
-          }}
-        >
+        // diri nako
+        <View style={styles.viewpicture}>
           {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
           ) : null}
@@ -1062,4 +1055,13 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 16,
   },
+
+
+  viewpicture: {
+    backgroundColor: "black",
+    position: "absolute",
+    zIndex: 4,
+    width: "100%",
+    height: "100%",
+  }
 });
