@@ -11,7 +11,7 @@ import profile from "./../../assets/profile.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import ConstButton from "../components/ConstButton";
 import ConstButtonShort from "../components/ConstButtonShort";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
 import { setEmptyFinalDriver } from "../components/camera/infoSlice";
 import { setLogout } from "./Authentication/authSlice";
@@ -20,7 +20,8 @@ function SettingsScreen({ navigation }) {
   const [logout1, setLogout1] = useState(false);
   const dispatch = useDispatch();
 
-  
+  const officer = useSelector((state) => state.auth.enforcer)
+
 
   const handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
@@ -72,8 +73,8 @@ function SettingsScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={{ marginTop: "35%" }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-              Jayde Engracia
+            <Text style={{ fontSize: 20, fontWeight: "bold", textTransform: 'capitalize' }}>
+              {officer.first_name} {officer.middle_name} {officer.last_name}
             </Text>
           </View>
         </View>
