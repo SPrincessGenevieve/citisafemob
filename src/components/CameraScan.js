@@ -706,6 +706,10 @@ export default function CameraScan() {
             concatenatedFields[fieldName] = concatenatedValue.trim();
           }
         }
+        if (concatenatedFields.license_no.length !== 13) {
+          Alert.alert("License number must have 13 characters.");
+          return;
+        }
 
         setData({
           ...data,
@@ -865,10 +869,7 @@ export default function CameraScan() {
           <ExpoImageManipulator
             photo={{ uri: capturedImage }}
             isVisible
-            onPictureChoosed={(data) => {
-              // console.log(data)
-              setCapturedImage({ uri: data.uri })
-          }}            
+            onPictureChoosed={(uri) => setCapturedImage(uri.uri)}          
             onToggleModal={() => setCropMode(!cropMode)}
 
           />
@@ -1013,7 +1014,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     position: "absolute",
-    top: 50,
+    top: 0,
     left: 0,
     zIndex: 1,
   },
