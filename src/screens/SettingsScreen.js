@@ -20,6 +20,8 @@ function SettingsScreen({ navigation }) {
   const [logout1, setLogout1] = useState(false);
   const dispatch = useDispatch();
 
+  
+
   const handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
   };
