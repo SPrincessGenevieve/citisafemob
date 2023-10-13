@@ -28,6 +28,35 @@ function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.auth.enforcer)
   const isOnline = useSelector((state) => state.auth.Online)
 
+  const [currentDate, setCurrentDate] = useState('');
+  const [currentDay, setCurrentDay] = useState('');
+
+  useEffect(() => {
+    // Function to update the current date
+    const updateDate = () => {
+      const now = new Date();
+      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayOfWeek = daysOfWeek[now.getDay()];
+
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const monthName = monthNames[now.getMonth()];
+
+      const formattedDate = `${monthName} ${now.getDate()}, ${now.getFullYear()}`;
+      const formattedDay = `${dayOfWeek}`
+      setCurrentDate(formattedDate);
+      setCurrentDay(formattedDay);
+    };
+
+    // Call the function once to set the initial date
+    updateDate();
+
+    // Update the date every minute
+    const intervalId = setInterval(updateDate, 60000);
+
+    // Clear the interval when the component is unmounted
+    return () => clearInterval(intervalId);
+  }, []);
+
   const unsubscribe = NetInfo.addEventListener(state => {
     if (state.isConnected === false) {
       console.log("No Internet")
@@ -125,7 +154,7 @@ function HomeScreen({ navigation }) {
             fontFamily: "Roboto Light",
           }}
         >
-          Monday,{" "}
+          {currentDay},{" "}
           <Text
             style={{
               color: "black",
@@ -133,7 +162,7 @@ function HomeScreen({ navigation }) {
               fontFamily: "Roboto Light",
             }}
           >
-            September 25, 2023
+            {currentDate}
           </Text>
         </Text>
       </View>
