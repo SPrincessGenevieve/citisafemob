@@ -5,21 +5,40 @@ import GradientBackground from "../../../components/GradientBG";
 import { Text } from "react-native";
 import ConstInput from "../../../components/ConstInput";
 import ConstButton from "../../../components/ConstButton";
+import axios from '../../../../plugins/axios'
 
 function ForgotPass(props) {
-  const [visible, isVisivle] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [resend, setResend] = useState(false)
+  const [countdown, setCountdown] = useState(60); // Set the initial countdown value in seconds
 
   const [mail, setMail] = useState({
-    email: ''
-  })
+    email: 'jaydemike21@gmail.com'
+  });
 
   const handleForgotPassword = () => {
+    axios.post('accounts/users/reset_password/', mail).then((response) => {
+      console.log("Email Sent");
+      setVisible(true);
+      startCountdown(); // Start the countdown when the email is sent
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
 
-    
+  const startCountdown = () => {
+    setResend(true);
+    const intervalId = setInterval(() => {
+      setCountdown((prevCountdown) => prevCountdown - 1);
+    }, 1000);
 
-
-
-  }
+    // Clear the interval when the countdown reaches 0
+    setTimeout(() => {
+      clearInterval(intervalId);
+      setResend(false);
+      setCountdown(60); // Reset the countdown value
+    }, 60000);
+  };
 
   return (
     <KeyboardWithoutWrapper>
@@ -62,13 +81,19 @@ function ForgotPass(props) {
               })
             }}
           ></ConstInput>
-          <Text>Resend Email</Text>
-          <ConstButton
+          {!resend ? (
+            <ConstButton
             marginLeftText={-10}
             title="Send Email"
             height={55}
-            onPress={() => isVisivle(!visible)}
+            onPress={handleForgotPassword}
           ></ConstButton>
+          ) : (
+            <Text style={{ fontSize: 16, color: "red" }}>
+              Resend in {countdown} seconds
+            </Text>            
+          ) }
+
         </View>
         {visible ? (
           <View
@@ -107,7 +132,7 @@ function ForgotPass(props) {
                 Email sent
               </Text>
               <ConstButton
-                onPress={() => isVisivle(!visible)}
+                onPress={() => setVisible(!visible)}
                 name="check"
                 title="Done"
                 height={55}
