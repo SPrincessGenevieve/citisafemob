@@ -888,19 +888,7 @@ export default function CameraScan() {
             }}
           ></Camera>
           <View style={styles.controlsContainer}>
-            <View
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-                top: 0,
-
-
-              }}
-            >
+            <View style={styles.controlText}>
               <Text
                 style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
               >
@@ -958,9 +946,7 @@ export default function CameraScan() {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  // },
+
   camera: {
     flex: 1,
   },
@@ -1001,7 +987,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     zIndex: 3,
   },
-  // working on it
+  // done
   takePictureBtn: {
     backgroundColor: "#3E7C1F",
     borderRadius: 50,
@@ -1023,12 +1009,27 @@ const styles = StyleSheet.create({
     marginVertical: 10,
 
   },
+  // ok 
   corners: {
-    width: "100%",
-    height: "100%",
+    width: "100%", 
+    height: "100%", 
+    display: "flex",
+    justifyContent: "center",
     position: "absolute",
+    top: 50,
+    left: 0,
     zIndex: 1,
   },
+  // tan awon 
+  controlText: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 50,
+  },
+
   picture: {
     width: "100%",
     height: "100%",
