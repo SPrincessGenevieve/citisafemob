@@ -16,7 +16,6 @@ import {
 import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
-import * as ImageManipulator from "expo-image-manipulator";
 import axios from "../../plugins/axios";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -30,6 +29,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import corners from "./../../assets/cornersOCR.png";
 import { setGetFinalDriver } from "./camera/infoSlice";
+import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
+
 
 export default function CameraScanCOR() {
   const [cameraMode, setCameraMode] = useState(CameraType.back);
@@ -97,13 +98,13 @@ export default function CameraScanCOR() {
   };
 
   const takePicture = async () => {
-    try {
-      const { uri } = await cameraRef?.current.takePictureAsync();
-
-      setCapturedImage(uri);
+    if (cameraRef) {
+      const uri = await cameraRef.takePictureAsync();
+      
+      
+      setCapturedImage(uri.uri); // Set the captured image URI directly
+      setCropMode(true);
       setShowPicture(true);
-    } catch (error) {
-      console.log("Error taking picture:", error);
     }
   };
 
@@ -160,6 +161,10 @@ export default function CameraScanCOR() {
             }
             concatenatedFields[fieldName] = concatenatedValue.trim();
           }
+        }
+        if (concatenatedFields.plate_number >= 7) {
+          Alert.alert("Plate number atleast have 6 characters.");
+          return;
         }
 
         setData({
@@ -224,9 +229,9 @@ export default function CameraScanCOR() {
     }
   };
 
-  useEffect(() => {
-    console.log("Updated Data:", data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log("Updated Data:", data);
+  // }, [data]);
 
   if (!getPermission()) {
     return Alert.alert(
@@ -288,7 +293,7 @@ export default function CameraScanCOR() {
           <ExpoImageManipulator
             photo={{ uri: capturedImage }}
             isVisible
-            onPictureChoosed={(uri) => setCapturedImage(uri)}
+            onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
             onToggleModal={() => setCropMode(!cropMode)}
           />
         </View>
