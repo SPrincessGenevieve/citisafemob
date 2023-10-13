@@ -636,7 +636,8 @@ export default function CameraScan() {
   const takePicture = async () => {
     if (cameraRef) {
       const uri = await cameraRef.takePictureAsync();
-
+      
+      
       setCapturedImage(uri.uri); // Set the captured image URI directly
       setCropMode(true);
       setShowPicture(true);
@@ -844,7 +845,7 @@ export default function CameraScan() {
   return (
     <View>
       {showPicture ? (
-        // diri nako
+        
         <View style={styles.viewpicture}>
           {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
@@ -861,14 +862,16 @@ export default function CameraScan() {
       ) : null}
 
       {cropMode ? (
-        <View>
           <ExpoImageManipulator
             photo={{ uri: capturedImage }}
             isVisible
-            onPictureChoosed={(uri) => setCapturedImage(uri)}
+            onPictureChoosed={(data) => {
+              // console.log(data)
+              setCapturedImage({ uri: data.uri })
+          }}            
             onToggleModal={() => setCropMode(!cropMode)}
+
           />
-        </View>
       ) : (
         <View style={{ height: "100%", width: "100%" }}>
           <Image style={styles.corners} source={corners}></Image>
@@ -935,6 +938,7 @@ export default function CameraScan() {
         </View>
       )}
     </View>
+
   );
 }
 
@@ -1063,5 +1067,10 @@ const styles = StyleSheet.create({
     zIndex: 4,
     width: "100%",
     height: "100%",
+  },
+  manipulator: {
+    width: '100%',
+    height: '100%',
+    display: 'flex'
   }
 });
