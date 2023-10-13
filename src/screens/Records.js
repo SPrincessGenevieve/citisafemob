@@ -58,7 +58,8 @@ function Records({ navigation }) {
         getTicket(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        alert("Failed to Fetch Tickets")
+        navigation.navigate("HomeScreen");
       });
   }, []);
 
@@ -318,13 +319,17 @@ function Records({ navigation }) {
               <PreviewComponent
                 title={"APPREHENDING OFFICER"}
                 value={capitalizeWords(
-                  `${selectedTicket.user_ID.last_name}, ${selectedTicket.user_ID.first_name} ${selectedTicket.user_ID.middle_name}`
+                  `${selectedTicket.user_ID.first_name} ${selectedTicket.user_ID.middle_name} ${selectedTicket.user_ID.last_name}`
                 )}
               ></PreviewComponent>
               <PreviewComponent
                 title={"Date and Time"}
                 value={selectedTicket.date_issued}
               ></PreviewComponent>
+              <PreviewComponent
+                title={"Ticket Status"}
+                value={selectedTicket.ticket_status}
+              ></PreviewComponent>              
               <PreviewComponent
                 title={"PLACE OF VIOLATION"}
                 value={selectedTicket.place_violation}

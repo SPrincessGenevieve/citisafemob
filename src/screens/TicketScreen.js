@@ -8,6 +8,8 @@ import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import * as Print from 'expo-print';
 import {shareAsync} from 'expo-sharing'
+import { setEmptyFinalDriver } from "../components/camera/infoSlice";
+import { setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
 
 
 function TicketScreen({ navigation }) {
@@ -98,6 +100,9 @@ function TicketScreen({ navigation }) {
 
       // Share the generated PDF file
       await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+
+      dispatch(setEmptyFinalDriver());
+      dispatch(setEmptyFinalVehicle());
       navigation.navigate("HomeScreen");
 
     } catch (error) {
