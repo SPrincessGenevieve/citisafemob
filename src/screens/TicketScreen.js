@@ -31,80 +31,81 @@ function TicketScreen({ navigation }) {
   const printTicket = async () => {
     const htmlContent = `
     <html>
-      <head>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-          }
-          .section {
-            margin-bottom: 5px; /* Adjusted margin */
-          }
-          .title {
-            font-size: 14px; /* Adjusted font size */
-            font-weight: bold;
-          }
-          .value {
-            font-size: 12px; /* Adjusted font size */
-          }
-        </style>
-      </head>
-      <body>
-        <div style="font-size: 14px; font-weight: bold; text-align: center;">MFTRTA Ticket No: ${ticket.MFRTA_TCT_NO}</div>
-        
-        <!-- Personal Information -->
-        <div class="section">
-          <div class="title">PERSONAL INFORMATION</div>
-          <!-- Adjusted font size for personal information -->
-          <div class="value">LAST NAME, FIRST NAME, MIDDLE NAME: ${ticket.driver_info.last_name}, ${ticket.driver_info.first_name} ${ticket.driver_info.middle_initial}.</div>
-          <div class="value">DATE OF BIRTH: ${ticket.driver_info.birthdate}</div>
-          <div class="value">NATIONALITY: ${ticket.driver_info.nationality}</div>
-          <div class="value">ADDRESS: ${ticket.driver_info.address}</div>
-          <div class="value">LICENSE NO.: ${ticket.driver_info.license_number !== 'undefined' ? ticket.driver_info.license_number : "No License Number"}</div>
-        </div>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .section {
+        margin-bottom: 2px; /* Adjusted margin */
+      }
+      .title {
+        font-size: 5px; /* Adjusted font size */
+        font-weight: bold;
+      }
+      .value {
+        font-size: 6px; /* Adjusted font size */
+        width: '50%';
+      }
+    </style>
+  </head>
+  <body>
+    <div style="font-size: 6px; font-weight: bold; text-align: center;">MFTRTA Ticket No: ${ticket.MFRTA_TCT_NO}</div>
+    
+    <!-- Personal Information -->
+    <div class="section">
+      <div class="title">PERSONAL INFO</div>
+      <div class="value">NAME: ${ticket.driver_info.last_name}, ${ticket.driver_info.first_name} ${ticket.driver_info.middle_initial}.</div>
+      <div class="value">DOB: ${ticket.driver_info.birthdate}</div>
+      <div class="value">NATIONALITY: ${ticket.driver_info.nationality}</div>
+      <div class="value">ADDRESS: ${ticket.driver_info.address}</div>
+      <div class="value">LICENSE: ${ticket.driver_info.license_number !== 'undefined' ? ticket.driver_info.license_number : "No License"}</div>
+    </div>
 
-        <!-- Vehicle Information -->
-        <div class="section">
-          <div class="title">VEHICLE INFORMATION</div>
-          <!-- Adjusted font size for vehicle information -->
-          <div class="value">REGISTERED OWNER: ${ticket.vehicle_info.name}</div>
-          <div class="value">PLATE NO.: ${ticket.vehicle_info.plate_number}</div>
-          <div class="value">MAKE: ${ticket.vehicle_info.make}</div>
-          <div class="value">CLASS: ${ticket.vehicle_info.vehicle_class}</div>
-          <div class="value">MODEL: ${ticket.vehicle_info.vehicle_model}</div>
-          <div class="value">CONTACT NO.: ${ticket.vehicle_info.contact_number}</div>
-          <div class="value">COLOR: ${ticket.vehicle_info.color}</div>
-          <div class="value">BODY MARKS: ${ticket.vehicle_info.body_markings}</div>
-        </div>
+    <!-- Vehicle Information -->
+    <div class="section">
+      <div class="title">VEHICLE INFO</div>
+      <div class="value">OWNER: ${ticket.vehicle_info.name}</div>
+      <div class="value">PLATE NO.: ${ticket.vehicle_info.plate_number}</div>
+      <div class="value">MAKE: ${ticket.vehicle_info.make}</div>
+      <div class="value">CLASS: ${ticket.vehicle_info.vehicle_class}</div>
+      <div class="value">MODEL: ${ticket.vehicle_info.vehicle_model}</div>
+      <div class="value">CONTACT: ${ticket.vehicle_info.contact_number}</div>
+      <div class="value">COLOR: ${ticket.vehicle_info.color}</div>
+      <div class="value">MARKINGS: ${ticket.vehicle_info.body_markings}</div>
+    </div>
 
-        <!-- Violation Information -->
-        <div class="section">
-          <div class="title">VIOLATION INFORMATION</div>
-          <div class="value">APPREHENDING OFFICER: ${ticket.user_ID.first_name}, ${ticket.user_ID.middle_name} ${ticket.user_ID.last_name}.</div>
-          <div class="value">DATE AND TIME: ${ticket.date_issued}</div>
-          <div class="value">PLACE OF VIOLATION: ${ticket.place_violation}</div>
-          <div class="title">TRAFFIC RULES VIOLATION</div>
-          
-          <!-- Map over violations_info array and display each violation -->
-          ${ticket.violation_info.violations_info.map((violation, index) => `
-            <div class="value">${index + 1}. ${violation}</div>
-          `).join('')}
-        </div>
-        
-      </body>
-    </html>
+    <!-- Violation Information -->
+    <div class="section">
+      <div class="title">VIOLATION INFO</div>
+      <div class="value">OFFICER: ${ticket.user_ID.first_name}, ${ticket.user_ID.middle_name} ${ticket.user_ID.last_name}.</div>
+      <div class="value">Ticket Status: ${ticket.ticket_status}</div>
+      <div class="value">DATE & TIME: ${ticket.date_issued}</div>
+      <div class="value">PLACE: ${ticket.place_violation}</div>
+      <div class="title">VIOLATIONS</div>
+      
+      <!-- Map over violations_info array and display each violation -->
+      ${ticket.violation_info.violations_info.map((violation, index) => `
+        <div class="value">${index + 1}. ${violation}</div>
+      `).join('')}
+    </div>
+    
+  </body>
+</html>
   `;
     try {
+      // Specify the paper size in pixels    
       // On iOS/android prints the given html. On web prints the HTML from the current page.
-      const { uri } = await Print.printToFileAsync({ html: htmlContent });
+      const { uri } = await Print.printToFileAsync({ html: htmlContent, OrientationType: 'portrait' }); // Ensure you pass the modified HTML content here
       console.log('File has been saved to:', uri);
-
+    
       // Share the generated PDF file
       await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
-
+    
       dispatch(setEmptyFinalDriver());
       dispatch(setEmptyFinalVehicle());
       navigation.navigate("HomeScreen");
-
+    
     } catch (error) {
       console.error('Error while printing:', error);
     }
