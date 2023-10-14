@@ -35,6 +35,8 @@ function Records({ navigation }) {
   const hideModal = () => setVisible(false);
   const containerStyle = { backgroundColor: "white", padding: 20 };
   const Token = useSelector((state) => state.auth.token);
+  const isOnline = useSelector((state) => state.auth.Online)
+
 
   const handleDetails = () => {
     navigation.navigate("RecordDetails");
@@ -48,7 +50,9 @@ function Records({ navigation }) {
   const [ticket, getTicket] = useState([]);
 
   useEffect(() => {
-    axios
+
+    if (isOnline) {
+      axios
       .get("ticket/register/", {
         headers: {
           Authorization: `token ${Token}`,
@@ -61,6 +65,11 @@ function Records({ navigation }) {
         alert("Failed to Fetch Tickets")
         navigation.navigate("HomeScreen");
       });
+    }else {
+      // for localstorage
+    }
+
+ 
   }, []);
 
   const handleTicketClick = (ticketItem) => {
