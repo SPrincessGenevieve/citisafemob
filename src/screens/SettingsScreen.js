@@ -21,6 +21,7 @@ function SettingsScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const officer = useSelector((state) => state.auth.enforcer)
+  const isOnline = useSelector((state) => state.auth.Online)
 
 
   const handlePrivacy = () => {
@@ -78,7 +79,11 @@ function SettingsScreen({ navigation }) {
             </Text>
           </View>
         </View>
-        <View style={{ height: "100%" }}>
+
+        <View style={{ height: "100%" }}>        
+        {isOnline ? (
+          <>
+                      {/* privacy */}
           <View
             style={{
               height: 60,
@@ -104,7 +109,10 @@ function SettingsScreen({ navigation }) {
                 style={{ marginLeft: 210, fontSize: 20, color: "grey" }}
               ></Icon>
             </TouchableOpacity>
+
+
           </View>
+          {/* about */}
           <View
             style={{
               height: 60,
@@ -128,6 +136,42 @@ function SettingsScreen({ navigation }) {
               ></Icon>
             </TouchableOpacity>
           </View>
+          </>
+        ) : (
+          <>
+                      {/* privacy */}
+          <View
+            style={{
+              height: 60,
+              justifyContent: "center",
+              marginTop: 20,
+              borderTopColor: "#D9D9D9",
+              borderBottomColor: "#D9D9D9",
+              borderTopWidth: 1,
+              borderBottomWidth: 1,
+            }}
+          >
+            <TouchableOpacity
+              onPress={handleAbout}
+              style={{
+                flexDirection: "row",
+                marginLeft: 25,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 15 }}>About</Text>
+              <Icon
+                name="right"
+                style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
+              ></Icon>
+            </TouchableOpacity>
+          </View>
+          </>
+        )}
+
+
+
+
           <View
             style={{
               alignItems: "center",
@@ -151,6 +195,9 @@ function SettingsScreen({ navigation }) {
             </View>
           </View>
         </View>
+
+
+        
         {logout1 ? (
           <>
             <View
