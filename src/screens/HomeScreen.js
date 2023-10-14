@@ -188,20 +188,46 @@ function HomeScreen({ navigation }) {
               marginTop: "100%",
             }}
           >
-            <ConstButton
-              onPress={() => setCite(!cite)}
-              name="scan1"
-              title="Cite Ticket"
+
+            {isOnline ? (
+              <>
+              <ConstButton
+                onPress={() => setCite(!cite)}
+                name="scan1"
+                title="Cite Ticket"
+                marginLeftText={10}
+                height={60}
+                ></ConstButton>           
+                <ConstButton
+                onPress={handleRecord}
+                name="file1"
+                title="Check Logs"
+                marginLeftText={10}
+                height={60}
+                ></ConstButton>               
+              </>
+
+            ) : (
+              <>
+              <ConstButton
+              onPress={handleForm}
+              name="form"
               marginLeftText={10}
               height={60}
+              title="Manual Entry"
             ></ConstButton>
-            <ConstButton
+
+              <ConstButton
               onPress={handleRecord}
               name="file1"
-              title="Check Logs"
+              title="Offline Ticket"
               marginLeftText={10}
               height={60}
             ></ConstButton>
+            </>
+            )}
+
+
           </View>
         </>
       ) : (

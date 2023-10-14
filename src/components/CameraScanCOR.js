@@ -163,7 +163,7 @@ export default function CameraScanCOR() {
           }
         }
         if (concatenatedFields.plate_number >= 7) {
-          Alert.alert("Plate number atleast have 6 characters.");
+          Alert.alert("Plate number must have atleast 6 characters.");
           return;
         }
 

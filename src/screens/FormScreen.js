@@ -45,7 +45,7 @@ function FormScreen({ navigation, route }) {
   const [cat4, setCat4] = useState(true);
   const [cat5, setCat5] = useState(true);
   const [location, setLocation] = useState(null);
-  const [selectedPin, setSelectedPin] = useState(null);
+  const [selectedPin, setSelectedPin] = useState('');
   const [currentAddress, setCurrentAddress] = useState(null);
   const [mfrtaTctNo, setMfrtaTctNo] = useState("");
   const [currentTime, setCurrentTime] = useState(moment().format("hh:mm A"));
@@ -299,10 +299,13 @@ function FormScreen({ navigation, route }) {
           dispatch(setDriverID(id))
           console.log(drivers)
           alert('Successfully Register Driver')
-  
+          Keyboard.dismiss(); // Dismiss the keyboard
+          scrollToTop(); // Scroll to the top
+          setViolation(!violation);
         }).catch((error) => {
           console.log('Error for Drivers')
           console.log(error)
+          alert("Please do check the Driver License Info!!")
         })
 
 
@@ -324,16 +327,25 @@ function FormScreen({ navigation, route }) {
           dispatch(setVehicleID(id))
           console.log(vehicles)
           alert('Successfully Register Vehicle')
-  
+          Keyboard.dismiss(); // Dismiss the keyboard
+          scrollToTop(); // Scroll to the top
+          setViolation(!violation);
         }).catch((error) => {
           console.log('Error for Vehicle')
           console.log(error)
           console.log(vehicles)
+          alert("Please do check the ORCR Info!!")
+
         })
     }
-    Keyboard.dismiss(); // Dismiss the keyboard
-    scrollToTop(); // Scroll to the top
-    setViolation(!violation);
+
+    // if nag exist ang duha then skip niya ang registration
+    if (isDriverExist && isVehicleExist) {
+      Keyboard.dismiss(); // Dismiss the keyboard
+      scrollToTop(); // Scroll to the top
+      setViolation(!violation);
+    }
+
 
   }
 
@@ -662,7 +674,7 @@ function FormScreen({ navigation, route }) {
                     style={{
                       fontSize: 30,
                       position: "absolute",
-                      left: 15,
+                      left: 45,
                       top: 5,
                     }}
                     name="search"
@@ -679,7 +691,7 @@ function FormScreen({ navigation, route }) {
                     onChangeText={(text) => setSearchQuery(text)}
                     placeholder="search violation"
                   />
-                  <View style={{ width: 40, height: 40, marginLeft: 10 }}>
+                  {/* <View style={{ width: 40, height: 40, marginLeft: 10 }}>
                     <TouchableOpacity onPress={toggleSortIcon}>
                       <Icon
                         name={sortAsc ? "sort-asc" : "sort-desc"}
@@ -687,7 +699,7 @@ function FormScreen({ navigation, route }) {
                         color="black"
                       />
                     </TouchableOpacity>
-                  </View>
+                  </View> */}
                 </View>
                 <View style={{ padding: 20 }}>
                   <Text style={styles.subtitle}>

@@ -10,6 +10,7 @@ import {
   Keyboard,
   ScrollView,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import GradientBackground from "../../../components/GradientBG";
 import { useFonts } from "expo-font";
@@ -20,16 +21,18 @@ import ConstButton from "../../../components/ConstButton";
 import Title from "../../../components/Title";
 import TextButton from "../../../components/TextButton";
 import axios from "../../../../plugins/axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setEnforcer,
   setLogin,
+  setLogout,
   setOffline,
   setOnline,
   setToken,
 } from "../authSlice";
 import NetInfo from "@react-native-community/netinfo";
 import * as SQLite from "expo-sqlite";
+import * as Crypto from 'expo-crypto';
 
 function FirstScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -40,166 +43,165 @@ function FirstScreen({ navigation }) {
   const [textInputFocused, setTextInputFocused] = useState(false);
   const [animationValue] = useState(new Animated.Value(1));
 
-  // offline mode
-  useEffect(() => {
-    // Open a database connection
-    const db = SQLite.openDatabase("credentials.db");
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: "",
+  });
+  // get the authSlice Online
+  const internet = useSelector((state) => state.auth.Online)
 
-    // Create a table for credentials
-    db.transaction((tx) => {
-      tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS credentials (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT);",
-        [],
-        () => {
-          console.log("Table created successfully");
-        },
-        (_, error) => {
-          console.error("Error creating table:", error);
-        }
-      );
-    });
 
-    // Load credentials from the database
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT * FROM credentials LIMIT 1;",
-        [],
-        (_, results) => {
-          if (results.rows.length > 0) {
-            const storedCredentials = results.rows.item(0);
-            setCredentials({
-              username: storedCredentials.username,
-              password: storedCredentials.password,
-            });
+  // database
+  const db = SQLite.openDatabase('localstorage5');
+
+  // create table users
+  db.transaction((tx) => {
+    tx.executeSql(
+      `CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        username TEXT, 
+        password TEXT, 
+        token TEXT,
+        first_name TEXT,
+        last_name TEXT,
+        middle_name TEXT,
+        position TEXT 
+        );`
+    );
+  });
+
+
+
+  // insert users
+  const saveCredentialsToDatabase = async (username, password, token, first_name, last_name, middle_name, position) => {
+    try {
+
+      db.transaction((tx) => {
+        tx.executeSql(
+          'INSERT INTO users (username, password, token, first_name, last_name, middle_name, position) VALUES (?, ?, ?, ?, ?, ?, ?);',
+          [username, password, token, first_name, last_name, middle_name, position],
+          (tx, result) => {
+            if (result.rowsAffected > 0) {
+              console.log('Credentials saved successfully.');
+            } else {
+              console.log('Failed to save credentials.');
+            }
           }
-        },
-        (_, error) => {
-          console.error("Error fetching credentials:", error);
+        );
+      });
+    } catch (error) {
+      console.error('Error hashing password:', error);
+    }
+  };
+
+// offline login
+const checkOfflineCredentials = async () => {
+  try {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM users WHERE username = ? AND password = ?;',
+        [credentials.username, credentials.password],
+        (tx, result) => {
+          if (result.rows.length > 0) {
+            const user = result.rows.item(0);
+
+            const userID = user.id;
+            const username = user.username;
+            const first_name = user.first_name;
+            const last_name = user.last_name;
+            const middle_name = user.middle_name;
+            const position = user.position;
+            const token = user.token;
+
+            dispatch(setToken(token));
+            dispatch(setEnforcer({userID, first_name, middle_name, last_name, position}))
+
+
+            dispatch(setLogin());
+          } else {
+            alert('Invalid credentials or user not found.');
+          }
         }
       );
     });
+  } catch (error) {
+    console.error('Error hashing password:', error);
+  }
+};
 
-    return () => {
-      db._db.close();
-    };
-  }, []);
 
   const unsubscribe = NetInfo.addEventListener((state) => {
     if (state.isConnected === false) {
-      console.log("No Internet");
+      console.log("Not Connected");
       dispatch(setOffline());
+      dispatch(setLogout());
     } else if (state.isConnected === true) {
       console.log("Connected");
       dispatch(setOnline());
+      dispatch(setLogout());
+
     }
-  });
+  }, [1]);
 
   useEffect(() => {
     unsubscribe();
   });
 
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-  });
 
-  const handleLogin = () => {
-    NetInfo.fetch().then((isConnected) => {
-      if (!isConnected) {
-        // Offline mode
-        const db = SQLite.openDatabase("credentials.db");
-        db.transaction((tx) => {
-          tx.executeSql(
-            "SELECT * FROM credentials LIMIT 1;",
-            [],
-            (_, results) => {
-              if (results.rows.length > 0) {
-                const storedCredentials = results.rows.item(0);
-                setCredentials({
-                  username: storedCredentials.username,
-                  password: storedCredentials.password,
-                });
-
-                // You can now use the stored credentials for local login
-                // For example, you might have a function for local authentication
-                dispatch(setLogin());
-
-                // if done then erase credentials
-                setCredentials({
-                  username: "",
-                  password: "",
-                })
-              } else {
-                // No stored credentials
-                console.log("No stored credentials");
-                setCredentials({
-                  username: "",
-                  password: "",
-                })
-              }
-            },
-            (_, error) => {
-              console.error("Error fetching credentials:", error);
-            }
-          );
-        });
-      } else {
-        // online
-        axios.post("accounts/token/login/", credentials).then((response) => {
-          const token = response.data.auth_token;
-          dispatch(setToken(token));
-
-          axios
-            .get("accounts/users/me/", {
-              headers: {
-                Authorization: `token ${token}`,
-              },
-            })
-            .then((response) => {
-              // Save credentials in the SQLite database
-              const db = SQLite.openDatabase("credentials.db");
-              db.transaction((tx) => {
-                tx.executeSql(
-                  "INSERT OR REPLACE INTO credentials (id, username, password) VALUES (?, ?, ?);",
-                  [1, credentials.username, credentials.password],
-                  () => {
-                    console.log("Credentials saved successfully");
-                  },
-                  (_, error) => {
-                    console.error("Error saving credentials:", error);
-                  }
-                );
-              });
-              const role = response.data.role;
-              const last_name = response.data.last_name;
-
-              dispatch(setEnforcer(response.data));
-
-              if (role != "ENFORCER") {
-                alert(`Sir ${last_name}, Your Role is ${role}`);
-                setCredentials({
-                  username: "",
-                  password: "",
-                });
-              } else {
-                alert(`Welcome to eTCMF ${role} - ${last_name}`);
-                dispatch(setLogin());
-              }
-            });
-        });
-      }
-    });
+  const handleForgotPass = () => {
+    navigation.navigate("ForgotPass");
   };
 
+
+  const handleLogin = async () => {
+    if (!internet) {
+      checkOfflineCredentials();
+      alert("You are in OFFLINE MODE");
+    } else {
+      try {
+        const response = await axios.post("accounts/token/login/", credentials);
+        const token = response.data.auth_token;
+  
+        dispatch(setToken(token));
+  
+        const userResponse = await axios.get("accounts/users/me/", {
+          headers: {
+            Authorization: `token ${token}`,
+          },
+        });
+  
+        const role = userResponse.data.role;
+        const last_name = userResponse.data.last_name;
+        const first_name = userResponse.data.first_name;
+        const middle_name = userResponse.data.middle_name;
+        const position = userResponse.data.position;
+
+  
+        dispatch(setEnforcer(userResponse.data));
+  
+        if (role !== "ENFORCER") {
+          alert(`Sir ${last_name}, Your Role is ${role}`);
+          setCredentials({
+            username: "",
+            password: "",
+          });
+        } else {
+          // Save credentials to local SQLite database          
+          saveCredentialsToDatabase(credentials.username, credentials.password, token, first_name, last_name, middle_name, position );
+          dispatch(setLogin());
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        // Handle the error, e.g., show an alert or update the UI
+      }
+    }
+  };
   useEffect(() => {
     return () => {
       unsubscribe();
     };
   }, []);
 
-  const handleForgotPass = () => {
-    navigation.navigate("ForgotPass");
-  };
+
 
   if (!fontsLoaded) {
     return null;
