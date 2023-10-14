@@ -32,10 +32,12 @@ import axios from '../../plugins/axios'
 import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setDriverRegisterd, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setGetFinalDriver, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
 import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setGetFinalVehicle, setIsCarRegistered, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
 import { setTicketInfo } from "../components/camera/ticketSlice";
+import * as SQLite from "expo-sqlite";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
   const Token = useSelector((state) => state.auth.token)
+  const isOnline = useSelector((state) => state.auth.Online)
 
   const [open, setOpen] = useState(false);
   const [sortAsc, setSortAsc] = useState(true);
@@ -44,7 +46,7 @@ function FormScreen({ navigation, route }) {
   const [cat3, setCat3] = useState(true);
   const [cat4, setCat4] = useState(true);
   const [cat5, setCat5] = useState(true);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState('');
   const [selectedPin, setSelectedPin] = useState('');
   const [currentAddress, setCurrentAddress] = useState(null);
   const [mfrtaTctNo, setMfrtaTctNo] = useState("");
@@ -66,11 +68,58 @@ function FormScreen({ navigation, route }) {
   const user = useSelector((state) => state.auth.enforcer)
 
 
+  // open database
+  const db = SQLite.openDatabase('localstorage5');
+
+  useEffect(() => {
+    // Create a table if it doesn't exist
+    db.transaction((tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS violations (' +
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+          'penalty_info_id INTEGER,' +
+          'description TEXT,' +
+          'amount TEXT,' +
+          'status TEXT,' +
+          'date TEXT,' +
+          'violation_type TEXT' +
+          ');'
+      );
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS ticket (' +
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+          'license_number TEXT,' +
+          'first_name TEXT,' +
+          'middle_initial TEXT,' +
+          'last_name TEXT,' +
+          'address TEXT,' +
+          'birthdate TEXT,' +
+          'nationality TEXT,' +
+          'classification TEXT' +
+          'name TEXT,' +
+          'address TEXT,' +
+          'contact_number TEXT,' +
+          'plate_number TEXT,' +
+          'make TEXT,' +
+          'color TEXT,' +
+          'vehicle_class TEXT,' +
+          'body_markings TEXT,' +
+          'vehicle_model TEXT,' +
+          'violation_ids TEXT' + 
+          'place_violation' +
+          ');'
+      );
+
+    });
+  }, []);
+
 
   // selected violation id's 
   const [violationIDs, setViolationIDs] = useState({
     "violation_id": []
   })
+
+
 
 
   // datas
@@ -86,21 +135,71 @@ function FormScreen({ navigation, route }) {
   };
 
   // mao ning violations
-
   const [violationData1, setViolationData1] = useState([])
 
   useEffect(() => {
-    axios.get('ticket/violation/', {
-      headers: {
-        Authorization: `token ${Token}`
-      }
-    }).then((response) => {
-      // Filter out only the active penalties
-      const activePenalties = response.data.filter(item => item.penalty_info.status === 'Active');
-      setViolationData1(activePenalties);
-    }).catch(error => {
-      console.log(error);
+
+    if (isOnline) {
+      axios.get('ticket/violation/', {
+        headers: {
+          Authorization: `token ${Token}`,
+        },
+      })
+      .then((response) => {
+        // Filter out only the active penalties
+        const activePenalties = response.data.filter(item => item.penalty_info.status === 'Active');
+  
+        db.transaction((tx) => {
+          activePenalties.forEach((penalty) => {
+            const penaltyInfo = penalty.penalty_info;
+  
+            tx.executeSql(
+              'INSERT INTO violations (penalty_info_id, description, amount, status, date, violation_type) VALUES (?, ?, ?, ?, ?, ?);',
+              [
+                penaltyInfo.id,
+                penaltyInfo.description,
+                penaltyInfo.amount,
+                penaltyInfo.status,
+                penaltyInfo.date,
+                penalty.violation_type,
+              ],
+              (_, results) => {
+                console.log('Inserted violation:', results.insertId);
+              },
+              (_, error) => {
+                console.log('Error inserting violation:', error);
+              }
+            );
+          });
+        });
+  
+        setViolationData1(activePenalties);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    } else {
+    // Fetch data from SQLite
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM violations;',
+        [],
+        (_, { rows }) => {
+          const offlineData = [];
+          for (let i = 0; i < rows.length; i++) {
+            offlineData.push(rows.item(i));
+          }
+          setViolationData1(offlineData);
+        },
+        (_, error) => {
+          console.log('Error selecting from SQLite:', error);
+        }
+      );
     });
+  
+    }
+
+
   }, [handleNextButton]);
 
 
@@ -141,7 +240,10 @@ function FormScreen({ navigation, route }) {
     fetchDate();
   }, []);
 
+  // kani
   const handleCheckboxChange = (text, isChecked, ids) => {
+
+    
     if (isChecked) {
       setCheckedViolations((prev) => [...prev, text]);
       // id
@@ -160,6 +262,17 @@ function FormScreen({ navigation, route }) {
         violation_id: prevState.violation_id.filter(id => id !== ids)
       }));
     }
+
+  };
+
+// offline selected ids
+  const saveSelectedViolationsToTicket = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'UPDATE ticket SET violation_ids = ? WHERE id = ?;',
+        [violationIDs.violation_id.join(','), /* ticket_id */]
+      );
+    });
   };
 
   const handleMapPress = async (e) => {
@@ -229,6 +342,8 @@ function FormScreen({ navigation, route }) {
 
 // final screen
 
+
+// kani 2
   const handleTicket = () => {
     const driverID = driver.id
     const vehicleID = vehicle.id
@@ -277,74 +392,96 @@ function FormScreen({ navigation, route }) {
 
 
   const handleNextButton = () => {
-    // check if the driver and vehicle registered
-    const isDriverExist = driver.isDriverRegisterd
-    const isVehicleExist = vehicle.isCarRegistered
 
-    // if driver exist
-    if (!isDriverExist) {
-      console.log('Not Exist')
-      console.log(isDriverExist)
+    // if online
+    if (isOnline) {
+      // check if the driver and vehicle registered
+      const isDriverExist = driver.isDriverRegisterd
+      const isVehicleExist = vehicle.isCarRegistered
 
-      const drivers = driver.finalDriver
-      console.log(drivers)  
+      // if driver exist
+      if (!isDriverExist) {
+        console.log('Not Exist')
+        console.log(isDriverExist)
 
-      axios.post(`drivers/register/`, drivers, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-          const id = response.data.id
-          dispatch(setManualDriverID(id))
-          dispatch(setDriverID(id))
-          console.log(drivers)
-          alert('Successfully Register Driver')
-          Keyboard.dismiss(); // Dismiss the keyboard
-          scrollToTop(); // Scroll to the top
-          setViolation(!violation);
-        }).catch((error) => {
-          console.log('Error for Drivers')
-          console.log(error)
-          alert("Please do check the Driver License Info!!")
-        })
+        const drivers = driver.finalDriver
+        console.log(drivers)  
+
+        axios.post(`drivers/register/`, drivers, {
+          headers: {
+            Authorization: `token ${Token}`
+          }
+        }).then((response) => {
+            const id = response.data.id
+            dispatch(setManualDriverID(id))
+            dispatch(setDriverID(id))
+            console.log(drivers)
+            alert('Successfully Register Driver')
+            Keyboard.dismiss(); // Dismiss the keyboard
+            scrollToTop(); // Scroll to the top
+            setViolation(!violation);
+          }).catch((error) => {
+            console.log('Error for Drivers')
+            console.log(error)
+            alert("Please do check the Driver License Info!!")
+          })
 
 
+      }
+
+      if (!isVehicleExist) {
+        console.log('Vehicle Not Exist')
+        console.log(isVehicleExist)
+
+        const vehicles = vehicle.finalVehicle
+        console.log(vehicles)
+
+        axios.post(`vehicles/register/`, vehicles, {
+          headers: {
+            Authorization: `token ${Token}`
+          }
+        }).then((response) => {
+            const id = response.data.id
+            dispatch(setVehicleID(id))
+            console.log(vehicles)
+            alert('Successfully Register Vehicle')
+            Keyboard.dismiss(); // Dismiss the keyboard
+            scrollToTop(); // Scroll to the top
+            setViolation(!violation);
+          }).catch((error) => {
+            console.log('Error for Vehicle')
+            console.log(error)
+            console.log(vehicles)
+            alert("Please do check the ORCR Info!!")
+
+          })
+      }
+
+      // if nag exist ang duha then skip niya ang registration
+      if (isDriverExist && isVehicleExist) {
+        Keyboard.dismiss(); // Dismiss the keyboard
+        scrollToTop(); // Scroll to the top
+        setViolation(!violation);
+      }
     }
 
-    if (!isVehicleExist) {
-      console.log('Vehicle Not Exist')
-      console.log(isVehicleExist)
+    // if offline
+    if (!isOnline) {
 
-      const vehicles = vehicle.finalVehicle
-      console.log(vehicles)
+      // driver license
 
-      axios.post(`vehicles/register/`, vehicles, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-          const id = response.data.id
-          dispatch(setVehicleID(id))
-          console.log(vehicles)
-          alert('Successfully Register Vehicle')
-          Keyboard.dismiss(); // Dismiss the keyboard
-          scrollToTop(); // Scroll to the top
-          setViolation(!violation);
-        }).catch((error) => {
-          console.log('Error for Vehicle')
-          console.log(error)
-          console.log(vehicles)
-          alert("Please do check the ORCR Info!!")
 
-        })
-    }
 
-    // if nag exist ang duha then skip niya ang registration
-    if (isDriverExist && isVehicleExist) {
       Keyboard.dismiss(); // Dismiss the keyboard
       scrollToTop(); // Scroll to the top
       setViolation(!violation);
+      // vehicle 
+
+
+
+
     }
+
 
 
   }
@@ -376,6 +513,7 @@ function FormScreen({ navigation, route }) {
     })
 
   }, []);
+  
   const [vehicles, getVehicles] = useState([])
   // registered vehicle
 
