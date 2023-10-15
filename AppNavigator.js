@@ -25,7 +25,7 @@ import About from "./src/screens/About";
 import TicketScreen from "./src/screens/TicketScreen";
 import { useSelector, useDispatch } from "react-redux";
 import NetInfo from "@react-native-community/netinfo";
-
+import History from "./src/screens/History";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -52,6 +52,21 @@ function TabNavigator() {
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="History"
+        component={History}
+        options={{
+          tabBarActiveTintColor: "#3E7C1F",
+          headerStyle: {
+            backgroundColor: "#518638",
+          },
+          headerTintColor: "#ffff",
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="reader-sharp" size={size} color={color} />
           ),
         }}
       />
