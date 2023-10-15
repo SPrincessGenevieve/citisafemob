@@ -14,6 +14,7 @@ function ConstInputShort({
   onPress,
   autoCapitalize,
   value,
+  onChangeText,
 }) {
   const [fontsLoaded] = useFonts({
     "Roboto-Light": require("./../../assets/fonts/Roboto-Light.ttf"),
@@ -53,6 +54,7 @@ function ConstInputShort({
         placeholder={placeholder}
         placeholderTextColor="grey"
         autoCapitalize={autoCapitalize}
+        onChangeText={onChangeText}
         style={{
           color: "black",
           borderWidth: 1,

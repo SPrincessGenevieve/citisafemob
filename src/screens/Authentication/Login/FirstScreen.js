@@ -24,6 +24,14 @@ import axios from "../../../../plugins/axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setEnforcer,
+  setEnforcerEmail,
+  setEnforcerFirstName,
+  setEnforcerID,
+  setEnforcerLastName,
+  setEnforcerMiddleName,
+  setEnforcerPosition,
+  setEnforcerProfilePicture,
+  setEnforcerUsername,
   setLogin,
   setLogout,
   setOffline,
@@ -87,7 +95,23 @@ function FirstScreen({ navigation }) {
   
         const role = userResponse.data.role;
         const last_name = userResponse.data.last_name;
-        dispatch(setEnforcer(userResponse.data));
+        const first_name = userResponse.data.first_name;
+        const middle_name = userResponse.data.middle_name;
+        const username = userResponse.data.username;
+        const id = userResponse.data.id;
+        const profile_picture = userResponse.data.profile_picture;
+        const email = userResponse.data.email;
+        const position = userResponse.data.position;
+
+        dispatch(setEnforcerEmail(email));
+        dispatch(setEnforcerID(id));
+        dispatch(setEnforcerUsername(username));
+        dispatch(setEnforcerFirstName(first_name));
+        dispatch(setEnforcerMiddleName(middle_name));
+        dispatch(setEnforcerLastName(last_name));
+        dispatch(setEnforcerProfilePicture(profile_picture));
+        dispatch(setEnforcerPosition(position));
+
   
         if (role !== "ENFORCER") {
           alert(`Sir ${last_name}, Your Role is ${role}`);

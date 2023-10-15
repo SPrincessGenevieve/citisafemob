@@ -21,10 +21,11 @@
     "@rneui/base": "^0.0.0-edge.2",
     "@rneui/themed": "^0.0.0-edge.2",
     "add": "^2.0.6",
-    "axios": "^1.4.0",
+    "axios": "^1.5.1",
     "expo": "~49.0.5",
     "expo-camera": "~13.4.4",
     "expo-checkbox": "~2.4.0",
+    "expo-crypto": "~12.4.1",
     "expo-file-system": "~15.4.4",
     "expo-font": "~11.4.0",
     "expo-image-crop": "^1.0.4",
@@ -58,8 +59,7 @@
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
     "xml-js": "^1.6.11",
-    "xml2js": "^0.6.2",
-    "expo-crypto": "~12.4.1"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

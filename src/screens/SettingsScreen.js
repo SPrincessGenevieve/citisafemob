@@ -14,9 +14,11 @@ import ConstButton from "../components/ConstButton";
 import { useDispatch, useSelector } from "react-redux";
 import { setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
 import { setEmptyFinalDriver } from "../components/camera/infoSlice";
-import { setLogout } from "./Authentication/authSlice";
+import { setEnforcerFirstName, setEnforcerLastName, setEnforcerMiddleName, setEnforcerPosition, setEnforcerProfilePicture, setEnforcerUsername, setLogout } from "./Authentication/authSlice";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import ConstInput from "../components/ConstInputShort";
+import * as ImagePicker from "expo-image-picker";
+import axios from '../../plugins/axios'
 
 function SettingsScreen({ navigation }) {
   const [logout1, setLogout1] = useState(false);
@@ -24,8 +26,11 @@ function SettingsScreen({ navigation }) {
 
   const dispatch = useDispatch();
 
+  const Token = useSelector((state) => state.auth.token)
   const officer = useSelector((state) => state.auth.enforcer);
   const isOnline = useSelector((state) => state.auth.Online);
+
+  
 
   const handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
@@ -41,6 +46,59 @@ function SettingsScreen({ navigation }) {
     dispatch(setEmptyFinalVehicle());
     dispatch(setLogout());
   };
+
+  const handleImagePicker = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        const selectedImageUri = result.uri;
+        dispatch(setEnforcerProfilePicture(selectedImageUri));
+        // Handle the selected image URI as needed
+      }
+    } catch (error) {
+      console.error('ImagePicker Error: ', error);
+    }
+  };
+
+  const handleUpdateUserInfo = () => {
+
+    const ID = officer.id
+
+    const formData = new FormData();
+    formData.append("profile_picture", {
+      uri: officer.profile_picture,
+      type: "image/jpeg", // or the actual type of your image
+      name: "profile_picture.jpg",
+    });
+
+
+    formData.append("username", officer.username);
+    formData.append("first_name", officer.first_name);
+    formData.append("middle_name", officer.middle_name);
+    formData.append("last_name", officer.last_name);        
+    formData.append("id", officer.id);
+    formData.append("position", officer.position);    
+
+    axios.patch(`accounts/users/${ID}/`, formData, {
+      headers: {
+        Authorization: `token ${Token}`,
+      },
+    }).then((response) => {
+      alert('Successfully Update User')
+      setEdit(!edit)
+    }).catch((error) => {
+      console.log(error)
+      alert('Failed Update User')
+      setEdit(!edit)
+    })
+
+  }
 
   return (
     <KeyboardWithoutWrapper>
@@ -114,6 +172,8 @@ function SettingsScreen({ navigation }) {
                         marginLeft: 70,
                         padding: 2,
                       }}
+                      onPress={handleImagePicker}
+
                     >
                       <Icon
                         style={{ fontSize: 20, color: "white" }}
@@ -123,21 +183,42 @@ function SettingsScreen({ navigation }) {
                   </View>
                 </View>
 
-                <View style={{ alignItems: "center", marginTop: 50 }}>
+                <View style={{ alignItems: "center", marginTop: 150 }}>
+                <ConstInput
+                    text={"Username"}
+                    placeholder="Username"
+                    width={300}
+                    value={officer.username}
+                    onChangeText={(text) => {
+                      dispatch(setEnforcerUsername(text))
+                    }}
+                  ></ConstInput>
                   <ConstInput
                     text={"First name"}
                     placeholder="First name"
                     width={300}
+                    value={officer.first_name}
+                    onChangeText={(text) => {
+                      dispatch(setEnforcerFirstName(text))
+                    }}
                   ></ConstInput>
                   <ConstInput
                     text={"Middle name"}
                     placeholder="Middle name"
                     width={300}
+                    value={officer.middle_name}
+                    onChangeText={(text) => {
+                      dispatch(setEnforcerMiddleName(text))
+                    }}
                   ></ConstInput>
                   <ConstInput
                     text={"Last name"}
                     placeholder="Last name"
                     width={300}
+                    value={officer.last_name}
+                    onChangeText={(text) => {
+                      dispatch(setEnforcerLastName(text))
+                    }}                    
                   ></ConstInput>
                   <View
                     style={{
@@ -145,18 +226,15 @@ function SettingsScreen({ navigation }) {
                       width: 300,
                     }}
                   >
-                    <View style={{ marginRight: 10 }}>
-                      <ConstInput
-                        text={"Role"}
-                        placeholder="Role"
-                        width={140}
-                      ></ConstInput>
-                    </View>
                     <View>
                       <ConstInput
                         text={"Position"}
                         placeholder="Position"
-                        width={140}
+                        width={300}
+                        value={officer.position}
+                        onChangeText={(text) => {
+                          dispatch(setEnforcerPosition(text))
+                        }}
                       ></ConstInput>
                     </View>
                   </View>
@@ -181,7 +259,7 @@ function SettingsScreen({ navigation }) {
                         borderRadius: 10,
                         marginRight: 20,
                       }}
-                      onPress={() => setEdit(!edit)}
+                      onPress={handleUpdateUserInfo}
                     >
                       <Text style={{ color: "white" }}>Save</Text>
                     </TouchableOpacity>
