@@ -26,35 +26,42 @@ function ConstInputShort({
   return (
     <View
       style={{
-        width: "33.3%",
         marginLeft: marginLeft,
         marginRight: marginRight,
+        marginBottom: 20,
       }}
     >
-      <Text
-        style={{
-          fontSize: 10,
-          color: "white",
-          fontFamily: "Roboto-Light",
-          marginLeft: 7,
-        }}
-      >
-        {text}
-      </Text>
+      <View style={{ zIndex: 1, width: 150 }}>
+        <Text
+          style={{
+            fontSize: 13,
+            color: "black",
+            marginLeft: 7,
+            position: "absolute",
+            backgroundColor: "white",
+            paddingHorizontal: 10,
+            marginTop: -10,
+          }}
+        >
+          {text}
+        </Text>
+      </View>
+
       <TextInput
         editable={editable}
         value={value}
         placeholder={placeholder}
-        placeholderTextColor="white"
+        placeholderTextColor="grey"
         autoCapitalize={autoCapitalize}
         style={{
-          color: "white",
-          borderBottomWidth: 0.9,
+          color: "black",
+          borderWidth: 0.9,
           borderRadius: 10,
-          padding: 10,
-          borderColor: "white",
-          fontSize: 17,
+          borderColor: "black",
+          fontSize: 15,
           width: width,
+          height: 45,
+          paddingHorizontal: 10,
         }}
       ></TextInput>
     </View>
