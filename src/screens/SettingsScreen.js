@@ -97,8 +97,8 @@ function SettingsScreen({ navigation }) {
                   <View>
                     <Image
                       style={{ height: 90, width: 90, borderRadius: 30 }}
-                      source={profile}
-                    ></Image>
+                      source={officer.profile_picture ? { uri: officer.profile_picture } : require('./../../assets/default_profile.png')}
+                      ></Image>
                   </View>
                   <View
                     style={{
@@ -203,8 +203,8 @@ function SettingsScreen({ navigation }) {
             <View style={{ position: "absolute" }}>
               <Image
                 style={{ height: 90, width: 90, borderRadius: 30 }}
-                source={profile}
-              ></Image>
+                source={officer.profile_picture ? { uri: officer.profile_picture } : require('./../../assets/default_profile.png')}
+                ></Image>
             </View>
 
             <View style={{ marginTop: "25%" }}>

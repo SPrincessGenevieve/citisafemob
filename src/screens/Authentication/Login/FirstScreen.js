@@ -31,8 +31,6 @@ import {
   setToken,
 } from "../authSlice";
 import NetInfo from "@react-native-community/netinfo";
-import * as SQLite from "expo-sqlite";
-import * as Crypto from 'expo-crypto';
 
 function FirstScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -44,96 +42,16 @@ function FirstScreen({ navigation }) {
   const [animationValue] = useState(new Animated.Value(1));
 
   const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
+    username: "mobile",
+    password: "2023@engracia",
   });
   // get the authSlice Online
   const internet = useSelector((state) => state.auth.Online)
 
 
-  // database
-  const db = SQLite.openDatabase('localstorage5');
-
-  // create table users
-  db.transaction((tx) => {
-    tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        username TEXT, 
-        password TEXT, 
-        token TEXT,
-        first_name TEXT,
-        last_name TEXT,
-        middle_name TEXT,
-        position TEXT 
-        );`
-    );
-  });
-
-
-
-  // insert users
-  const saveCredentialsToDatabase = async (username, password, token, first_name, last_name, middle_name, position) => {
-    try {
-
-      db.transaction((tx) => {
-        tx.executeSql(
-          'INSERT INTO users (username, password, token, first_name, last_name, middle_name, position) VALUES (?, ?, ?, ?, ?, ?, ?);',
-          [username, password, token, first_name, last_name, middle_name, position],
-          (tx, result) => {
-            if (result.rowsAffected > 0) {
-              console.log('Credentials saved successfully.');
-            } else {
-              console.log('Failed to save credentials.');
-            }
-          }
-        );
-      });
-    } catch (error) {
-      console.error('Error hashing password:', error);
-    }
-  };
-
-// offline login
-const checkOfflineCredentials = async () => {
-  try {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM users WHERE username = ? AND password = ?;',
-        [credentials.username, credentials.password],
-        (tx, result) => {
-          if (result.rows.length > 0) {
-            const user = result.rows.item(0);
-
-            const userID = user.id;
-            const username = user.username;
-            const first_name = user.first_name;
-            const last_name = user.last_name;
-            const middle_name = user.middle_name;
-            const position = user.position;
-            const token = user.token;
-
-            dispatch(setToken(token));
-            dispatch(setEnforcer({userID, first_name, middle_name, last_name, position}))
-
-
-            dispatch(setLogin());
-          } else {
-            alert('Invalid credentials or user not found.');
-          }
-        }
-      );
-    });
-  } catch (error) {
-    console.error('Error hashing password:', error);
-  }
-};
-
-
   const unsubscribe = NetInfo.addEventListener((state) => {
     if (state.isConnected === false) {
-      console.log("Not Connected");
-      dispatch(setOffline());
-      dispatch(setLogout());
+      alert("Please Connect to the Internet")
     } else if (state.isConnected === true) {
       console.log("Connected");
       dispatch(setOnline());
@@ -153,10 +71,7 @@ const checkOfflineCredentials = async () => {
 
 
   const handleLogin = async () => {
-    if (!internet) {
-      checkOfflineCredentials();
-      alert("You are in OFFLINE MODE");
-    } else {
+
       try {
         const response = await axios.post("accounts/token/login/", credentials);
         const token = response.data.auth_token;
@@ -168,14 +83,10 @@ const checkOfflineCredentials = async () => {
             Authorization: `token ${token}`,
           },
         });
+        console.log(userResponse.data)
   
         const role = userResponse.data.role;
         const last_name = userResponse.data.last_name;
-        const first_name = userResponse.data.first_name;
-        const middle_name = userResponse.data.middle_name;
-        const position = userResponse.data.position;
-
-  
         dispatch(setEnforcer(userResponse.data));
   
         if (role !== "ENFORCER") {
@@ -185,15 +96,13 @@ const checkOfflineCredentials = async () => {
             password: "",
           });
         } else {
-          // Save credentials to local SQLite database          
-          saveCredentialsToDatabase(credentials.username, credentials.password, token, first_name, last_name, middle_name, position );
           dispatch(setLogin());
         }
       } catch (error) {
         console.error('Error during login:', error);
         // Handle the error, e.g., show an alert or update the UI
       }
-    }
+    
   };
   useEffect(() => {
     return () => {

@@ -5,12 +5,12 @@ import {
   Animated,
   Dimensions,
   TouchableOpacity,
+  Image
 } from "react-native";
 import GradientBackground from "../components/GradientBGR";
 import ConstButton from "../components/ConstButton";
 import { useFonts } from "expo-font";
 import profile from "./../../assets/default_profile.png";
-import { Image } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import { useSelector, useDispatch } from "react-redux";
 import NetInfo from '@react-native-community/netinfo'
@@ -68,19 +68,8 @@ function HomeScreen({ navigation }) {
     return () => clearInterval(intervalId);
   }, []);
 
-  const unsubscribe = NetInfo.addEventListener(state => {
-    if (state.isConnected === false) {
-      console.log("No Internet")
-    } else if (state.isConnected === true) {
-      console.log('Connected')
-      dispatch(setOnline())
-    }
 
-  });
 
-  useEffect(() => {
-    unsubscribe()
-  })
 
   if (!fontsLoaded) {
     return null;
@@ -124,15 +113,20 @@ function HomeScreen({ navigation }) {
         }}
       >
         <View>
-          <Image
-            source={profile}
-            style={{
-              position: "absolute",
-              display: "flex",
-              right: -10,
-              marginTop: 65,
-            }}
-          ></Image>
+        <Image
+          source={user.profile_picture ? { uri: user.profile_picture } : require('./../../assets/default_profile.png')}
+          style={{
+            position: "absolute",
+            display: "flex",
+            right: -10,
+            marginTop: 65,
+            width: 50, // Adjust width and height as needed
+            height: 50,
+            borderRadius: 25, // Optional: Add borderRadius for a circular image
+          }}
+        />
+
+
         </View>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <Text
@@ -188,9 +182,6 @@ function HomeScreen({ navigation }) {
               marginTop: "100%",
             }}
           >
-
-            {isOnline ? (
-              <>
               <ConstButton
                 onPress={() => setCite(!cite)}
                 name="scan1"
@@ -205,28 +196,6 @@ function HomeScreen({ navigation }) {
                 marginLeftText={10}
                 height={60}
                 ></ConstButton>               
-              </>
-
-            ) : (
-              <>
-              <ConstButton
-              onPress={handleForm}
-              name="form"
-              marginLeftText={10}
-              height={60}
-              title="Manual Entry"
-            ></ConstButton>
-
-              <ConstButton
-              onPress={handleRecord}
-              name="file1"
-              title="Offline Ticket"
-              marginLeftText={10}
-              height={60}
-            ></ConstButton>
-            </>
-            )}
-
 
           </View>
         </>
@@ -261,7 +230,6 @@ function HomeScreen({ navigation }) {
             }}
           >
 
-            {isOnline && (
               <ConstButton
               onPress={handleIntroLicense}
               name="scan1"
@@ -269,7 +237,7 @@ function HomeScreen({ navigation }) {
               marginLeftText={10}
               height={60}
             ></ConstButton>
-            )}
+            
             <ConstButton
               onPress={handleForm}
               name="form"
