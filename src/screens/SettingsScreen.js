@@ -20,23 +20,22 @@ function SettingsScreen({ navigation }) {
   const [logout1, setLogout1] = useState(false);
   const dispatch = useDispatch();
 
-  const officer = useSelector((state) => state.auth.enforcer)
-  const isOnline = useSelector((state) => state.auth.Online)
-
+  const officer = useSelector((state) => state.auth.enforcer);
+  const isOnline = useSelector((state) => state.auth.Online);
 
   const handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
   };
 
   const handleAbout = () => {
-    navigation.navigate("AboutScreen");
+    navigation.navigate("About");
   };
 
   const handleLogout = () => {
     // clear all info
-    dispatch(setEmptyFinalDriver())
-    dispatch(setEmptyFinalVehicle())
-    dispatch(setLogout())
+    dispatch(setEmptyFinalDriver());
+    dispatch(setEmptyFinalVehicle());
+    dispatch(setLogout());
   };
 
   return (
@@ -74,103 +73,104 @@ function SettingsScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={{ marginTop: "35%" }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold", textTransform: 'capitalize' }}>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                textTransform: "capitalize",
+              }}
+            >
               {officer.first_name} {officer.middle_name} {officer.last_name}
             </Text>
           </View>
         </View>
 
-        <View style={{ height: "100%" }}>        
-        {isOnline ? (
-          <>
-                      {/* privacy */}
-          <View
-            style={{
-              height: 60,
-              justifyContent: "center",
-              marginTop: 20,
-              borderTopColor: "#D9D9D9",
-              borderBottomColor: "#D9D9D9",
-              borderTopWidth: 1,
-              borderBottomWidth: 1,
-            }}
-          >
-            <TouchableOpacity
-              onPress={handlePrivacy}
-              style={{
-                flexDirection: "row",
-                marginLeft: 25,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 15 }}>Privary and Security</Text>
-              <Icon
-                name="right"
-                style={{ marginLeft: 210, fontSize: 20, color: "grey" }}
-              ></Icon>
-            </TouchableOpacity>
-
-
-          </View>
-          {/* about */}
-          <View
-            style={{
-              height: 60,
-              justifyContent: "center",
-              borderBottomColor: "#D9D9D9",
-              borderBottomWidth: 1,
-            }}
-          >
-            <TouchableOpacity
-              onPress={handleAbout}
-              style={{
-                flexDirection: "row",
-                marginLeft: 25,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 15 }}>About</Text>
-              <Icon
-                name="right"
-                style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
-              ></Icon>
-            </TouchableOpacity>
-          </View>
-          </>
-        ) : (
-          <>
-                      {/* privacy */}
-          <View
-            style={{
-              height: 60,
-              justifyContent: "center",
-              marginTop: 20,
-              borderTopColor: "#D9D9D9",
-              borderBottomColor: "#D9D9D9",
-              borderTopWidth: 1,
-              borderBottomWidth: 1,
-            }}
-          >
-            <TouchableOpacity
-              onPress={handleAbout}
-              style={{
-                flexDirection: "row",
-                marginLeft: 25,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 15 }}>About</Text>
-              <Icon
-                name="right"
-                style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
-              ></Icon>
-            </TouchableOpacity>
-          </View>
-          </>
-        )}
-
-
-
+        <View style={{ height: "100%" }}>
+          {isOnline ? (
+            <>
+              {/* privacy */}
+              <View
+                style={{
+                  height: 60,
+                  justifyContent: "center",
+                  marginTop: 20,
+                  borderTopColor: "#D9D9D9",
+                  borderBottomColor: "#D9D9D9",
+                  borderTopWidth: 1,
+                  borderBottomWidth: 1,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={handlePrivacy}
+                  style={{
+                    flexDirection: "row",
+                    marginLeft: 25,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 15 }}>Privary and Security</Text>
+                  <Icon
+                    name="right"
+                    style={{ marginLeft: 210, fontSize: 20, color: "grey" }}
+                  ></Icon>
+                </TouchableOpacity>
+              </View>
+              {/* about */}
+              <View
+                style={{
+                  height: 60,
+                  justifyContent: "center",
+                  borderBottomColor: "#D9D9D9",
+                  borderBottomWidth: 1,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={handleAbout}
+                  style={{
+                    flexDirection: "row",
+                    marginLeft: 25,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 15 }}>About</Text>
+                  <Icon
+                    name="right"
+                    style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
+                  ></Icon>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <>
+              {/* privacy */}
+              <View
+                style={{
+                  height: 60,
+                  justifyContent: "center",
+                  marginTop: 20,
+                  borderTopColor: "#D9D9D9",
+                  borderBottomColor: "#D9D9D9",
+                  borderTopWidth: 1,
+                  borderBottomWidth: 1,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={handleAbout}
+                  style={{
+                    flexDirection: "row",
+                    marginLeft: 25,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 15 }}>About</Text>
+                  <Icon
+                    name="right"
+                    style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
+                  ></Icon>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
 
           <View
             style={{
@@ -196,8 +196,6 @@ function SettingsScreen({ navigation }) {
           </View>
         </View>
 
-
-        
         {logout1 ? (
           <>
             <View

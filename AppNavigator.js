@@ -138,9 +138,15 @@ function AppNavigator() {
           }}
         />
         <Stack.Screen
-          name="AboutScreen"
+          name="About"
           component={About}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: "#518638",
+            },
+            headerTintColor: "#ffff",
+          }}
         />
         <Stack.Screen
           name="OCRScan"
