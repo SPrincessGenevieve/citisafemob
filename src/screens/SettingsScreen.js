@@ -59,26 +59,71 @@ function SettingsScreen({ navigation }) {
             >
               <View
                 style={{
-                  backgroundColor: "black",
-                  opacity: 0.5,
+                  backgroundColor: "white",
                   position: "absolute",
                   height: "100%",
                   width: "100%",
-                  alignItems: "center",
-                }}
-              ></View>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  position: "absolute",
-                  height: "70%",
-                  width: "90%",
                   display: "flex",
                   justifyContent: "center",
                   borderRadius: 20,
                 }}
               >
-                <View style={{ alignItems: "center", marginTop: -10 }}>
+                <View
+                  style={{
+                    position: "absolute",
+                    marginTop: 20,
+                    width: 100,
+                    left: 10,
+                    top: 10,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => setEdit(!edit)}
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                  >
+                    <Icon size={30} name="back"></Icon>
+                    <Text style={{ marginLeft: 10, fontSize: 20 }}>BACK</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    marginLeft: "40%",
+                    marginTop: 80,
+                  }}
+                >
+                  <View>
+                    <Image
+                      style={{ height: 90, width: 90, borderRadius: 30 }}
+                      source={profile}
+                    ></Image>
+                  </View>
+                  <View
+                    style={{
+                      position: "absolute",
+                      display: "flex",
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: "#3E7C1F",
+                        borderRadius: 20,
+                        marginTop: 70,
+                        marginLeft: 70,
+                        padding: 2,
+                      }}
+                    >
+                      <Icon
+                        style={{ fontSize: 20, color: "white" }}
+                        name="edit"
+                      ></Icon>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={{ alignItems: "center", marginTop: 50 }}>
                   <ConstInput
                     text={"First name"}
                     placeholder="First name"
@@ -94,40 +139,36 @@ function SettingsScreen({ navigation }) {
                     placeholder="Last name"
                     width={300}
                   ></ConstInput>
-                  <ConstInput
-                    text={"Role"}
-                    placeholder="Role"
-                    width={300}
-                  ></ConstInput>
-                  <ConstInput
-                    text={"Position"}
-                    placeholder="Position"
-                    width={300}
-                  ></ConstInput>
                   <View
                     style={{
-                      width: "35%",
+                      flexDirection: "row",
+                      width: 300,
+                    }}
+                  >
+                    <View style={{ marginRight: 10 }}>
+                      <ConstInput
+                        text={"Role"}
+                        placeholder="Role"
+                        width={140}
+                      ></ConstInput>
+                    </View>
+                    <View>
+                      <ConstInput
+                        text={"Position"}
+                        placeholder="Position"
+                        width={140}
+                      ></ConstInput>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      width: "40%",
                       flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <TouchableOpacity
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%",
-                        height: 40,
-                        backgroundColor: "white",
-                        borderWidth: 2,
-                        borderColor: "green",
-                        borderRadius: 10,
-                        marginRight: 20,
-                      }}
-                      onPress={() => setEdit(!edit)}
-                    >
-                      <Text>Cancel</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity
                       style={{
                         alignItems: "center",
@@ -164,27 +205,6 @@ function SettingsScreen({ navigation }) {
                 style={{ height: 90, width: 90, borderRadius: 30 }}
                 source={profile}
               ></Image>
-            </View>
-            <View
-              style={{
-                position: "absolute",
-                display: "flex",
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  backgroundColor: "#3E7C1F",
-                  borderRadius: 20,
-                  marginTop: 70,
-                  marginLeft: 70,
-                  padding: 2,
-                }}
-              >
-                <Icon
-                  style={{ fontSize: 20, color: "white" }}
-                  name="edit"
-                ></Icon>
-              </TouchableOpacity>
             </View>
 
             <View style={{ marginTop: "25%" }}>

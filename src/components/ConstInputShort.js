@@ -55,7 +55,7 @@ function ConstInputShort({
         autoCapitalize={autoCapitalize}
         style={{
           color: "black",
-          borderWidth: 0.9,
+          borderWidth: 1,
           borderRadius: 10,
           borderColor: "black",
           fontSize: 15,
