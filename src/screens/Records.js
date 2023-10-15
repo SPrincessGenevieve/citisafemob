@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTicketInfo } from "../components/camera/ticketSlice";
 
 function Records({ navigation }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [sortAsc, setSortAsc] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -35,8 +35,7 @@ function Records({ navigation }) {
   const hideModal = () => setVisible(false);
   const containerStyle = { backgroundColor: "white", padding: 20 };
   const Token = useSelector((state) => state.auth.token);
-  const isOnline = useSelector((state) => state.auth.Online)
-
+  const isOnline = useSelector((state) => state.auth.Online);
 
   const handleDetails = () => {
     navigation.navigate("RecordDetails");
@@ -50,26 +49,23 @@ function Records({ navigation }) {
   const [ticket, getTicket] = useState([]);
 
   useEffect(() => {
-
     if (isOnline) {
       axios
-      .get("ticket/register/", {
-        headers: {
-          Authorization: `token ${Token}`,
-        },
-      })
-      .then((response) => {
-        getTicket(response.data);
-      })
-      .catch((error) => {
-        alert("Failed to Fetch Tickets")
-        navigation.navigate("HomeScreen");
-      });
-    }else {
+        .get("ticket/register/", {
+          headers: {
+            Authorization: `token ${Token}`,
+          },
+        })
+        .then((response) => {
+          getTicket(response.data);
+        })
+        .catch((error) => {
+          alert("Failed to Fetch Tickets");
+          navigation.navigate("HomeScreen");
+        });
+    } else {
       // for localstorage
     }
-
- 
   }, []);
 
   const handleTicketClick = (ticketItem) => {
@@ -189,7 +185,6 @@ function Records({ navigation }) {
     ));
   };
 
-  
   function capitalizeWords(str) {
     return str.replace(/\b\w/g, (match) => match.toUpperCase());
   }
@@ -340,7 +335,7 @@ function Records({ navigation }) {
               <PreviewComponent
                 title={"Ticket Status"}
                 value={selectedTicket.ticket_status}
-              ></PreviewComponent>              
+              ></PreviewComponent>
               <PreviewComponent
                 title={"PLACE OF VIOLATION"}
                 value={selectedTicket.place_violation}
@@ -430,10 +425,11 @@ function Records({ navigation }) {
                 value={searchTerm}
                 onChangeText={(text) => setSearchTerm(text)}
               />
-              <TouchableOpacity onPress={toggleSortIcon}>
-                <Icon name="search1" style={{ fontSize: 25 }}></Icon>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={toggleSortIcon}>
+
+              <TouchableOpacity
+                onPress={toggleSortIcon}
+                style={{ marginLeft: 15 }}
+              >
                 <Icon2
                   name={sortAsc ? "sort-asc" : "sort-desc"}
                   size={30}
