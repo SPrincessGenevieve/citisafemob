@@ -44,6 +44,9 @@ export const infoSliceCOR = createSlice({
     setIsCarRegistered: (state) => {
       state.isCarRegistered = true
     },
+    setDefaultCarRegistered: (state) => {
+      state.isCarRegistered = false
+    },
     setFinalVehicle: (state) => {
 
       state.finalVehicle.name = state.extractedInfo.complete_owners_name
@@ -55,7 +58,6 @@ export const infoSliceCOR = createSlice({
       state.finalVehicle.vehicle_class = state.extractedInfo.class
       state.finalVehicle.body_markings = state.extractedInfo.body_markings
       state.finalVehicle.vehicle_model = state.extractedInfo.series
-      state.finalVehicle.driverID = state.driverids
     },
     setdriverID: (state, action) => {
       state.driverids = action.payload
@@ -163,6 +165,7 @@ export const {
   setManualDriverID,
   setEmptyFinalVehicle,
   setEmptyextractedInfo,
+  setDefaultCarRegistered
 } = infoSliceCOR.actions;
 
 export default infoSliceCOR.reducer;

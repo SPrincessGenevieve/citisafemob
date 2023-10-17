@@ -1,9 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Text, TextInput, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
+import axios from '../../plugins/axios'
+import { useSelector } from "react-redux";
 
 function History(props) {
+
+  const Token = useSelector((state) => state.auth.token);
+
+  // get all ticket
+  const [ticket, getTicket] = useState([]);
+
+  useEffect(() => {
+      axios
+        .get("ticket/register/", {
+          headers: {
+            Authorization: `token ${Token}`,
+          },
+        })
+        .then((response) => {
+
+          console.log(response.data)
+
+          getTicket(response.data);
+        })
+        .catch((error) => {
+          alert("Failed to Fetch Tickets");
+          navigation.navigate("HomeScreen");
+        });
+    
+  }, []);
+
+
+
   return (
     <View
       style={{
@@ -85,7 +115,7 @@ function History(props) {
                 <Text>Princess Genevieve Sagrado</Text>
               </View>
               <View style={{ marginTop: 20 }}>
-                <Text> > Driving without a helmet</Text>
+                <Text>Driving without a helmet</Text>
               </View>
               <View style={{ marginTop: 20 }}>
                 <TouchableOpacity>

@@ -120,6 +120,9 @@ export const infoSlice = createSlice({
     setDriverRegisterd: (state) => {
       state.isDriverRegisterd = true
     },
+    setDefaultDriverRegisterd: (state) => {
+      state.isDriverRegisterd = false
+    },
     setDriverID: (state, action) => {
       state.id = action.payload
     },
@@ -170,7 +173,8 @@ export const {
   setAddress,
   setBirthDate,
   setNationality,
-  setGetFinalDriver
+  setGetFinalDriver,
+  setDefaultDriverRegisterd
 } = infoSlice.actions;
 
 export default infoSlice.reducer;

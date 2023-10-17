@@ -22,6 +22,7 @@ import {
   setFinalVehicle,
   setGetFinalVehicle,
   setIsCarRegistered,
+  setManualDriverID,
   setRecognizedText,
   setVehicleID,
 } from "./camera/infoSliceCOR";
@@ -198,6 +199,7 @@ export default function CameraScanCOR() {
           const driverIDString = vehicleExists.driverID.toString();
           dispatch(setIsCarRegistered());
           dispatch(setVehicleID(vehicleID));
+          dispatch(setManualDriverID(driverIDString))
           dispatch(
             setGetFinalVehicle({
               ...vehicleExists,
@@ -210,9 +212,9 @@ export default function CameraScanCOR() {
               vehicle_class: vehicleExists.vehicle_class,
               body_markings: vehicleExists.body_markings,
               vehicle_model: vehicleExists.vehicle_model,
-              driverID: driverIDString,
             })
           );
+
           navigation.navigate("FormScreen");
         } else {
           console.log(`Vehicle Not found: ${concatenatedFields.plate_no}`);

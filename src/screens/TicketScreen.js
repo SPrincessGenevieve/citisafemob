@@ -8,8 +8,8 @@ import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import * as Print from 'expo-print';
 import {shareAsync} from 'expo-sharing'
-import { setEmptyFinalDriver } from "../components/camera/infoSlice";
-import { setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
+import { setDefaultDriverRegisterd, setEmptyFinalDriver } from "../components/camera/infoSlice";
+import { setDefaultCarRegistered, setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
 
 
 function TicketScreen({ navigation }) {
@@ -104,6 +104,8 @@ function TicketScreen({ navigation }) {
     
       dispatch(setEmptyFinalDriver());
       dispatch(setEmptyFinalVehicle());
+      dispatch(setDefaultCarRegistered());
+      dispatch(setDefaultDriverRegisterd());
       navigation.navigate("HomeScreen");
     
     } catch (error) {

@@ -239,9 +239,6 @@ function FormScreen({ navigation, route }) {
 
 
 // final screen
-
-
-// kani 2
   const handleTicket = () => {
     const driverID = driver.id
     const vehicleID = vehicle.id
@@ -294,66 +291,154 @@ function FormScreen({ navigation, route }) {
     const isDriverExist = driver.isDriverRegisterd
     const isVehicleExist = vehicle.isCarRegistered
 
-    // if driver exist
-    if (!isDriverExist) {
-      console.log('Not Exist')
-      console.log(isDriverExist)
+    if (!isDriverExist && !isVehicleExist) {
 
       const drivers = driver.finalDriver
       console.log(drivers)  
+      
+      const vehicles = vehicle.finalVehicle
+      console.log(vehicles)
+
 
       axios.post(`drivers/register/`, drivers, {
         headers: {
           Authorization: `token ${Token}`
         }
       }).then((response) => {
-          const id = response.data.id
-          dispatch(setManualDriverID(id))
-          dispatch(setDriverID(id))
-          console.log(drivers)
+          const id = response.data.id;
+          const idString = id ? id.toString() : ''; // Convert to string, or use an empty string if undefined
+          console.log('Driver ID:', idString);
+
+          dispatch(setDriverID(idString))
+          dispatch(setDriverRegisterd())
+          dispatch(setManualDriverID(idString))
+
+          const formData1 = {}
+
+          formData1.append('driverID', idString);
+          formData1.append('name', vehicles.name);
+          formData1.append('address', vehicles.address);
+          formData1.append('contact_number', vehicles.contact_number);
+          formData1.append('plate_number', vehicles.plate_number);
+          formData1.append('make', vehicles.make);
+          formData1.append('color', vehicles.color);
+          formData1.append('vehicle_class', vehicles.vehicle_class);
+          formData1.append('body_markings', vehicles.body_markings);
+          formData1.append('vehicle_model', vehicles.vehicle_model)
+
+
           alert('Successfully Register Driver')
+
+          axios.post(`vehicles/register/`, formData1, {
+            headers: {
+              Authorization: `token ${Token}`
+            }
+          }).then((response) => {
+              const id = response.data.id
+              dispatch(setVehicleID(id))
+              dispatch(setIsCarRegistered())
+    
+              console.log(vehicles)
+              alert('Successfully Register Vehicle')
+    
+              Keyboard.dismiss(); // Dismiss the keyboard
+              scrollToTop(); // Scroll to the top
+              setViolation(!violation);
+            }).catch((error) => {
+              console.log('Error for Vehicle')
+              console.log(error)
+              console.log(formData1)
+              alert("Please do check the ORCR Info!!")
+    
+            })
+
+
+
           Keyboard.dismiss(); // Dismiss the keyboard
           scrollToTop(); // Scroll to the top
           setViolation(!violation);
+          
         }).catch((error) => {
           console.log('Error for Drivers')
           console.log(error)
+          console.log(drivers)
           alert("Please do check the Driver License Info!!")
         })
 
 
+
     }
 
-    if (!isVehicleExist) {
-      console.log('Vehicle Not Exist')
-      console.log(isVehicleExist)
+    
+    // if driver not exist but vehicle exist
+    // if (!isDriverExist && isVehicleExist) {
+    //   console.log('Not Exist')
+    //   console.log(isDriverExist)
 
-      const vehicles = vehicle.finalVehicle
-      console.log(vehicles)
+    //   const drivers = driver.finalDriver
+    //   console.log(drivers)  
 
-      axios.post(`vehicles/register/`, vehicles, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-          const id = response.data.id
-          dispatch(setVehicleID(id))
-          console.log(vehicles)
-          alert('Successfully Register Vehicle')
-          Keyboard.dismiss(); // Dismiss the keyboard
-          scrollToTop(); // Scroll to the top
-          setViolation(!violation);
-        }).catch((error) => {
-          console.log('Error for Vehicle')
-          console.log(error)
-          console.log(vehicles)
-          alert("Please do check the ORCR Info!!")
+    //   axios.post(`drivers/register/`, drivers, {
+    //     headers: {
+    //       Authorization: `token ${Token}`
+    //     }
+    //   }).then((response) => {
+    //       const id = response.data.id
+    //       dispatch(setManualDriverID(id))
+    //       dispatch(setDriverID(id))
+    //       //
+    //       dispatch(setDriverRegisterd())
 
-        })
-    }
+    //       alert('Successfully Register Driver')
 
-    // if nag exist ang duha then skip niya ang registration
-    if (isDriverExist && isVehicleExist) {
+    //       Keyboard.dismiss(); // Dismiss the keyboard
+    //       scrollToTop(); // Scroll to the top
+    //       setViolation(!violation);
+          
+    //     }).catch((error) => {
+    //       console.log('Error for Drivers')
+    //       console.log(error)
+    //       console.log(drivers)
+    //       alert("Please do check the Driver License Info!!")
+    //     })
+
+
+    // }
+
+    // if (!isVehicleExist) {
+    //   console.log('Vehicle Not Exist')
+    //   console.log(isVehicleExist)
+
+    //   const vehicles = vehicle.finalVehicle
+    //   console.log(vehicles)
+
+    //   axios.post(`vehicles/register/`, vehicles, {
+    //     headers: {
+    //       Authorization: `token ${Token}`
+    //     }
+    //   }).then((response) => {
+    //       const id = response.data.id
+    //       dispatch(setVehicleID(id))
+
+    //       dispatch(setIsCarRegistered())
+
+    //       console.log(vehicles)
+    //       alert('Successfully Register Vehicle')
+
+    //       Keyboard.dismiss(); // Dismiss the keyboard
+    //       scrollToTop(); // Scroll to the top
+    //       setViolation(!violation);
+    //     }).catch((error) => {
+    //       console.log('Error for Vehicle')
+    //       console.log(error)
+    //       console.log(vehicles)
+    //       alert("Please do check the ORCR Info!!")
+
+    //     })
+    // }
+
+
+    if (isVehicleExist && isDriverExist){
       Keyboard.dismiss(); // Dismiss the keyboard
       scrollToTop(); // Scroll to the top
       setViolation(!violation);
