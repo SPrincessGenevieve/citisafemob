@@ -47,6 +47,7 @@ export default function CameraScanCOR() {
   const navigation = useNavigation();
 
   const Token = useSelector((state) => state.auth.token);
+  const driverSliceID = useSelector((state) => state.infoText.id)
 
   const [data, setData] = useState({
     plate_no: "",
@@ -192,7 +193,7 @@ export default function CameraScanCOR() {
           (vehicles) => vehicles.plate_number === concatenatedFields.plate_no
         );
 
-        if (vehicleExists) {
+        if (vehicleExists && vehicleExists.driverID === driverSliceID) {
           alert(`Existing Vehicle: ${concatenatedFields.plate_no}`);
 
           const vehicleID = vehicleExists.id;
@@ -216,12 +217,31 @@ export default function CameraScanCOR() {
           );
 
           navigation.navigate("FormScreen");
+        } else if (vehicleExists && vehicleExists.driverID !== driverSliceID){
+          
+          alert(`Registered Vehicle but not the same driver: ${concatenatedFields.plate_no}`);
+          dispatch(
+            setGetFinalVehicle({
+              ...vehicleExists,
+              name: vehicleExists.name,
+              address: vehicleExists.address,
+              contact_number: vehicleExists.contact_number,
+              plate_number: vehicleExists.plate_number,
+              make: vehicleExists.make,
+              color: vehicleExists.color,
+              vehicle_class: vehicleExists.vehicle_class,
+              body_markings: vehicleExists.body_markings,
+              vehicle_model: vehicleExists.vehicle_model,
+            })
+          );
+          navigation.navigate("FormScreen");
+
         } else {
-          console.log(`Vehicle Not found: ${concatenatedFields.plate_no}`);
           alert(`New Vehicle: ${concatenatedFields.plate_no}`);
           dispatch(setFinalVehicle());
           navigation.navigate("FormScreen");
         }
+
       } else {
         Alert.alert("Text extraction failed. Please try again later.");
       }
