@@ -78,9 +78,10 @@ export default function ColorSelector({ navigation }) {
 
   const handleCustomColorChange = (color) => {
     setCustomColor(color);
-    dispatch(setColor(color))
+    dispatch(setColor(color));
+    console.log("Custom color changed:", color);
   };
-
+  
   const getColorName = (colorHex) => {
     const predefinedColor = predefinedColors.find(
       (color) => color.hex === colorHex
@@ -155,12 +156,12 @@ export default function ColorSelector({ navigation }) {
         color.name.toLowerCase() === customColor.toLowerCase() ||
         color.hex.toLowerCase() === customColor.toLowerCase()
     );
-
+  
     if (matchedColor) {
       setSelectedColor(matchedColor.hex);
-      dispatch(setColor(matchedColor.hex))
+      dispatch(setColor(matchedColor.hex));
       setCustomColor("");
-      
+      console.log("Custom color submitted:", matchedColor.hex);
     } else {
       alert("Color not found. Please enter a valid color name or hex code.");
     }

@@ -72,7 +72,6 @@ import {
 } from "../components/camera/infoSliceCOR";
 import { setTicketInfo } from "../components/camera/ticketSlice";
 import * as SQLite from "expo-sqlite";
-import ConstDrop from "../components/ConstDrop";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();

@@ -228,6 +228,10 @@ function Records({ navigation }) {
                 title={"MFRTA TICKET NO."}
                 value={selectedTicket.MFRTA_TCT_NO}
               ></PreviewComponent>
+                            <PreviewComponent
+                title={"Penalty Amount"}
+                value={selectedTicket.penalty_amount}
+              ></PreviewComponent>
               <PreviewComponent
                 title={"DATE"}
                 value={selectedTicket.date_issued}
