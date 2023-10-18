@@ -122,6 +122,7 @@ function FirstScreen({ navigation }) {
         } else {
           dispatch(setLogin());
         }
+        
       } catch (error) {
         console.error('Error during login:', error);
         // Handle the error, e.g., show an alert or update the UI

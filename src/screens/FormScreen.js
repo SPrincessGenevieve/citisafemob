@@ -32,7 +32,6 @@ import axios from '../../plugins/axios'
 import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setDriverRegisterd, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setGetFinalDriver, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
 import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setGetFinalVehicle, setIsCarRegistered, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
 import { setTicketInfo } from "../components/camera/ticketSlice";
-import * as SQLite from "expo-sqlite";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
