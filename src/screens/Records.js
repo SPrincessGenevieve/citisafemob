@@ -230,7 +230,7 @@ function Records({ navigation }) {
               ></PreviewComponent>
                             <PreviewComponent
                 title={"Penalty Amount"}
-                value={selectedTicket.penalty_amount}
+                value={`₱ ${selectedTicket.penalty_amount}.00`}
               ></PreviewComponent>
               <PreviewComponent
                 title={"DATE"}
