@@ -14,11 +14,19 @@ import ConstButton from "../components/ConstButton";
 import { useDispatch, useSelector } from "react-redux";
 import { setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
 import { setEmptyFinalDriver } from "../components/camera/infoSlice";
-import { setEnforcerFirstName, setEnforcerLastName, setEnforcerMiddleName, setEnforcerPosition, setEnforcerProfilePicture, setEnforcerUsername, setLogout } from "./Authentication/authSlice";
+import {
+  setEnforcerFirstName,
+  setEnforcerLastName,
+  setEnforcerMiddleName,
+  setEnforcerPosition,
+  setEnforcerProfilePicture,
+  setEnforcerUsername,
+  setLogout,
+} from "./Authentication/authSlice";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import ConstInput from "../components/ConstInputShort";
 import * as ImagePicker from "expo-image-picker";
-import axios from '../../plugins/axios'
+import axios from "../../plugins/axios";
 
 function SettingsScreen({ navigation }) {
   const [logout1, setLogout1] = useState(false);
@@ -26,11 +34,9 @@ function SettingsScreen({ navigation }) {
 
   const dispatch = useDispatch();
 
-  const Token = useSelector((state) => state.auth.token)
+  const Token = useSelector((state) => state.auth.token);
   const officer = useSelector((state) => state.auth.enforcer);
   const isOnline = useSelector((state) => state.auth.Online);
-
-  
 
   const handlePrivacy = () => {
     navigation.navigate("PrivacyScreen");
@@ -55,20 +61,19 @@ function SettingsScreen({ navigation }) {
         aspect: [4, 3],
         quality: 1,
       });
-  
+
       if (!result.canceled) {
         const selectedImageUri = result.uri;
         dispatch(setEnforcerProfilePicture(selectedImageUri));
         // Handle the selected image URI as needed
       }
     } catch (error) {
-      console.error('ImagePicker Error: ', error);
+      console.error("ImagePicker Error: ", error);
     }
   };
 
   const handleUpdateUserInfo = () => {
-
-    const ID = officer.id
+    const ID = officer.id;
 
     const formData = new FormData();
     formData.append("profile_picture", {
@@ -77,28 +82,29 @@ function SettingsScreen({ navigation }) {
       name: "profile_picture.jpg",
     });
 
-
     formData.append("username", officer.username);
     formData.append("first_name", officer.first_name);
     formData.append("middle_name", officer.middle_name);
-    formData.append("last_name", officer.last_name);        
+    formData.append("last_name", officer.last_name);
     formData.append("id", officer.id);
-    formData.append("position", officer.position);    
+    formData.append("position", officer.position);
 
-    axios.patch(`accounts/users/${ID}/`, formData, {
-      headers: {
-        Authorization: `token ${Token}`,
-      },
-    }).then((response) => {
-      alert('Successfully Update User')
-      setEdit(!edit)
-    }).catch((error) => {
-      console.log(error)
-      alert('Failed Update User')
-      setEdit(!edit)
-    })
-
-  }
+    axios
+      .patch(`accounts/users/${ID}/`, formData, {
+        headers: {
+          Authorization: `token ${Token}`,
+        },
+      })
+      .then((response) => {
+        alert("Successfully Update User");
+        setEdit(!edit);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Failed Update User");
+        setEdit(!edit);
+      });
+  };
 
   return (
     <KeyboardWithoutWrapper>
@@ -155,8 +161,12 @@ function SettingsScreen({ navigation }) {
                   <View>
                     <Image
                       style={{ height: 90, width: 90, borderRadius: 30 }}
-                      source={officer.profile_picture ? { uri: officer.profile_picture } : require('./../../assets/default_profile.png')}
-                      ></Image>
+                      source={
+                        officer.profile_picture
+                          ? { uri: officer.profile_picture }
+                          : require("./../../assets/default_profile.png")
+                      }
+                    ></Image>
                   </View>
                   <View
                     style={{
@@ -168,12 +178,11 @@ function SettingsScreen({ navigation }) {
                       style={{
                         backgroundColor: "#3E7C1F",
                         borderRadius: 20,
-                        marginTop: 70,
+                        marginTop: 80,
                         marginLeft: 70,
                         padding: 2,
                       }}
                       onPress={handleImagePicker}
-
                     >
                       <Icon
                         style={{ fontSize: 20, color: "white" }}
@@ -184,13 +193,13 @@ function SettingsScreen({ navigation }) {
                 </View>
 
                 <View style={{ alignItems: "center", marginTop: 150 }}>
-                <ConstInput
+                  <ConstInput
                     text={"Username"}
                     placeholder="Username"
                     width={300}
                     value={officer.username}
                     onChangeText={(text) => {
-                      dispatch(setEnforcerUsername(text))
+                      dispatch(setEnforcerUsername(text));
                     }}
                   ></ConstInput>
                   <ConstInput
@@ -199,7 +208,7 @@ function SettingsScreen({ navigation }) {
                     width={300}
                     value={officer.first_name}
                     onChangeText={(text) => {
-                      dispatch(setEnforcerFirstName(text))
+                      dispatch(setEnforcerFirstName(text));
                     }}
                   ></ConstInput>
                   <ConstInput
@@ -208,7 +217,7 @@ function SettingsScreen({ navigation }) {
                     width={300}
                     value={officer.middle_name}
                     onChangeText={(text) => {
-                      dispatch(setEnforcerMiddleName(text))
+                      dispatch(setEnforcerMiddleName(text));
                     }}
                   ></ConstInput>
                   <ConstInput
@@ -217,8 +226,8 @@ function SettingsScreen({ navigation }) {
                     width={300}
                     value={officer.last_name}
                     onChangeText={(text) => {
-                      dispatch(setEnforcerLastName(text))
-                    }}                    
+                      dispatch(setEnforcerLastName(text));
+                    }}
                   ></ConstInput>
                   <View
                     style={{
@@ -233,7 +242,7 @@ function SettingsScreen({ navigation }) {
                         width={300}
                         value={officer.position}
                         onChangeText={(text) => {
-                          dispatch(setEnforcerPosition(text))
+                          dispatch(setEnforcerPosition(text));
                         }}
                       ></ConstInput>
                     </View>
@@ -281,8 +290,12 @@ function SettingsScreen({ navigation }) {
             <View style={{ position: "absolute" }}>
               <Image
                 style={{ height: 90, width: 90, borderRadius: 30 }}
-                source={officer.profile_picture ? { uri: officer.profile_picture } : require('./../../assets/default_profile.png')}
-                ></Image>
+                source={
+                  officer.profile_picture
+                    ? { uri: officer.profile_picture }
+                    : require("./../../assets/default_profile.png")
+                }
+              ></Image>
             </View>
 
             <View style={{ marginTop: "25%" }}>
@@ -299,6 +312,7 @@ function SettingsScreen({ navigation }) {
                     borderRadius: 20,
                     marginLeft: 190,
                     padding: 2,
+                    marginTop: -20,
                   }}
                   onPress={() => setEdit(!edit)}
                 >
@@ -494,7 +508,7 @@ function SettingsScreen({ navigation }) {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "center",
-                        marginTop: 20,
+                        marginTop: -25,
                       }}
                     >
                       <TouchableOpacity

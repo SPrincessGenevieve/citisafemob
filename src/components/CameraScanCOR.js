@@ -32,7 +32,6 @@ import corners from "./../../assets/cornersOCR.png";
 import { setGetFinalDriver } from "./camera/infoSlice";
 import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
 
-
 export default function CameraScanCOR() {
   const [cameraMode, setCameraMode] = useState(CameraType.back);
   const [flash, setFlash] = useState("off"); // Changed to string type
@@ -47,7 +46,7 @@ export default function CameraScanCOR() {
   const navigation = useNavigation();
 
   const Token = useSelector((state) => state.auth.token);
-  const driverSliceID = useSelector((state) => state.infoText.id)
+  const driverSliceID = useSelector((state) => state.infoText.id);
 
   const [data, setData] = useState({
     plate_no: "",
@@ -102,8 +101,7 @@ export default function CameraScanCOR() {
   const takePicture = async () => {
     if (cameraRef) {
       const uri = await cameraRef.takePictureAsync();
-      
-      
+
       setCapturedImage(uri.uri); // Set the captured image URI directly
       setCropMode(true);
       setShowPicture(true);
@@ -200,7 +198,7 @@ export default function CameraScanCOR() {
           const driverIDString = vehicleExists.driverID.toString();
           dispatch(setIsCarRegistered());
           dispatch(setVehicleID(vehicleID));
-          dispatch(setManualDriverID(driverIDString))
+          dispatch(setManualDriverID(driverIDString));
           dispatch(
             setGetFinalVehicle({
               ...vehicleExists,
@@ -217,9 +215,10 @@ export default function CameraScanCOR() {
           );
 
           navigation.navigate("FormScreen");
-        } else if (vehicleExists && vehicleExists.driverID !== driverSliceID){
-          
-          alert(`Registered Vehicle but not the same driver: ${concatenatedFields.plate_no}`);
+        } else if (vehicleExists && vehicleExists.driverID !== driverSliceID) {
+          alert(
+            `Registered Vehicle but not the same driver: ${concatenatedFields.plate_no}`
+          );
           dispatch(
             setGetFinalVehicle({
               ...vehicleExists,
@@ -235,13 +234,11 @@ export default function CameraScanCOR() {
             })
           );
           navigation.navigate("FormScreen");
-
         } else {
           alert(`New Vehicle: ${concatenatedFields.plate_no}`);
           dispatch(setFinalVehicle());
           navigation.navigate("FormScreen");
         }
-
       } else {
         Alert.alert("Text extraction failed. Please try again later.");
       }
@@ -271,7 +268,7 @@ export default function CameraScanCOR() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false, // Set to false to disable cropping
-      aspect: [16, 9],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -338,45 +335,36 @@ export default function CameraScanCOR() {
             }}
           ></Camera>
           <View style={styles.controlsContainer}>
-     
             <View style={styles.control}>
-            <TouchableOpacity
-              style={styles.otherbtn}  
-              onPress={pickImage}
-            >
-              <Icon name="image" size={28} color="white" style={{}} />
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
+                <Icon name="image" size={28} color="white" style={{}} />
+              </TouchableOpacity>
 
-            <View>
-              <TouchableOpacity
-                style={styles.takePictureBtn}
-                onPress={takePicture}
-              >
-                <ScanOutlined
-                  style={{
-                    color: "white",
-                    fontSize: 50,
-                  }}
-                  name="line-scan"
-                ></ScanOutlined>
+              <View>
+                <TouchableOpacity
+                  style={styles.takePictureBtn}
+                  onPress={takePicture}
+                >
+                  <ScanOutlined
+                    style={{
+                      color: "white",
+                      fontSize: 50,
+                    }}
+                    name="line-scan"
+                  ></ScanOutlined>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
+                <Feather
+                  name={
+                    flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
+                  }
+                  size={28}
+                  color="white"
+                />
               </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              style={styles.otherbtn}
-              onPress={toggleFlash}
-            >
-              <Feather
-                name={
-                  flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
-                }
-                size={28}
-                color="white"
-              />
-            </TouchableOpacity>
-            </View>
-
-
           </View>
         </View>
       )}
@@ -385,7 +373,6 @@ export default function CameraScanCOR() {
 }
 
 const styles = StyleSheet.create({
-
   camera: {
     flex: 1,
   },
@@ -408,7 +395,7 @@ const styles = StyleSheet.create({
   // ok
   controlsContainer: {
     width: "100%",
-    height: '100%',
+    height: "100%",
     flexDirection: "row",
     display: "flex",
     justifyContent: "center",
@@ -446,12 +433,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 50,
     marginVertical: 10,
-
   },
-  // ok 
+  // ok
   corners: {
-    width: "100%", 
-    height: "100%", 
+    width: "100%",
+    height: "100%",
     display: "flex",
     justifyContent: "center",
     position: "absolute",
@@ -459,13 +445,13 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 1,
   },
-  // tan awon 
+  // tan awon
   controlText: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
     top: 50,
   },
 
@@ -476,13 +462,14 @@ const styles = StyleSheet.create({
   },
   nextBtn: {
     position: "absolute",
-    bottom: 50,
+    bottom: 80,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 15,
-    paddingHorizontal: 50,
-    marginLeft: -50,
-    left: 95,
+    height: 40,
+    width: 150,
+    left: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
   nextText: {
     color: "green",
@@ -490,18 +477,19 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     position: "absolute",
-    bottom: 50,
+    bottom: 80,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 15,
-    right: 40,
-    paddingHorizontal: 50,
+    height: 40,
+    width: 150,
+    right: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
   cancelText: {
     color: "red",
     fontSize: 16,
   },
-
 
   viewpicture: {
     backgroundColor: "black",
@@ -509,5 +497,5 @@ const styles = StyleSheet.create({
     zIndex: 4,
     width: "100%",
     height: "100%",
-  }
+  },
 });

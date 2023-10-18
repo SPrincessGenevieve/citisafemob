@@ -69,7 +69,7 @@ function ConstInput({
             display: "flex",
             position: "absolute",
             alignItems: "flex-end",
-            marginLeft: 280,
+            marginLeft: 250,
           }}
         >
           <MaterialIcons

@@ -38,7 +38,7 @@ function IntroLicense({ navigation }) {
       <View
         style={{
           display: "flex",
-          marginTop: "80%",
+          marginTop: "65%",
         }}
       >
         <Text style={styles.subtitlebottom}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   id: {
     display: "flex",
     alignItems: "center",
-    marginTop: 30,
+    marginTop: -30,
     position: "absolute",
     zIndex: -1,
     width: "100%",

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import {
   View,
@@ -108,13 +107,11 @@ export default function CameraScan() {
   const { width, height } = Dimensions.get("window");
   const aspectRatio = height / width;
 
-
   // camera
   const takePicture = async () => {
     if (cameraRef) {
       const uri = await cameraRef.takePictureAsync();
-      
-      
+
       setCapturedImage(uri.uri); // Set the captured image URI directly
       setCropMode(true);
       setShowPicture(true);
@@ -312,12 +309,12 @@ export default function CameraScan() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [16, 9],
+      aspect: [1, 1],
       quality: 1,
     });
 
     console.log(result);
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setCapturedImage(result.assets[0].uri);
       setShowPicture(true);
     }
@@ -326,7 +323,6 @@ export default function CameraScan() {
   return (
     <View>
       {showPicture ? (
-        
         <View style={styles.viewpicture}>
           {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
@@ -343,13 +339,12 @@ export default function CameraScan() {
       ) : null}
 
       {cropMode ? (
-          <ExpoImageManipulator
-            photo={{ uri: capturedImage }}
-            isVisible
-            onPictureChoosed={(uri) => setCapturedImage(uri.uri)}          
-            onToggleModal={() => setCropMode(!cropMode)}
-
-          />
+        <ExpoImageManipulator
+          photo={{ uri: capturedImage }}
+          isVisible
+          onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
+          onToggleModal={() => setCropMode(!cropMode)}
+        />
       ) : (
         <View style={{ height: "100%", width: "100%" }}>
           <Image style={styles.corners} source={corners}></Image>
@@ -364,7 +359,7 @@ export default function CameraScan() {
           <View style={styles.controlsContainer}>
             <View style={styles.controlText}>
               <Text
-                style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
+                style={{ color: "white", fontSize: 25, fontWeight: "bold" }}
               >
                 Photo of Driver’s License
               </Text>
@@ -376,10 +371,7 @@ export default function CameraScan() {
 
             {/* oki nani */}
             <View style={styles.control}>
-              <TouchableOpacity
-                style={styles.otherbtn}
-                onPress={pickImage}
-              >
+              <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
                 <Icon name="image" size={28} color="white" style={{}} />
               </TouchableOpacity>
 
@@ -398,10 +390,7 @@ export default function CameraScan() {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity
-                style={styles.otherbtn}
-                onPress={toggleFlash}
-              >
+              <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
                 <Feather
                   name={
                     flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
@@ -409,19 +398,16 @@ export default function CameraScan() {
                   size={28}
                   color="white"
                 />
-              </TouchableOpacity>              
+              </TouchableOpacity>
             </View>
-
           </View>
         </View>
       )}
     </View>
-
   );
 }
 
 const styles = StyleSheet.create({
-
   camera: {
     flex: 1,
   },
@@ -444,7 +430,7 @@ const styles = StyleSheet.create({
   // ok
   controlsContainer: {
     width: "100%",
-    height: '100%',
+    height: "100%",
     flexDirection: "row",
     display: "flex",
     justifyContent: "center",
@@ -482,12 +468,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 50,
     marginVertical: 10,
-
   },
-  // ok 
+  // ok
   corners: {
-    width: "100%", 
-    height: "100%", 
+    width: "100%",
+    height: "100%",
     display: "flex",
     justifyContent: "center",
     position: "absolute",
@@ -495,14 +480,14 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 1,
   },
-  // tan awon 
+  // tan awon
   controlText: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 50,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 180,
   },
 
   picture: {
@@ -512,13 +497,14 @@ const styles = StyleSheet.create({
   },
   nextBtn: {
     position: "absolute",
-    bottom: 50,
+    bottom: 80,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 15,
-    paddingHorizontal: 50,
-    marginLeft: -50,
-    left: 95,
+    height: 40,
+    width: 110,
+    left: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
   nextText: {
     color: "green",
@@ -526,18 +512,19 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     position: "absolute",
-    bottom: 50,
+    bottom: 80,
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 15,
-    right: 40,
-    paddingHorizontal: 50,
+    height: 40,
+    width: 110,
+    right: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
   cancelText: {
     color: "red",
     fontSize: 16,
   },
-
 
   viewpicture: {
     backgroundColor: "black",
@@ -547,8 +534,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   manipulator: {
-    width: '100%',
-    height: '100%',
-    display: 'flex'
-  }
+    width: "100%",
+    height: "100%",
+    display: "flex",
+  },
 });
