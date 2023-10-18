@@ -28,17 +28,61 @@ import ViolationCheck from "../components/ViolationCheck";
 import violationData from "./../components/ViolationList.json";
 import { useTheme } from "react-native-paper";
 import PreviewComponent from "../components/PreviewComponent";
-import axios from '../../plugins/axios'
-import { setAddress, setAgencyCodes, setBirthDate, setBloodTypes, setDLCodes, setDriverClassification, setDriverID, setDriverRegisterd, setEmptyFinalDriver, setEmptyRecognizedText, setExpirationDate, setFirstName, setGender, setGetFinalDriver, setHeight, setLastName, setLicenseNumber, setMiddleInitial, setNationality, setWeight } from "../components/camera/infoSlice";
-import { setBodyMarkings, setColor, setEmptyFinalVehicle, setEmptyextractedInfo, setFinalVehicle, setGetFinalVehicle, setIsCarRegistered, setMake, setManualDriverID, setOwnerAddress, setOwnerContactNumber, setOwnerName, setPlateNumber, setVehicleClass, setVehicleID, setVehicleModel, setdriverID } from "../components/camera/infoSliceCOR";
+import axios from "../../plugins/axios";
+import {
+  setAddress,
+  setAgencyCodes,
+  setBirthDate,
+  setBloodTypes,
+  setDLCodes,
+  setDriverClassification,
+  setDriverID,
+  setDriverRegisterd,
+  setEmptyFinalDriver,
+  setEmptyRecognizedText,
+  setExpirationDate,
+  setFirstName,
+  setGender,
+  setGetFinalDriver,
+  setHeight,
+  setLastName,
+  setLicenseNumber,
+  setMiddleInitial,
+  setNationality,
+  setWeight,
+} from "../components/camera/infoSlice";
+import {
+  setBodyMarkings,
+  setColor,
+  setEmptyFinalVehicle,
+  setEmptyextractedInfo,
+  setFinalVehicle,
+  setGetFinalVehicle,
+  setIsCarRegistered,
+  setMake,
+  setManualDriverID,
+  setOwnerAddress,
+  setOwnerContactNumber,
+  setOwnerName,
+  setPlateNumber,
+  setVehicleClass,
+  setVehicleID,
+  setVehicleModel,
+  setdriverID,
+} from "../components/camera/infoSliceCOR";
 import { setTicketInfo } from "../components/camera/ticketSlice";
 import * as SQLite from "expo-sqlite";
+import ConstDrop from "../components/ConstDrop";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
-  const Token = useSelector((state) => state.auth.token)
-  const isOnline = useSelector((state) => state.auth.Online)
-
+  const Token = useSelector((state) => state.auth.token);
+  const isOnline = useSelector((state) => state.auth.Online);
+  const data = [
+    { key: "SP", value: "SP" },
+    { key: "P", value: "P" },
+    { key: "NP", value: "NP" },
+  ];
   const [open, setOpen] = useState(false);
   const [sortAsc, setSortAsc] = useState(true);
   const [cat1, setCat1] = useState(true);
@@ -46,8 +90,8 @@ function FormScreen({ navigation, route }) {
   const [cat3, setCat3] = useState(true);
   const [cat4, setCat4] = useState(true);
   const [cat5, setCat5] = useState(true);
-  const [location, setLocation] = useState('');
-  const [selectedPin, setSelectedPin] = useState('');
+  const [location, setLocation] = useState("");
+  const [selectedPin, setSelectedPin] = useState("");
   const [currentAddress, setCurrentAddress] = useState(null);
   const [mfrtaTctNo, setMfrtaTctNo] = useState("");
   const [currentTime, setCurrentTime] = useState(moment().format("hh:mm A"));
@@ -59,24 +103,19 @@ function FormScreen({ navigation, route }) {
   const [violation, setViolation] = useState(false);
   const [checkedViolations, setCheckedViolations] = useState([]);
   const [preview, setPreview] = useState(false);
+  const [selected, setSelected] = useState("");
 
   // driver details
-  const driver = useSelector((state) => state.infoText)
+  const driver = useSelector((state) => state.infoText);
   // vehicel details
-  const vehicle = useSelector((state) => state.infoTextOCR)
+  const vehicle = useSelector((state) => state.infoTextOCR);
   // enforcer details
-  const user = useSelector((state) => state.auth.enforcer)
+  const user = useSelector((state) => state.auth.enforcer);
 
-
-
-
-  // selected violation id's 
+  // selected violation id's
   const [violationIDs, setViolationIDs] = useState({
-    "violation_id": []
-  })
-
-
-
+    violation_id: [],
+  });
 
   // datas
   const ocrText = useSelector((state) => state.infoText.finalDriver);
@@ -91,26 +130,27 @@ function FormScreen({ navigation, route }) {
   };
 
   // mao ning violations
-  const [violationData1, setViolationData1] = useState([])
+  const [violationData1, setViolationData1] = useState([]);
 
   useEffect(() => {
-    axios.get('ticket/violation/', {
-      headers: {
-        Authorization: `token ${Token}`,
-      },
-    })
-    .then((response) => {
-      // Filter out only the active penalties
-      const activePenalties = response.data.filter(item => item.penalty_info.status === 'Active');
+    axios
+      .get("ticket/violation/", {
+        headers: {
+          Authorization: `token ${Token}`,
+        },
+      })
+      .then((response) => {
+        // Filter out only the active penalties
+        const activePenalties = response.data.filter(
+          (item) => item.penalty_info.status === "Active"
+        );
 
-      setViolationData1(activePenalties);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-
+        setViolationData1(activePenalties);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [handleNextButton]);
-
 
   const filteredData = violationData1.filter((item) =>
     item.violation_type.toLowerCase().includes(searchQuery.toLowerCase())
@@ -150,27 +190,23 @@ function FormScreen({ navigation, route }) {
   }, []);
 
   const handleCheckboxChange = (text, isChecked, ids) => {
-
-    
     if (isChecked) {
       setCheckedViolations((prev) => [...prev, text]);
       // id
-      setViolationIDs(prevState => ({
-        violation_id: [...prevState.violation_id, ids]
+      setViolationIDs((prevState) => ({
+        violation_id: [...prevState.violation_id, ids],
       }));
 
-      console.log(violationIDs)
-
+      console.log(violationIDs);
     } else {
       setCheckedViolations((prev) =>
         prev.filter((violation) => violation !== text)
       );
 
-      setViolationIDs(prevState => ({
-        violation_id: prevState.violation_id.filter(id => id !== ids)
+      setViolationIDs((prevState) => ({
+        violation_id: prevState.violation_id.filter((id) => id !== ids),
       }));
     }
-
   };
 
   const handleMapPress = async (e) => {
@@ -237,83 +273,80 @@ function FormScreen({ navigation, route }) {
     setSortAsc(!sortAsc); // Toggle the state between true and false
   };
 
-
-// final screen
+  // final screen
   const handleTicket = () => {
-    const driverID = driver.id
-    const vehicleID = vehicle.id
+    const driverID = driver.id;
+    const vehicleID = vehicle.id;
 
     // first post the traffic violation
-    axios.post('ticket/trafficviolation/', violationIDs,{
-      headers: {
-        Authorization: `token ${Token}`
-      }
-    }).then((response) => {
-      // traffic violation id
-      const traffic_violationID = response.data.id
-      setTrafficViolationID(trafficViolationID)
-      console.log(response.data)
-
-      const formData = {
-        vehicle: vehicleID,
-        driver_ID: driverID,
-        violations: traffic_violationID,
-        place_violation: selectedPin.address,
-        ticket_status: 'PENDING',
-      }
-  
-
-      axios.post('ticket/register/', JSON.stringify(formData), {
+    axios
+      .post("ticket/trafficviolation/", violationIDs, {
         headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-        alert("Successfully Cited")
-        dispatch(setTicketInfo(response.data))
-        navigation.navigate("TicketScreen");
-      }).catch((error) => {
-        console.log(error)
-        console.log(formData)
+          Authorization: `token ${Token}`,
+        },
       })
+      .then((response) => {
+        // traffic violation id
+        const traffic_violationID = response.data.id;
+        setTrafficViolationID(trafficViolationID);
+        console.log(response.data);
 
-    }).catch((error) => {
-      console.log(error)
-    })
+        const formData = {
+          vehicle: vehicleID,
+          driver_ID: driverID,
+          violations: traffic_violationID,
+          place_violation: selectedPin.address,
+          ticket_status: "PENDING",
+        };
 
-
-
-
+        axios
+          .post("ticket/register/", JSON.stringify(formData), {
+            headers: {
+              Authorization: `token ${Token}`,
+            },
+          })
+          .then((response) => {
+            alert("Successfully Cited");
+            dispatch(setTicketInfo(response.data));
+            navigation.navigate("TicketScreen");
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(formData);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-
 
   const handleNextButton = () => {
     // check if the driver and vehicle registered
-    const isDriverExist = driver.isDriverRegisterd
-    const isVehicleExist = vehicle.isCarRegistered
-
+    const isDriverExist = driver.isDriverRegisterd;
+    const isVehicleExist = vehicle.isCarRegistered;
 
     // done
     if (!isDriverExist && !isVehicleExist) {
+      const drivers = driver.finalDriver;
+      console.log(drivers);
 
-      const drivers = driver.finalDriver
-      console.log(drivers)  
-      
-      const vehicles = vehicle.finalVehicle
-      console.log(vehicles)
+      const vehicles = vehicle.finalVehicle;
+      console.log(vehicles);
 
-
-      axios.post(`drivers/register/`, drivers, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
+      axios
+        .post(`drivers/register/`, drivers, {
+          headers: {
+            Authorization: `token ${Token}`,
+          },
+        })
+        .then((response) => {
           const id = response.data.id;
-          const idString = id ? id.toString() : ''; // Convert to string, or use an empty string if undefined
-          console.log('Driver ID:', idString);
+          const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
+          console.log("Driver ID:", idString);
 
-          dispatch(setDriverID(idString))
-          dispatch(setDriverRegisterd())
-          dispatch(setManualDriverID(idString))
+          dispatch(setDriverID(idString));
+          dispatch(setDriverRegisterd());
+          dispatch(setManualDriverID(idString));
 
           const requestData = {
             driverID: idString,
@@ -328,54 +361,52 @@ function FormScreen({ navigation, route }) {
             vehicle_model: vehicles.vehicle_model,
           };
 
+          alert("Successfully Register Driver");
 
-          alert('Successfully Register Driver')
+          axios
+            .post(`vehicles/register/`, requestData, {
+              headers: {
+                Authorization: `token ${Token}`,
+              },
+            })
+            .then((response) => {
+              const id = response.data.id;
+              dispatch(setVehicleID(id));
+              dispatch(setIsCarRegistered());
 
-          axios.post(`vehicles/register/`, requestData, {
-            headers: {
-              Authorization: `token ${Token}`
-            }
-          }).then((response) => {
-              const id = response.data.id
-              dispatch(setVehicleID(id))
-              dispatch(setIsCarRegistered())
-    
-              console.log(vehicles)
-              alert('Successfully Register Vehicle')
-    
+              console.log(vehicles);
+              alert("Successfully Register Vehicle");
+
               Keyboard.dismiss(); // Dismiss the keyboard
               scrollToTop(); // Scroll to the top
               setViolation(!violation);
-            }).catch((error) => {
-              console.log('Error for Vehicle')
-              console.log(error)
-              console.log(requestData)
-              alert("Please do check the ORCR Info!!")
-    
             })
-
-
+            .catch((error) => {
+              console.log("Error for Vehicle");
+              console.log(error);
+              console.log(requestData);
+              alert("Please do check the ORCR Info!!");
+            });
 
           Keyboard.dismiss(); // Dismiss the keyboard
           scrollToTop(); // Scroll to the top
           setViolation(!violation);
-          
-        }).catch((error) => {
-          console.log('Error for Drivers')
-          console.log(error)
-          console.log(drivers)
-          alert("Please do check the Driver License Info!!")
         })
+        .catch((error) => {
+          console.log("Error for Drivers");
+          console.log(error);
+          console.log(drivers);
+          alert("Please do check the Driver License Info!!");
+        });
     }
     // done
     if (isDriverExist && !isVehicleExist) {
+      console.log("Not Exist");
+      console.log(isDriverExist);
+      const vehicles = vehicle.finalVehicle;
 
-      console.log('Not Exist')
-      console.log(isDriverExist)
-      const vehicles = vehicle.finalVehicle
-
-      const id = driver.finalDriver.id
-      const idString = id ? id.toString() : ''; // Convert to string, or use an empty string if undefined
+      const id = driver.finalDriver.id;
+      const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
 
       const requestData = {
         driverID: idString,
@@ -390,50 +421,54 @@ function FormScreen({ navigation, route }) {
         vehicle_model: vehicles.vehicle_model,
       };
 
-      axios.post(`vehicles/register/`, requestData, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
-          const id = response.data.id
-          dispatch(setVehicleID(id))
-          dispatch(setIsCarRegistered())
+      axios
+        .post(`vehicles/register/`, requestData, {
+          headers: {
+            Authorization: `token ${Token}`,
+          },
+        })
+        .then((response) => {
+          const id = response.data.id;
+          dispatch(setVehicleID(id));
+          dispatch(setIsCarRegistered());
 
-          console.log(vehicles)
-          alert('Successfully Register Vehicle')
+          console.log(vehicles);
+          alert("Successfully Register Vehicle");
 
           Keyboard.dismiss(); // Dismiss the keyboard
           scrollToTop(); // Scroll to the top
           setViolation(!violation);
-        }).catch((error) => {
-          console.log('Error for Vehicle')
-          console.log(error)
-          console.log(requestData)
-          alert("Please do check the ORCR Info!!")
-
         })
+        .catch((error) => {
+          console.log("Error for Vehicle");
+          console.log(error);
+          console.log(requestData);
+          alert("Please do check the ORCR Info!!");
+        });
     }
 
     // done
     if (!isDriverExist && isVehicleExist) {
-      const drivers = driver.finalDriver
-      console.log(drivers)  
-      
-      const vehicles = vehicle.finalVehicle
-      console.log(vehicles)
+      const drivers = driver.finalDriver;
+      console.log(drivers);
 
-      axios.post(`drivers/register/`, drivers, {
-        headers: {
-          Authorization: `token ${Token}`
-        }
-      }).then((response) => {
+      const vehicles = vehicle.finalVehicle;
+      console.log(vehicles);
+
+      axios
+        .post(`drivers/register/`, drivers, {
+          headers: {
+            Authorization: `token ${Token}`,
+          },
+        })
+        .then((response) => {
           const id = response.data.id;
-          const idString = id ? id.toString() : ''; // Convert to string, or use an empty string if undefined
-          console.log('Driver ID:', idString);
+          const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
+          console.log("Driver ID:", idString);
 
-          dispatch(setDriverID(idString))
-          dispatch(setDriverRegisterd())
-          dispatch(setManualDriverID(idString))
+          dispatch(setDriverID(idString));
+          dispatch(setDriverRegisterd());
+          dispatch(setManualDriverID(idString));
 
           const requestData = {
             driverID: idString,
@@ -447,91 +482,93 @@ function FormScreen({ navigation, route }) {
             body_markings: vehicles.body_markings,
             vehicle_model: vehicles.vehicle_model,
           };
-          alert('Successfully Register Driver')
+          alert("Successfully Register Driver");
 
-          axios.post(`vehicles/register/`, requestData, {
-            headers: {
-              Authorization: `token ${Token}`
-            }
-          }).then((response) => {
-              const id = response.data.id
-              dispatch(setVehicleID(id))
-              dispatch(setIsCarRegistered())
-    
-              console.log(vehicles)
-              alert('Successfully Register Vehicle')
-    
+          axios
+            .post(`vehicles/register/`, requestData, {
+              headers: {
+                Authorization: `token ${Token}`,
+              },
+            })
+            .then((response) => {
+              const id = response.data.id;
+              dispatch(setVehicleID(id));
+              dispatch(setIsCarRegistered());
+
+              console.log(vehicles);
+              alert("Successfully Register Vehicle");
+
               Keyboard.dismiss(); // Dismiss the keyboard
               scrollToTop(); // Scroll to the top
               setViolation(!violation);
-            }).catch((error) => {
-              console.log('Error for Vehicle')
-              console.log(error)
-              console.log(requestData)
-              alert("Please do check the ORCR Info!!")
-    
             })
-
-        }).catch((error) => {
-          console.log('Error for Drivers')
-          console.log(error)
-          console.log(drivers)
-          alert("Please do check the Driver License Info!!")
+            .catch((error) => {
+              console.log("Error for Vehicle");
+              console.log(error);
+              console.log(requestData);
+              alert("Please do check the ORCR Info!!");
+            });
         })
-
+        .catch((error) => {
+          console.log("Error for Drivers");
+          console.log(error);
+          console.log(drivers);
+          alert("Please do check the Driver License Info!!");
+        });
     }
-    // 
-    if (isVehicleExist && isDriverExist){
+    //
+    if (isVehicleExist && isDriverExist) {
       Keyboard.dismiss(); // Dismiss the keyboard
       scrollToTop(); // Scroll to the top
       setViolation(!violation);
     }
+  };
 
-
-  }
-
-
-// for ticket
-  const [trafficViolationID, setTrafficViolationID] = useState("")
+  // for ticket
+  const [trafficViolationID, setTrafficViolationID] = useState("");
 
   const handlePreviewTicket = () => {
-    setPreview(!preview) && setViolation(!violation) && Keyboard.dismiss() && scrollToTop()
-  }
+    setPreview(!preview) &&
+      setViolation(!violation) &&
+      Keyboard.dismiss() &&
+      scrollToTop();
+  };
 
   // FOR MANUAL  ENTRY
   // registered driver
-  const [drivers, getDrivers] = useState([])
+  const [drivers, getDrivers] = useState([]);
 
   useEffect(() => {
-
-    axios.get('drivers/register/', {
-      headers: {
-        Authorization: `token ${Token}`
-      }
-    }).then((response) => {
-      getDrivers(response.data)
-    }).catch((error) => {
-      console.log(`Error Fetch Driver's Data: ${error}`)
-    })
-
+    axios
+      .get("drivers/register/", {
+        headers: {
+          Authorization: `token ${Token}`,
+        },
+      })
+      .then((response) => {
+        getDrivers(response.data);
+      })
+      .catch((error) => {
+        console.log(`Error Fetch Driver's Data: ${error}`);
+      });
   }, []);
-  
-  const [vehicles, getVehicles] = useState([])
+
+  const [vehicles, getVehicles] = useState([]);
   // registered vehicle
 
   useEffect(() => {
-
-    axios.get('vehicles/register/', {
-      headers: {
-        Authorization: `token ${Token}`
-      }
-    }).then((response) => {
-      getVehicles(response.data)
-
-    }).catch((error) => {
-      console.log('error dong')
-    })
-
+    axios
+      .get("vehicles/register/", {
+        headers: {
+          Authorization: `token ${Token}`,
+        },
+      })
+      .then((response) => {
+        getVehicles(response.data);
+      })
+      .catch((error) => {
+        console.log("error dong");
+      });
   }, []);
 
   return (
@@ -947,17 +984,22 @@ function FormScreen({ navigation, route }) {
                         </TouchableOpacity>
                       </View>
                       <View style={{ marginLeft: 25, marginTop: 20 }}>
-
-                      {/* violation area */}
+                        {/* violation area */}
 
                         {filteredData.map((item) => (
                           <ViolationCheck
                             key={item.id}
                             id={item.id}
                             text={item.violation_type}
-                            isChecked={checkedViolations.includes(item.violation_type)}
+                            isChecked={checkedViolations.includes(
+                              item.violation_type
+                            )}
                             handleCheckboxChange={(isChecked) =>
-                              handleCheckboxChange(item.violation_type, isChecked, item.id)
+                              handleCheckboxChange(
+                                item.violation_type,
+                                isChecked,
+                                item.id
+                              )
                             }
                           />
                         ))}
@@ -1054,43 +1096,44 @@ function FormScreen({ navigation, route }) {
                           text={"Driver's License Number*"}
                           value={ocrText.license_number}
                           onChangeText={(text) => {
-                            dispatch(setLicenseNumber(text))
+                            dispatch(setLicenseNumber(text));
 
-                            
                             // CHECK IF THE DRIVER IS EXIST
                             const driverExists = drivers.find(
                               (driver) => driver.license_number === text
                             );
-                              
+
                             if (driverExists) {
                               if (driverExists.license_number === text) {
-                                alert(`Existing Driver: ${text}`)
+                                alert(`Existing Driver: ${text}`);
                                 const driverId = driverExists.id;
-                                const classificationString = driverExists.classification.toString();
-                                dispatch(setDriverRegisterd())
-                                dispatch(setdriverID(driverId))                              
-                                dispatch(setGetFinalDriver({
-                                  ...driverExists, 
-                                  license_number: driverExists.license_number,
-                                  first_name: driverExists.first_name,
-                                  middle_initial: driverExists.middle_initial,
-                                  last_name: driverExists.last_name,
-                                  address: driverExists.address,
-                                  birthdate: driverExists.birthdate,
-                                  nationality: driverExists.nationality,
-                                  classification: classificationString,
-                                }))
-                                dispatch(setdriverID(driverId))
+                                const classificationString =
+                                  driverExists.classification.toString();
+                                dispatch(setDriverRegisterd());
+                                dispatch(setdriverID(driverId));
+                                dispatch(
+                                  setGetFinalDriver({
+                                    ...driverExists,
+                                    license_number: driverExists.license_number,
+                                    first_name: driverExists.first_name,
+                                    middle_initial: driverExists.middle_initial,
+                                    last_name: driverExists.last_name,
+                                    address: driverExists.address,
+                                    birthdate: driverExists.birthdate,
+                                    nationality: driverExists.nationality,
+                                    classification: classificationString,
+                                  })
+                                );
+                                dispatch(setdriverID(driverId));
                               } else {
-                                alert(`New Driver: ${text}`)
+                                alert(`New Driver: ${text}`);
                               }
                             }
-                            
                           }}
                           marginTop={25}
                           marginBottom={25}
                           required
-                        ></ConstInput>                        
+                        ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
@@ -1107,7 +1150,7 @@ function FormScreen({ navigation, route }) {
                           height={40}
                           value={ocrText.middle_initial}
                           onChangeText={(text) => {
-                            dispatch(setMiddleInitial(text))
+                            dispatch(setMiddleInitial(text));
                           }}
                           text="Middle Initial"
                           required
@@ -1121,7 +1164,7 @@ function FormScreen({ navigation, route }) {
                             dispatch(setLastName(text));
                           }}
                           required
-                        ></ConstInput>         
+                        ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
@@ -1129,11 +1172,11 @@ function FormScreen({ navigation, route }) {
                           value={ocrText.address}
                           onChangeText={(text) => {
                             dispatch(setAddress(text));
-                          }}                          
+                          }}
                           marginTop={25}
                           required
                           multiline={true}
-                        ></ConstInput>                                                               
+                        ></ConstInput>
                         <ConstInput
                           borderRadius={10}
                           height={40}
@@ -1141,7 +1184,7 @@ function FormScreen({ navigation, route }) {
                           text={"Date of Birth*"}
                           onChangeText={(text) => {
                             dispatch(setBirthDate(text));
-                          }}                          
+                          }}
                           marginTop={25}
                           required
                         ></ConstInput>
@@ -1152,13 +1195,21 @@ function FormScreen({ navigation, route }) {
                           value={ocrText.nationality}
                           onChangeText={(text) => {
                             dispatch(setNationality(text));
-                          }}                          
+                          }}
                           marginTop={25}
                           required
-                        ></ConstInput>                        
-                                         
-                      
-                              {/* if possible, selection ra sya */}
+                        ></ConstInput>
+
+                        {/* if possible, selection ra sya */}
+                        <ConstDrop
+                          text={"Classification"}
+                          setSelected={(val) => setSelected(val)}
+                          data={data}
+                          save="value"
+                          marginTop={25}
+                          marginBottom={25}
+                        ></ConstDrop>
+                        {/*
                         <ConstInput
                           borderRadius={10}
                           height={40}
@@ -1166,15 +1217,13 @@ function FormScreen({ navigation, route }) {
                           text={"Classification"}
                           value={ocrText.classification}
                           onChangeText={(text) => {
-                            dispatch(setDriverClassification(text))
+                            dispatch(setDriverClassification(text));
                           }}
                           marginTop={25}
                           marginBottom={25}
                           required
-                        ></ConstInput>                           
-                          {/* if existing user there is button for edit of his/her info */}
-
-
+                        ></ConstInput>*/}
+                        {/* if existing user there is button for edit of his/her info */}
                       </View>
                     </View>
                   </View>
@@ -1232,36 +1281,35 @@ function FormScreen({ navigation, route }) {
                           );
 
                           if (vehicleExists) {
-
                             if (vehicleExists.plate_number === text) {
-                              alert(`Existing Vehicle: ${text}`)
+                              alert(`Existing Vehicle: ${text}`);
                               const vehicleID = vehicleExists.id;
-                              const driverIDString = vehicleExists.driverID.toString();
+                              const driverIDString =
+                                vehicleExists.driverID.toString();
                               dispatch(setIsCarRegistered());
                               dispatch(setVehicleID(vehicleID));
-                              dispatch(setGetFinalVehicle({
-                                ...vehicleExists,
-                                name: vehicleExists.name,
-                                address: vehicleExists.address,
-                                contact_number: vehicleExists.contact_number,
-                                plate_number: vehicleExists.plate_number,
-                                make: vehicleExists.make,
-                                color: vehicleExists.color,
-                                vehicle_class: vehicleExists.vehicle_class,
-                                body_markings: vehicleExists.body_markings,
-                                vehicle_model: vehicleExists.vehicle_model,
-                                driverID: driverIDString,
-                              }))                              
-                            }else {
-                              alert(`New Vehicle: ${text}`)
-                              dispatch(setFinalVehicle())
+                              dispatch(
+                                setGetFinalVehicle({
+                                  ...vehicleExists,
+                                  name: vehicleExists.name,
+                                  address: vehicleExists.address,
+                                  contact_number: vehicleExists.contact_number,
+                                  plate_number: vehicleExists.plate_number,
+                                  make: vehicleExists.make,
+                                  color: vehicleExists.color,
+                                  vehicle_class: vehicleExists.vehicle_class,
+                                  body_markings: vehicleExists.body_markings,
+                                  vehicle_model: vehicleExists.vehicle_model,
+                                  driverID: driverIDString,
+                                })
+                              );
+                            } else {
+                              alert(`New Vehicle: ${text}`);
+                              dispatch(setFinalVehicle());
                             }
-                          }else {
+                          } else {
                             dispatch(setPlateNumber(text));
                           }
-
-
-
                         }}
                         required
                       ></ConstInput>
@@ -1275,7 +1323,7 @@ function FormScreen({ navigation, route }) {
                           dispatch(setOwnerName(text));
                         }}
                         required
-                      ></ConstInput>            
+                      ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
@@ -1285,7 +1333,7 @@ function FormScreen({ navigation, route }) {
                           dispatch(setOwnerAddress(text));
                         }}
                         required
-                      ></ConstInput>              
+                      ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
@@ -1295,7 +1343,7 @@ function FormScreen({ navigation, route }) {
                           dispatch(setOwnerContactNumber(text));
                         }}
                         required
-                      ></ConstInput>                                          
+                      ></ConstInput>
                       <ConstInput
                         borderRadius={10}
                         height={40}
@@ -1335,8 +1383,8 @@ function FormScreen({ navigation, route }) {
                           dispatch(setBodyMarkings(text));
                         }}
                         required
-                      ></ConstInput>             
-                            
+                      ></ConstInput>
+
                       <ConstInput
                         borderRadius={10}
                         height={40}
@@ -1347,7 +1395,7 @@ function FormScreen({ navigation, route }) {
                         }}
                         required
                         marginBottom={25}
-                      ></ConstInput>                                  
+                      ></ConstInput>
                       <View>
                         {/* <Text
                           style={{
@@ -1367,9 +1415,7 @@ function FormScreen({ navigation, route }) {
                             dispatch(setColor(text));
                           }}                        
                         ></ColorSelector> */}
-                         
                       </View>
-
                     </View>
                   </View>
                 </View>
@@ -1454,8 +1500,9 @@ function FormScreen({ navigation, route }) {
                           value={selectedPin ? selectedPin.address : "N/A"}
                           onChangeText={(text) => {
                             setSelectedPin({
-                              ...selectedPin, address: text
-                            })
+                              ...selectedPin,
+                              address: text,
+                            });
                           }}
                           multiline={true}
                         ></ConstInput>

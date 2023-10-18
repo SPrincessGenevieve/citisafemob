@@ -3,14 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Animated,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Keyboard,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Alert,
 } from "react-native";
 import GradientBackground from "../../../components/GradientBG";
 import { useFonts } from "expo-font";
@@ -18,12 +11,10 @@ import ConstInput from "../../../components/ConstInput";
 import ConstInputVisible from "../../../components/ConstInputVisible";
 import KeyboardWithoutWrapper from "../../../components/KeyboardWithoutWrapper";
 import ConstButton from "../../../components/ConstButton";
-import Title from "../../../components/Title";
 import TextButton from "../../../components/TextButton";
 import axios from "../../../../plugins/axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setEnforcer,
   setEnforcerEmail,
   setEnforcerFirstName,
   setEnforcerID,
@@ -34,7 +25,6 @@ import {
   setEnforcerUsername,
   setLogin,
   setLogout,
-  setOffline,
   setOnline,
   setToken,
 } from "../authSlice";
