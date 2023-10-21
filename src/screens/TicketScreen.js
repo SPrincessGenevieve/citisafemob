@@ -10,6 +10,7 @@ import * as Print from 'expo-print';
 import {shareAsync} from 'expo-sharing'
 import { setDefaultDriverRegisterd, setEmptyFinalDriver } from "../components/camera/infoSlice";
 import { setDefaultCarRegistered, setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
+import { FileSystem, MediaLibrary } from 'expo';
 
 
 function TicketScreen({ navigation }) {
@@ -28,7 +29,7 @@ function TicketScreen({ navigation }) {
   const formattedDate = `${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
 
 //  print
-  const printTicket = async () => {
+  async function downloadAndPrint() {         
     const htmlContent = `
     <html>
   <head>
@@ -93,24 +94,33 @@ function TicketScreen({ navigation }) {
   </body>
 </html>
   `;
-    try {
-      // Specify the paper size in pixels    
-      // On iOS/android prints the given html. On web prints the HTML from the current page.
-      const { uri } = await Print.printToFileAsync({ html: htmlContent, OrientationType: 'portrait' }); // Ensure you pass the modified HTML content here
-      console.log('File has been saved to:', uri);
+  try {
+    // Specify the paper size in pixels    
+    // On iOS/android prints the given html. On web prints the HTML from the current page.
+    const { uri } = await Print.printToFileAsync({ html: htmlContent, OrientationType: 'portrait' });
     
-      // Share the generated PDF file
-      await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+    // Save the file to the device
+    const fileName = `${Date.now()}.pdf`;
+    const filePath = FileSystem.documentDirectory + fileName;
+    await FileSystem.writeAsStringAsync(filePath, htmlContent, { encoding: FileSystem.EncodingType.UTF8 });
     
-      dispatch(setEmptyFinalDriver());
-      dispatch(setEmptyFinalVehicle());
-      dispatch(setDefaultCarRegistered());
-      dispatch(setDefaultDriverRegisterd());
-      navigation.navigate("HomeScreen");
-    
-    } catch (error) {
-      console.error('Error while printing:', error);
-    }
+    // Print the file
+    await Print.printAsync({ uri: filePath, name: 'Your Document', duplex: true });
+
+    // Share the generated PDF file
+    await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+
+    // Clean up and navigate
+    dispatch(setEmptyFinalDriver());
+    dispatch(setEmptyFinalVehicle());
+    dispatch(setDefaultCarRegistered());
+    dispatch(setDefaultDriverRegisterd());
+    navigation.navigate("HomeScreen");
+
+  } catch (error) {
+    console.error('Error while printing:', error);
+    Alert.alert('Error', 'Failed to print the ticket. Please try again.');
+  }
   };
 
   return (
@@ -326,7 +336,7 @@ function TicketScreen({ navigation }) {
                       name={"printer"}
                       title={"PRINT"}
                       height={50}
-                      onPress={printTicket}
+                      onPress={downloadAndPrint}
                     ></ConstButton>
                   </View>
                 </View>
