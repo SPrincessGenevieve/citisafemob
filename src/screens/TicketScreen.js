@@ -6,18 +6,18 @@ import Icon from "react-native-vector-icons/Octicons";
 import ConstButton from "../components/ConstButton";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import { useDispatch, useSelector } from "react-redux";
-import * as Print from 'expo-print';
-import {shareAsync} from 'expo-sharing'
 import { setDefaultDriverRegisterd, setEmptyFinalDriver } from "../components/camera/infoSlice";
 import { setDefaultCarRegistered, setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
-import { FileSystem, MediaLibrary } from 'expo';
-
+import * as Print from 'expo-print';
+import { shareAsync } from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
 
 function TicketScreen({ navigation }) {
 
   const dispatch = useDispatch();
-
   const ticket = useSelector((state) => state.ticket.ticketInfo)
+
 
   const handleCite = () => {
     navigation.navigate("HomeScreen");

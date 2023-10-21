@@ -41,6 +41,7 @@
     "expo-status-bar": "~1.6.0",
     "feather-icons": "^4.29.0",
     "moment": "^2.29.4",
+    "permissions": "^0.1.0",
     "react": "^18.2.0",
     "react-image-crop": "^10.1.8",
     "react-native": "^0.72.5",
@@ -62,7 +63,8 @@
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
     "xml-js": "^1.6.11",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "expo-media-library": "~15.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

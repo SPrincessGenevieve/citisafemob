@@ -1203,7 +1203,10 @@ function FormScreen({ navigation, route }) {
                         {/* if possible, selection ra sya */}
                         <ConstDrop
                           text={"Classification"}
-                          setSelected={(val) => setSelected(val)}
+                          setSelected={(val) => {
+                            setSelected(val)
+                            dispatch(setDriverClassification())
+                          }}
                           data={data}
                           save="value"
                           marginTop={25}

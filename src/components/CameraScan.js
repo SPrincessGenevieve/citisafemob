@@ -300,25 +300,27 @@ export default function CameraScan() {
     );
   }
 
-  const switchFlashMode = () => {
-    setFlash(flash === "off" ? "on" : "off");
-  };
+  // not available
 
-  // oki nani
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+  // const switchFlashMode = () => {
+  //   setFlash(flash === "off" ? "on" : "off");
+  // };
 
-    console.log(result);
-    if (!result.cancelled) {
-      setCapturedImage(result.assets[0].uri);
-      setShowPicture(true);
-    }
-  };
+  // // oki nani
+  // const pickImage = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [1, 1],
+  //     quality: 1,
+  //   });
+
+  //   console.log(result);
+  //   if (!result.cancelled) {
+  //     setCapturedImage(result.assets[0].uri);
+  //     setShowPicture(true);
+  //   }
+  // };
 
   return (
     <View>
@@ -339,12 +341,13 @@ export default function CameraScan() {
       ) : null}
 
       {cropMode ? (
-        <ExpoImageManipulator
-          photo={{ uri: capturedImage }}
-          isVisible
-          onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
-          onToggleModal={() => setCropMode(!cropMode)}
-        />
+          <ExpoImageManipulator
+            photo={{ uri: capturedImage }}
+            isVisible
+            onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
+            onToggleModal={() => setCropMode(!cropMode)}
+            ratio='16:9'
+          />
       ) : (
         <View style={{ height: "100%", width: "100%" }}>
           <Image style={styles.corners} source={corners}></Image>
@@ -355,6 +358,7 @@ export default function CameraScan() {
             ref={(ref) => {
               setCameraRef(ref);
             }}
+            ratio="16:9" // Set the aspect ratio to 1:1
           ></Camera>
           <View style={styles.controlsContainer}>
             <View style={styles.controlText}>
@@ -371,9 +375,10 @@ export default function CameraScan() {
 
             {/* oki nani */}
             <View style={styles.control}>
-              <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
+              {/* outdated system */}
+              {/* <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
                 <Icon name="image" size={28} color="white" style={{}} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <View>
                 <TouchableOpacity
@@ -390,7 +395,9 @@ export default function CameraScan() {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
+
+{/* no flash */}
+              {/* <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
                 <Feather
                   name={
                     flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
@@ -398,7 +405,7 @@ export default function CameraScan() {
                   size={28}
                   color="white"
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
@@ -532,6 +539,7 @@ const styles = StyleSheet.create({
     zIndex: 4,
     width: "100%",
     height: "100%",
+    ratio: '16:10'
   },
   manipulator: {
     width: "100%",
