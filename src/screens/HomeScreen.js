@@ -23,6 +23,8 @@ function HomeScreen({ navigation }) {
   });
   const dispatch = useDispatch()
 
+  const printer = useSelector((state) => state.auth.isPrinterConnected)
+
   const [cite, setCite] = useState(true);
 
   const user = useSelector((state) => state.auth.enforcer)
@@ -171,6 +173,20 @@ function HomeScreen({ navigation }) {
             {currentDate}
           </Text>
         </Text>
+        {printer ? (
+              <Text style={{
+                color: "green",
+                fontSize: 20,
+                fontFamily: "Roboto Light",
+              }}>Printer Connected</Text>
+            ): (
+              <Text style={{
+                color: "red",
+                fontSize: 20,
+                fontFamily: "Roboto Light",
+              }}>Printer Not Connected</Text>
+            )}
+
       </View>
       {cite ? (
         <>
@@ -229,6 +245,14 @@ function HomeScreen({ navigation }) {
               width: "80%",
             }}
           >
+            
+            <ConstButton
+              onPress={handleIntroLicense}
+              name="bluetooth"
+              title="Activate Printer"
+              marginLeftText={10}
+              height={60}
+            ></ConstButton>
 
               <ConstButton
               onPress={handleIntroLicense}

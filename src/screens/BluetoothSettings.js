@@ -21,6 +21,8 @@ import {
 import ItemList from "./ItemList";
 import SamplePrint from "./SamplePrint";
 import { styles } from "./styles";
+import { useDispatch } from "react-redux";
+import { setisPrinter } from "./Authentication/authSlice";
 
 const BluetoothApp = () => {
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -29,6 +31,9 @@ const BluetoothApp = () => {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [boundAddress, setBoundAddress] = useState("");
+
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     BluetoothManager.isBluetoothEnabled().then(
@@ -247,6 +252,7 @@ const BluetoothApp = () => {
           fds = found;
         }
         setFoundDs(fds);
+        dispatch(setisPrinter())
         setLoading(false);
       },
       (er) => {

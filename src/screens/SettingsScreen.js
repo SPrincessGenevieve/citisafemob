@@ -473,14 +473,14 @@ function SettingsScreen({ navigation }) {
                 alignItems: "center",
                 justifyContent: "center",
                 width: "100%",
-                marginTop: "40%",
+                marginTop: 10,
               }}
             >
               <View
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  width: "40%",
+                  width: "60%",
                 }}
               >
                 <ConstButton

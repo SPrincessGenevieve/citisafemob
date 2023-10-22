@@ -22,7 +22,7 @@ import Ant from "react-native-vector-icons/AntDesign";
 import Light from "react-native-vector-icons/FontAwesome5";
 import Circle from "react-native-vector-icons/Entypo";
 import MapLocation from "../components/MapLocation";
-import * as Location from "expo-location";
+import * as Location from 'expo-location';
 import ColorSelector from "../components/ColorSelector";
 import ViolationCheck from "../components/ViolationCheck";
 import violationData from "./../components/ViolationList.json";
@@ -208,6 +208,8 @@ function FormScreen({ navigation, route }) {
       }));
     }
   };
+
+  
 
   const handleMapPress = async (e) => {
     const newPin = {

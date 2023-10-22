@@ -16,6 +16,7 @@ export const authSlice = createSlice({
       profile_picture: '',
       position: '',
     },
+    isPrinterConnected: false,
 
   },
   reducers: {
@@ -29,6 +30,7 @@ export const authSlice = createSlice({
       state.token = "";
       state.enforcer = {}
       state.setIsLoggedIn = false;
+      state.isPrinterConnected = false;
     },
     setEnforcer: (state, action) => {
       state.enforcer = action.payload
@@ -64,11 +66,14 @@ export const authSlice = createSlice({
     setEnforcerPosition: (state, action) => {
       state.enforcer.position = action.payload
     },
+    setisPrinter: (state) => {
+      state.isPrinterConnected = true
+    },
   },
 });
 
 export const { setToken, setLogin, setLogout, setEnforcer, setOnline, setOffline,
 setEnforcerEmail, setEnforcerID, setEnforcerFirstName, setEnforcerUsername, setEnforcerLastName,
-setEnforcerMiddleName, setEnforcerProfilePicture, setEnforcerPosition } = authSlice.actions;
+setEnforcerMiddleName, setEnforcerProfilePicture, setEnforcerPosition, setisPrinter } = authSlice.actions;
 
 export default authSlice.reducer;

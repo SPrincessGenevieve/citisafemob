@@ -164,6 +164,12 @@ function TicketScreen({ navigation }) {
         ['Place of Violations: ' + ticket.place_violation],
         {},
       );
+      await BluetoothEscposPrinter.printColumn(
+        [48],
+        [BluetoothEscposPrinter.ALIGN.LEFT],
+        ['Penalty Amount ' + ticket.penalty_amount],
+        {},
+      );
       // Violations
       await BluetoothEscposPrinter.printText('Violations', { align: 'left' });
       await BluetoothEscposPrinter.printText('\r\n', {});
