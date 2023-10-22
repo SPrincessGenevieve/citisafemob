@@ -46,6 +46,10 @@ function SettingsScreen({ navigation }) {
     navigation.navigate("About");
   };
 
+  const handleBluetoothApp = () => {
+    navigation.navigate("Bluetooth");
+  };
+
   const handleLogout = () => {
     // clear all info
     dispatch(setEmptyFinalDriver());
@@ -406,6 +410,31 @@ function SettingsScreen({ navigation }) {
                     ></Icon>
                   </TouchableOpacity>
                 </View>
+                {/* printer */}
+                <View
+                  style={{
+                    height: 60,
+                    justifyContent: "center",
+                    borderBottomColor: "#D9D9D9",
+                    borderBottomWidth: 1,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={handleBluetoothApp}
+                    style={{
+                      flexDirection: "row",
+                      marginLeft: 25,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: 15 }}>Printer</Text>
+                    <Icon
+                      name="right"
+                      style={{ marginLeft: 305, fontSize: 20, color: "grey" }}
+                    ></Icon>
+                  </TouchableOpacity>
+                </View>
+                
               </>
             ) : (
               <>

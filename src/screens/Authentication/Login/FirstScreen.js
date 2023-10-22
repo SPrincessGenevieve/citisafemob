@@ -54,7 +54,6 @@ function FirstScreen({ navigation }) {
       console.log("Connected");
       dispatch(setOnline());
       dispatch(setLogout());
-
     }
   }, [1]);
 
@@ -80,9 +79,7 @@ function FirstScreen({ navigation }) {
           headers: {
             Authorization: `token ${token}`,
           },
-        });
-        console.log(userResponse.data)
-  
+        });  
         const role = userResponse.data.role;
         const last_name = userResponse.data.last_name;
         const first_name = userResponse.data.first_name;

@@ -118,8 +118,8 @@ function HomeScreen({ navigation }) {
           style={{
             position: "absolute",
             display: "flex",
-            right: -10,
-            marginTop: 65,
+            right: -20,
+            marginTop: 55,
             width: 50, // Adjust width and height as needed
             height: 50,
             borderRadius: 25, // Optional: Add borderRadius for a circular image
@@ -128,7 +128,7 @@ function HomeScreen({ navigation }) {
 
 
         </View>
-        <View style={{ display: "flex", flexDirection: "row" }}>
+        <View style={{ display: "flex", flexDirection: "row", marginRight: 15, }}>
           <Text
             style={{
               marginTop: "20%",

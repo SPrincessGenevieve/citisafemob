@@ -291,6 +291,7 @@ export default function CameraScanCOR() {
             zIndex: 4,
             width: "100%",
             height: "100%",
+            ratio: "16:9" //
           }}
         >
           {capturedImage ? (
@@ -314,6 +315,7 @@ export default function CameraScanCOR() {
             isVisible
             onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
             onToggleModal={() => setCropMode(!cropMode)}
+            ratio="16:9" // Set the aspect ratio to 1:1
           />
         </View>
       ) : (
@@ -329,16 +331,17 @@ export default function CameraScanCOR() {
           <Camera
             flashMode={flash}
             style={styles.camera}
-            type={type}
             ref={(ref) => {
               setCameraRef(ref);
             }}
+            ratio="16:9" // Set the aspect ratio to 1:1
+
           ></Camera>
           <View style={styles.controlsContainer}>
             <View style={styles.control}>
-              <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
+              {/* <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
                 <Icon name="image" size={28} color="white" style={{}} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <View>
                 <TouchableOpacity
@@ -355,7 +358,7 @@ export default function CameraScanCOR() {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
+              {/* <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
                 <Feather
                   name={
                     flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
@@ -363,7 +366,7 @@ export default function CameraScanCOR() {
                   size={28}
                   color="white"
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
@@ -459,6 +462,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+    ratio: "16:9" // Se
   },
   nextBtn: {
     position: "absolute",
@@ -467,7 +471,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 40,
     width: 150,
-    left: 50,
+    left: 25,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -482,7 +486,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 40,
     width: 150,
-    right: 50,
+    right: 25,
     alignItems: "center",
     justifyContent: "center",
   },

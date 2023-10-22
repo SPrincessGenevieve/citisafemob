@@ -34,7 +34,7 @@ import { setdriverID } from "./camera/infoSliceCOR";
 
 export default function CameraScan() {
   const [flash, setFlash] = useState("off"); // Changed to string type
-  const [cameraRef, setCameraRef] = useState(null);
+  const [cameraRef, setCameraRef] = useState('');
   const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
   const [cropMode, setCropMode] = useState(false);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -111,7 +111,6 @@ export default function CameraScan() {
   const takePicture = async () => {
     if (cameraRef) {
       const uri = await cameraRef.takePictureAsync();
-
       setCapturedImage(uri.uri); // Set the captured image URI directly
       setCropMode(true);
       setShowPicture(true);
@@ -180,10 +179,12 @@ export default function CameraScan() {
             concatenatedFields[fieldName] = concatenatedValue.trim();
           }
         }
-        if (concatenatedFields.license_no.length !== 13) {
-          Alert.alert("License number must have 13 characters.");
-          return;
-        }
+
+        // validation
+        // if (concatenatedFields.license_no.length !== 13) {
+        //   Alert.alert("License number must have 13 characters.");
+        //   return;
+        // }
 
         setData({
           ...data,
@@ -328,7 +329,7 @@ export default function CameraScan() {
         <View style={styles.viewpicture}>
           {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
-          ) : null}
+          ) : ('')}
 
           <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
             <Text style={styles.nextText}>Next</Text>
@@ -338,7 +339,7 @@ export default function CameraScan() {
             <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      ) : null}
+      ) : ('')}
 
       {cropMode ? (
           <ExpoImageManipulator
@@ -346,7 +347,7 @@ export default function CameraScan() {
             isVisible
             onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
             onToggleModal={() => setCropMode(!cropMode)}
-            ratio='16:9'
+            ratio="16:9" // Set the aspect ratio to 1:1
           />
       ) : (
         <View style={{ height: "100%", width: "100%" }}>
@@ -354,7 +355,6 @@ export default function CameraScan() {
           <Camera
             flashMode={flash}
             style={styles.camera}
-            type={type}
             ref={(ref) => {
               setCameraRef(ref);
             }}
@@ -501,6 +501,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+    ratio: "16:9" // Set the aspect ratio to 1:1
+
   },
   nextBtn: {
     position: "absolute",
@@ -539,7 +541,7 @@ const styles = StyleSheet.create({
     zIndex: 4,
     width: "100%",
     height: "100%",
-    ratio: '16:10'
+    ratio: "16:9" // Set the aspect ratio to 1:1
   },
   manipulator: {
     width: "100%",

@@ -31,7 +31,7 @@ function IntroOCR({ navigation }) {
       </View>
       <View style={styles.id}>
         <Image
-          style={{ marginTop: 150, width: 225, height: 280 }}
+          style={{ marginTop: 110, width: 225, height: 280 }}
           source={OCRImage}
         ></Image>
       </View>
@@ -41,14 +41,14 @@ function IntroOCR({ navigation }) {
           marginTop: "80%",
         }}
       >
-        <Text style={styles.subtitlebottom}>
+      <Text style={[styles.subtitlebottom, { marginTop: 10 }]}> 
           Every Driver will get the same experience
         </Text>
         <Text style={styles.subtitlebottom}>
           The information will be encrypted and secured
         </Text>
       </View>
-      <View style={{ width: "90%", marginTop: 30 }}>
+      <View style={{ width: "90%" }}>
         <ConstButton
           onPress={handleOCRSreen}
           title={"Start Identification"}
@@ -65,18 +65,19 @@ export default IntroOCR;
 const styles = StyleSheet.create({
   title: {
     color: "black",
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: "bold",
     display: "flex",
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 12,
     color: "black",
     textAlign: "center",
   },
   subtitlebottom: {
-    fontSize: 13,
+
+    fontSize: 12,
     color: "black",
     textAlign: "center",
     bottom: 0,

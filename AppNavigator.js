@@ -26,6 +26,7 @@ import TicketScreen from "./src/screens/TicketScreen";
 import { useSelector, useDispatch } from "react-redux";
 import NetInfo from "@react-native-community/netinfo";
 import History from "./src/screens/History";
+import BluetoothApp from "./src/screens/BluetoothSettings";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -148,6 +149,17 @@ function AppNavigator() {
             headerTintColor: "#ffff",
           }}
         />
+        <Stack.Screen
+          name="Bluetooth"
+          component={BluetoothApp}
+          options={{
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: "#518638",
+            },
+            headerTintColor: "#ffff",
+          }}
+        />        
         <Stack.Screen
           name="OCRScan"
           options={{
