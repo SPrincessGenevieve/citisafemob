@@ -245,14 +245,6 @@ function HomeScreen({ navigation }) {
               width: "80%",
             }}
           >
-            
-            <ConstButton
-              onPress={handleIntroLicense}
-              name="bluetooth"
-              title="Activate Printer"
-              marginLeftText={10}
-              height={60}
-            ></ConstButton>
 
               <ConstButton
               onPress={handleIntroLicense}

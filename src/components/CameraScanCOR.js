@@ -35,8 +35,8 @@ import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
 export default function CameraScanCOR() {
   const [cameraMode, setCameraMode] = useState(CameraType.back);
   const [flash, setFlash] = useState("off"); // Changed to string type
-  const [capturedImage, setCapturedImage] = useState("");
-  const [pictureUri, setPictureUri] = useState("");
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [pictureUri, setPictureUri] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
   const [cropMode, setCropMode] = useState(false);

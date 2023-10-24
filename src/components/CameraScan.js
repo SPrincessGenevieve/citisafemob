@@ -34,7 +34,7 @@ import { setdriverID } from "./camera/infoSliceCOR";
 
 export default function CameraScan() {
   const [flash, setFlash] = useState("off"); // Changed to string type
-  const [cameraRef, setCameraRef] = useState('');
+  const [cameraRef, setCameraRef] = useState(null);
   const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
   const [cropMode, setCropMode] = useState(false);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -329,7 +329,7 @@ export default function CameraScan() {
         <View style={styles.viewpicture}>
           {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
-          ) : ('')}
+          ) : (null)}
 
           <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
             <Text style={styles.nextText}>Next</Text>
@@ -339,7 +339,7 @@ export default function CameraScan() {
             <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      ) : ('')}
+      ) : (null)}
 
       {cropMode ? (
           <ExpoImageManipulator
