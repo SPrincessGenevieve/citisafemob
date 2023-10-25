@@ -115,6 +115,27 @@ export default function CameraScan() {
       setCropMode(true);
       setShowPicture(true);
     }
+
+    try {
+      // Crop the image with specified dimensions
+      const croppedImage = await ExpoImageManipulator.manipulateAsync(
+        uri,
+        [{ crop: { originX: left, originY: top, width: cropWidth, height: cropHeight } }],
+        { compress: 1, format: ExpoImageManipulator.SaveFormat.PNG }
+      );
+
+      // Set the cropped image URI
+      setPictureUri(croppedImage.uri);
+      console.log(width, height, left, top)
+      setShowPicture(true);
+    } catch (error) {
+      console.log("Error cropping the image:", error);
+      // Handle the error here
+    }
+
+
+
+
   };
 
   const cancelPicture = () => {
@@ -341,15 +362,6 @@ export default function CameraScan() {
         </View>
       ) : (null)}
 
-      {cropMode ? (
-          <ExpoImageManipulator
-            photo={{ uri: capturedImage }}
-            isVisible
-            onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
-            onToggleModal={() => setCropMode(!cropMode)}
-            ratio="16:9" // Set the aspect ratio to 1:1
-          />
-      ) : (
         <View style={{ height: "100%", width: "100%" }}>
           <Image style={styles.corners} source={corners}></Image>
           <Camera
@@ -409,7 +421,6 @@ export default function CameraScan() {
             </View>
           </View>
         </View>
-      )}
     </View>
   );
 }

@@ -38,7 +38,7 @@ function IntroLicense({ navigation }) {
       <View
         style={{
           display: "flex",
-          marginTop: "65%",
+          marginTop: "75%",
         }}
       >
         <Text style={styles.subtitlebottom}>
