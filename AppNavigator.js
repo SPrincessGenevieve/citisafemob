@@ -27,6 +27,7 @@ import { useSelector, useDispatch } from "react-redux";
 import NetInfo from "@react-native-community/netinfo";
 import History from "./src/screens/History";
 import BluetoothApp from "./src/screens/BluetoothSettings";
+import CameraScan from "./src/components/CameraScan";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

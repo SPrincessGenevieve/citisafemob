@@ -33,12 +33,15 @@ import axios from "../../plugins/axios";
 import { setdriverID } from "./camera/infoSliceCOR";
 
 export default function CameraScan() {
-  const [flash, setFlash] = useState("off"); // Changed to string type
+  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const [cameraRef, setCameraRef] = useState(null);
-  const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
+  const [showPicture, setShowPicture] = useState(false);
   const [cropMode, setCropMode] = useState(false);
-  const [type, setType] = useState(Camera.Constants.Type.back);
-  const [capturedImage, setCapturedImage] = useState("");
+  const [capturedImage, setCapturedImage] = useState('');
+  const [left, setLeft] = useState(0);
+  const [top, setTop] = useState(0);
+  const [cropWidth, setCropWidth] = useState(0);
+  const [cropHeight, setCropHeight] = useState(0);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -105,39 +108,32 @@ export default function CameraScan() {
   };
 
   const { width, height } = Dimensions.get("window");
-  const aspectRatio = height / width;
 
   // camera
   const takePicture = async () => {
     if (cameraRef) {
-      const uri = await cameraRef.takePictureAsync();
-      setCapturedImage(uri.uri); // Set the captured image URI directly
+      const photo = await cameraRef.takePictureAsync();
+      setCapturedImage(photo.uri);
       setCropMode(true);
       setShowPicture(true);
     }
-
+  };
+  const cropImage = async () => {
     try {
-      // Crop the image with specified dimensions
       const croppedImage = await ExpoImageManipulator.manipulateAsync(
-        uri,
+        capturedImage,
         [{ crop: { originX: left, originY: top, width: cropWidth, height: cropHeight } }],
         { compress: 1, format: ExpoImageManipulator.SaveFormat.PNG }
       );
 
-      // Set the cropped image URI
-      setPictureUri(croppedImage.uri);
-      console.log(width, height, left, top)
-      setShowPicture(true);
+      setCapturedImage(croppedImage.uri);
+      setCropMode(false);
+      console.log('Image cropped successfully.');
     } catch (error) {
-      console.log("Error cropping the image:", error);
+      console.error('Error cropping the image:', error);
       // Handle the error here
     }
-
-
-
-
   };
-
   const cancelPicture = () => {
     setCapturedImage("");
     setShowPicture(false);
@@ -241,7 +237,7 @@ export default function CameraScan() {
           dispatch(
             setGetFinalDriver({
               ...driverExists,
-              license_number: driverExists.license_number,
+              license_number: driverExists.license_number,  
               first_name: driverExists.first_name,
               middle_initial: driverExists.middle_initial,
               last_name: driverExists.last_name,
@@ -345,9 +341,17 @@ export default function CameraScan() {
   // };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {showPicture ? (
-        <View style={styles.viewpicture}>
+        <View 
+        style={{
+          backgroundColor: "black",
+          position: "absolute",
+          zIndex: 4,
+          width: "100%",
+          height: "100%",
+        }}        
+        >
           {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
           ) : (null)}
@@ -362,8 +366,28 @@ export default function CameraScan() {
         </View>
       ) : (null)}
 
-        <View style={{ height: "100%", width: "100%" }}>
-          <Image style={styles.corners} source={corners}></Image>
+        {cropMode ? (
+        <ExpoImageManipulator
+        photo={{ uri: capturedImage }}
+        isVisible
+        onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
+        onToggleModal={() => setCropMode(!cropMode)}
+        onEditRectSelected={(rect) => {
+          setLeft(rect.x);
+          setTop(rect.y);
+          setCropWidth(rect.width);
+          setCropHeight(rect.height);
+        }}
+        onSave={(editedImage) => {
+          setCapturedImage(editedImage.uri);
+          setCropMode(false);
+          console.log('Image cropped successfully.');
+        }}
+      />          
+        ): (
+
+          <View style={{ height: "100%", width: "100%", backgroundColor: "transparent"}}>
+          {/* <Image style={styles.corners} source={corners}></Image> */}
           <Camera
             flashMode={flash}
             style={styles.camera}
@@ -373,7 +397,7 @@ export default function CameraScan() {
             ratio="16:9" // Set the aspect ratio to 1:1
           ></Camera>
           <View style={styles.controlsContainer}>
-            <View style={styles.controlText}>
+            {/* <View style={styles.controlText}>
               <Text
                 style={{ color: "white", fontSize: 25, fontWeight: "bold" }}
               >
@@ -383,7 +407,7 @@ export default function CameraScan() {
                 Please place the front of the Driver’s License
               </Text>
               <Text style={{ color: "white" }}>in the frame</Text>
-            </View>
+            </View> */}
 
             {/* oki nani */}
             <View style={styles.control}>
@@ -420,7 +444,10 @@ export default function CameraScan() {
               </TouchableOpacity> */}
             </View>
           </View>
-        </View>
+        </View>          
+        )}
+
+ 
     </View>
   );
 }
@@ -512,8 +539,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
-    ratio: "16:9" // Set the aspect ratio to 1:1
-
   },
   nextBtn: {
     position: "absolute",
