@@ -13,6 +13,7 @@ import { shareAsync } from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
+import { hsdLogo } from "./dummy-logo";
 
 
 
@@ -32,146 +33,59 @@ function TicketScreen({ navigation }) {
   const currentDate = new Date();
   const formattedDate = `${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
 
+  const options = {
+    width: 384, // Set the pic width (dots) based on your device (58mm - 58)
+    left: 0,   // Set the left padding for printing position adjustment
+  };
   async function printreciept() {
   
     try {
-      await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+      // await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+      await BluetoothEscposPrinter.printText('Republic of the Philippines ' ,{ align: 'center' });
+      await BluetoothEscposPrinter.printText('Municipality of Manolo Fortich ' ,{ align: 'center' });
+      await BluetoothEscposPrinter.printText('ROADS AND TRAFFIC ADMINISTRATION ' ,{ align: 'center', widthtimes: 3});
+      await BluetoothEscposPrinter.printText('GEMS - eMFTC ' ,{ align: 'center' });
       await BluetoothEscposPrinter.printText(' MFTRTA Ticket No: ' + ticket.MFRTA_TCT_NO, { align: 'center' });
-      await BluetoothEscposPrinter.printText('\r\n', {});
-    
+      await BluetoothEscposPrinter.printPic(hsdLogo, options);
+
       // Personal Information
-      await BluetoothEscposPrinter.printText('Personal Info', { align: 'left' });
-    
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Name: ' + ticket.driver_info.last_name + ', ' + ticket.driver_info.first_name + ' ' + ticket.driver_info.middle_initial],
-        {},
-      );
-
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['DOB: ' + ticket.driver_info.birthdate],
-        {},
-      );
-
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Nationality: ' + ticket.driver_info.nationality],
-        {},
-      );
+      await BluetoothEscposPrinter.printText('Personal Info', { align: 'center' });
+      await BluetoothEscposPrinter.printText(' Name: ' + ticket.driver_info.last_name + ', ' + ticket.driver_info.first_name + ' ' + ticket.driver_info.middle_initial , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Date of Birth: ' + ticket.driver_info.birthdate , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Nationality: ' + ticket.driver_info.nationality , { align: 'left' });
       // Check if the license_number is 'undefined'
       const licenseText = ticket.driver_info.license_number !== 'undefined' ? '' + ticket.driver_info.license_number : 'No License';
+      await BluetoothEscposPrinter.printText(' License No: ' + licenseText , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Classification: ' + ticket.driver_info.classification , { align: 'left' });
 
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['License Number: ' + licenseText],
-        {},
-      );
-
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Classification: ' + ticket.driver_info.classification],
-        {},
-      );
-
-      await BluetoothEscposPrinter.printText('\r\n', {});
-      // Vehicle Information
-      await BluetoothEscposPrinter.printText('Vehicle Info', { align: 'left' });
+      // Vehicle Information      
+      await BluetoothEscposPrinter.printText("--------------------------------",{align: 'center'});
+      await BluetoothEscposPrinter.printText('Vehicle Information', { align: 'center' });
       await BluetoothEscposPrinter.printText('\r\n', {});
 
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Owner: ' + ticket.vehicle_info.name],
-        {},
-      );
-
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Plate No.: ' + ticket.vehicle_info.plate_number],
-        {},
-      );
-
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Make: ' + ticket.vehicle_info.make],
-        {},
-      );
-
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Class: ' + ticket.vehicle_info.vehicle_class],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Model: ' + ticket.vehicle_info.vehicle_model],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Contact: ' + ticket.vehicle_info.contact_number],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Color: ' + ticket.vehicle_info.color],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Markings: ' + ticket.vehicle_info.body_markings],
-        {},
-      );
+      await BluetoothEscposPrinter.printText(' Owner: ' + ticket.vehicle_info.name , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Plate Number: ' + ticket.vehicle_info.plate_number , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Make: ' + ticket.vehicle_info.make , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Class: ' + ticket.vehicle_info.vehicle_class , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Model: ' + ticket.vehicle_info.vehicle_model , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Color: ' + ticket.vehicle_info.color , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Body Markings: ' + ticket.vehicle_info.body_markings , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Contact Number: ' + ticket.vehicle_info.contact_number , { align: 'left' });
 
       // Violation Information
+      await BluetoothEscposPrinter.printText("--------------------------------",{align: 'center'});
       await BluetoothEscposPrinter.printText('Violation Info', { align: 'left' });
       await BluetoothEscposPrinter.printText('\r\n', {});
 
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Officer: ' + ticket.user_ID.first_name + ', ' + ticket.user_ID.middle_name + ' ' + ticket.user_ID.last_name],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Status: ' + ticket.ticket_status],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Date & Time: ' + ticket.date_issued],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Place of Violations: ' + ticket.place_violation],
-        {},
-      );
-      await BluetoothEscposPrinter.printColumn(
-        [48],
-        [BluetoothEscposPrinter.ALIGN.LEFT],
-        ['Penalty Amount ' + ticket.penalty_amount],
-        {},
-      );
+      await BluetoothEscposPrinter.printText(' Officer: ' + ticket.user_ID.first_name + ', ' + ticket.user_ID.middle_name + ' ' + ticket.user_ID.last_name , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Status: ' + ticket.ticket_status , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Date & Time: ' + ticket.date_issued , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Place of Violations: ' + ticket.place_violation , { align: 'left' });
+      await BluetoothEscposPrinter.printText(' Penalty Amount: ' + ticket.penalty_amount , { align: 'left' });
+
       // Violations
-      await BluetoothEscposPrinter.printText('Violations', { align: 'left' });
+      await BluetoothEscposPrinter.printText("--------------------------------",{align: 'center'});
+      await BluetoothEscposPrinter.printText('Violations', { align: 'center' });
       await BluetoothEscposPrinter.printText('\r\n', {});
 
       ticket.violation_info.violations_info.forEach(async (violation, index) => {
