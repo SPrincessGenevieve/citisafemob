@@ -79,9 +79,9 @@ function FormScreen({ navigation, route }) {
   const Token = useSelector((state) => state.auth.token);
   const isOnline = useSelector((state) => state.auth.Online);
   const data = [
-    { key: "SP", value: "SP" },
-    { key: "P", value: "P" },
-    { key: "NP", value: "NP" },
+    { key: "Student-Permit", value: "SP" },
+    { key: "Professional", value: "P" },
+    { key: "Non-Professional", value: "NP" },
   ];
   const [open, setOpen] = useState(false);
   const [sortAsc, setSortAsc] = useState(true);
@@ -530,10 +530,10 @@ function FormScreen({ navigation, route }) {
   const [trafficViolationID, setTrafficViolationID] = useState("");
 
   const handlePreviewTicket = () => {
-    setPreview(!preview) &&
-      setViolation(!violation) &&
-      Keyboard.dismiss() &&
-      scrollToTop();
+    setPreview(!preview) 
+    setViolation(!violation) 
+    Keyboard.dismiss() 
+    scrollToTop();
   };
 
   // FOR MANUAL  ENTRY
@@ -1207,7 +1207,8 @@ function FormScreen({ navigation, route }) {
                           text={"Classification"}
                           setSelected={(val) => {
                             setSelected(val)
-                            dispatch(setDriverClassification())
+                            dispatch(setDriverClassification(val))
+
                           }}
                           data={data}
                           save="value"

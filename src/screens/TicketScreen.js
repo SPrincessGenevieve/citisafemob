@@ -7,7 +7,7 @@ import ConstButton from "../components/ConstButton";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import { setDefaultDriverRegisterd, setEmptyFinalDriver } from "../components/camera/infoSlice";
-import { setDefaultCarRegistered, setEmptyFinalVehicle } from "../components/camera/infoSliceCOR";
+import { setDefaultCarRegistered, setEmptyFinalVehicle, setEmptyextractedInfo } from "../components/camera/infoSliceCOR";
 import * as Print from 'expo-print';
 import { shareAsync } from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
@@ -97,8 +97,19 @@ function TicketScreen({ navigation }) {
       await BluetoothEscposPrinter.printText('\r\n', {});
       await BluetoothEscposPrinter.printText('\r\n', {});
 
+
+      
+      dispatch(setEmptyFinalDriver());
+      dispatch(setEmptyFinalVehicle());
+      dispatch(setEmptyextractedInfo());
+      navigation.navigate("HomeScreen");
     } catch (e) {
       alert(e.message || 'ERROR');
+
+      dispatch(setEmptyFinalDriver());
+      dispatch(setEmptyFinalVehicle());
+      dispatch(setEmptyextractedInfo());
+      navigation.navigate("HomeScreen");
     }
     }
     
