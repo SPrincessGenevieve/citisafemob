@@ -375,7 +375,7 @@ export default function CameraScan() {
 
 
           <View style={{ height: "100%", width: "100%", backgroundColor: "transparent"}}>
-          {/* <Image style={styles.corners} source={corners}></Image> */}
+          <Image style={styles.corners} source={corners}></Image>
           <Camera
             flashMode={flash}
             style={styles.camera}
@@ -385,7 +385,7 @@ export default function CameraScan() {
             ratio="16:9" // Set the aspect ratio to 1:1
           ></Camera>
           <View style={styles.controlsContainer}>
-            {/* <View style={styles.controlText}>
+            <View style={styles.controlText}>
               <Text
                 style={{ color: "white", fontSize: 25, fontWeight: "bold" }}
               >
@@ -395,7 +395,7 @@ export default function CameraScan() {
                 Please place the front of the Driver’s License
               </Text>
               <Text style={{ color: "white" }}>in the frame</Text>
-            </View> */}
+            </View>
 
             {/* oki nani */}
             <View style={styles.control}>
