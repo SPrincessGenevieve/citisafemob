@@ -228,7 +228,7 @@ function FormScreen({ navigation, route }) {
       return;
     }
 
-    let currentLocation = await Location.getCurrentPositionAsync({});
+    let currentLocation = await Location.getCurrentPositionAsync({enableHighAccuracy: true});
     setLocation(currentLocation.coords);
   };
 

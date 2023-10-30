@@ -46,7 +46,7 @@ function TicketScreen({ navigation }) {
       await BluetoothEscposPrinter.printText('ROADS AND TRAFFIC ADMINISTRATION ' ,{ align: 'center', widthtimes: 3});
       await BluetoothEscposPrinter.printText('GEMS - eMFTC ' ,{ align: 'center' });
       await BluetoothEscposPrinter.printText(' MFTRTA Ticket No: ' + ticket.MFRTA_TCT_NO, { align: 'center' });
-      await BluetoothEscposPrinter.printPic(hsdLogo, options);
+      // await BluetoothEscposPrinter.printPic(hsdLogo, options);
 
       // Personal Information
       await BluetoothEscposPrinter.printText('Personal Info', { align: 'center' });
