@@ -83,6 +83,7 @@ android {
 
     namespace 'com.gems.emftc'
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true        
         applicationId 'com.gems.emftc'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion

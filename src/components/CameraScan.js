@@ -15,7 +15,7 @@ import {
   getCameraPermissionsAsync, // Fixed typo here
 } from "expo-camera";
 import Feather from "@expo/vector-icons/Feather";
-import * as ImagePicker from "expo-image-picker";
+// import * as ImagePicker from "expo-image-picker";
 import {
   setDriverID,
   setDriverRegisterd,
@@ -31,6 +31,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import corners from "./../../assets/corners.png";
 import axios from "../../plugins/axios";
 import { setdriverID } from "./camera/infoSliceCOR";
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function CameraScan() {
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
@@ -113,27 +114,30 @@ export default function CameraScan() {
   const takePicture = async () => {
     if (cameraRef) {
       const photo = await cameraRef.takePictureAsync();
-      setCapturedImage(photo.uri);
-      setCropMode(true);
-      setShowPicture(true);
-    }
-  };
-  const cropImage = async () => {
-    try {
-      const croppedImage = await ExpoImageManipulator.manipulateAsync(
-        capturedImage,
-        [{ crop: { originX: left, originY: top, width: cropWidth, height: cropHeight } }],
-        { compress: 1, format: ExpoImageManipulator.SaveFormat.PNG }
-      );
+  
+      // Check if photo has a valid path property
+      if (photo && photo.uri) {
+        ImagePicker.openCropper({
+          path: photo.uri, // Use the path property
+          includeBase64: true,
+        })
+          .then(image => {
+            const base64Image = `data:${image.mime};base64,${image.data}`;
+            setCapturedImage(base64Image);
 
-      setCapturedImage(croppedImage.uri);
-      setCropMode(false);
-      console.log('Image cropped successfully.');
-    } catch (error) {
-      console.error('Error cropping the image:', error);
-      // Handle the error here
+            setShowPicture(true);
+          })
+          .catch(error => {
+            console.log('Error:', error);
+          });
+      }
     }
   };
+  
+
+
+
+
   const cancelPicture = () => {
     setCapturedImage("");
     setShowPicture(false);
@@ -325,20 +329,23 @@ export default function CameraScan() {
   // };
 
   // // oki nani
-  // const pickImage = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [1, 1],
-  //     quality: 1,
-  //   });
+  const pickImage = async () => {
 
-  //   console.log(result);
-  //   if (!result.cancelled) {
-  //     setCapturedImage(result.assets[0].uri);
-  //     setShowPicture(true);
-  //   }
-  // };
+    ImagePicker.openPicker({
+      cropping: true,
+      includeBase64: true,
+    })
+      .then(image => {
+        const base64Image = `data:${image.mime};base64,${image.data}`;
+
+        setCapturedImage(base64Image);
+        setShowPicture(true);
+
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -366,25 +373,6 @@ export default function CameraScan() {
         </View>
       ) : (null)}
 
-        {cropMode ? (
-        <ExpoImageManipulator
-        photo={{ uri: capturedImage }}
-        isVisible
-        onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
-        onToggleModal={() => setCropMode(!cropMode)}
-        onEditRectSelected={(rect) => {
-          setLeft(rect.x);
-          setTop(rect.y);
-          setCropWidth(rect.width);
-          setCropHeight(rect.height);
-        }}
-        onSave={(editedImage) => {
-          setCapturedImage(editedImage.uri);
-          setCropMode(false);
-          console.log('Image cropped successfully.');
-        }}
-      />          
-        ): (
 
           <View style={{ height: "100%", width: "100%", backgroundColor: "transparent"}}>
           {/* <Image style={styles.corners} source={corners}></Image> */}
@@ -412,9 +400,9 @@ export default function CameraScan() {
             {/* oki nani */}
             <View style={styles.control}>
               {/* outdated system */}
-              {/* <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
+              <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
                 <Icon name="image" size={28} color="white" style={{}} />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
 
               <View>
                 <TouchableOpacity
@@ -445,8 +433,6 @@ export default function CameraScan() {
             </View>
           </View>
         </View>          
-        )}
-
  
     </View>
   );
