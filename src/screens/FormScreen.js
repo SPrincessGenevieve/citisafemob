@@ -79,10 +79,11 @@ function FormScreen({ navigation, route }) {
   const Token = useSelector((state) => state.auth.token);
   const isOnline = useSelector((state) => state.auth.Online);
   const data = [
-    { key: "Student-Permit", value: "SP" },
-    { key: "Professional", value: "P" },
-    { key: "Non-Professional", value: "NP" },
+    { key: "SP", value: "Student-Permit" },
+    { key: "P", value: "Professional" },
+    { key: "NP", value: "Non-Professional" },
   ];
+
   const [open, setOpen] = useState(false);
   const [sortAsc, setSortAsc] = useState(true);
   const [cat1, setCat1] = useState(true);
@@ -1208,10 +1209,10 @@ function FormScreen({ navigation, route }) {
                           setSelected={(val) => {
                             setSelected(val)
                             dispatch(setDriverClassification(val))
-
+                            console.log(val)
                           }}
                           data={data}
-                          save="value"
+                          save="key"
                           marginTop={25}
                           marginBottom={25}
                         ></ConstDrop>

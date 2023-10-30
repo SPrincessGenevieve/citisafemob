@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AppNavigator from "./AppNavigator";
 import { Provider } from "react-redux";
 import store from "./plugins/store";
-
+2
 export default function App() {
   return (
     <Provider store={store}>

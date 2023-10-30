@@ -1,0 +1,11 @@
+[33m74ead42[m[33m ([m[1;36mHEAD -> [m[1;32mnewBackend[m[33m, [m[1;31morigin/newBackend[m[33m)[m HEAD@{0}: reset: moving to head
+[33m74ead42[m[33m ([m[1;36mHEAD -> [m[1;32mnewBackend[m[33m, [m[1;31morigin/newBackend[m[33m)[m HEAD@{1}: commit: Adjust na sad og camera
+[33m75fe885[m HEAD@{2}: commit: Update Classification
+[33m116a7cc[m HEAD@{3}: commit: Change manual cropping to autocrop
+[33m3d5181c[m HEAD@{4}: commit: Modified Printer
+[33m96cd5aa[m HEAD@{5}: reset: moving to head
+[33m96cd5aa[m HEAD@{6}: commit: Camera adjust
+[33mfa40596[m HEAD@{7}: reset: moving to head
+[33mfa40596[m HEAD@{8}: reset: moving to head
+[33mfa40596[m HEAD@{9}: checkout: moving from main to newBackend
+[33m006e3f9[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{10}: clone: from https://github.com/SPrincessGenevieve/citisafemob.git
