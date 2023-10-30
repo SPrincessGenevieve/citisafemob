@@ -17,7 +17,7 @@ import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import axios from "../../plugins/axios";
-import * as ImagePicker from "expo-image-picker";
+import ImagePicker from 'react-native-image-crop-picker';
 import {
   setFinalVehicle,
   setGetFinalVehicle,
@@ -100,14 +100,26 @@ export default function CameraScanCOR() {
 
   const takePicture = async () => {
     if (cameraRef) {
-      const uri = await cameraRef.takePictureAsync();
+      const photo = await cameraRef.takePictureAsync();
+  
+      // Check if photo has a valid path property
+      if (photo && photo.uri) {
+        ImagePicker.openCropper({
+          path: photo.uri, // Use the path property
+          includeBase64: true,
+        })
+          .then(image => {
+            const base64Image = `data:${image.mime};base64,${image.data}`;
+            setCapturedImage(base64Image);
 
-      setCapturedImage(uri.uri); // Set the captured image URI directly
-      setCropMode(true);
-      setShowPicture(true);
+            setShowPicture(true);
+          })
+          .catch(error => {
+            console.log('Error:', error);
+          });
+      }
     }
   };
-
   const cancelPicture = () => {
     setCapturedImage("");
     setShowPicture(false);
@@ -265,21 +277,23 @@ export default function CameraScanCOR() {
   };
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false, // Set to false to disable cropping
-      aspect: [1, 1],
-      quality: 1,
-    });
 
-    console.log(result);
-    if (!result.canceled) {
-      const { uri } = result;
-      setCapturedImage(uri); // Use result.uri directly
-      setCropMode(false);
-      setShowPicture(true);
-    }
+    ImagePicker.openPicker({
+      cropping: true,
+      includeBase64: true,
+    })
+      .then(image => {
+        const base64Image = `data:${image.mime};base64,${image.data}`;
+
+        setCapturedImage(base64Image);
+        setShowPicture(true);
+
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
   };
+
 
   return (
     <View>
@@ -308,17 +322,6 @@ export default function CameraScanCOR() {
         </View>
       ) : null}
 
-      {cropMode ? (
-        <View>
-          <ExpoImageManipulator
-            photo={{ uri: capturedImage }}
-            isVisible
-            onPictureChoosed={(uri) => setCapturedImage(uri.uri)}
-            onToggleModal={() => setCropMode(!cropMode)}
-            ratio="16:9" // Set the aspect ratio to 1:1
-          />
-        </View>
-      ) : (
         <View
           style={{
             height: "100%",
@@ -339,9 +342,9 @@ export default function CameraScanCOR() {
           ></Camera>
           <View style={styles.controlsContainer}>
             <View style={styles.control}>
-              {/* <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
+              <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
                 <Icon name="image" size={28} color="white" style={{}} />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
 
               <View>
                 <TouchableOpacity
@@ -370,7 +373,6 @@ export default function CameraScanCOR() {
             </View>
           </View>
         </View>
-      )}
     </View>
   );
 }

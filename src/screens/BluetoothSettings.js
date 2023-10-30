@@ -346,7 +346,7 @@ const BluetoothApp = () => {
         </Text>
       )}
       <Text style={styles.sectionTitle}>
-        Bluetooth connected to this cellphone:
+        Bluetooth connected to this device:
       </Text>
       {loading ? <ActivityIndicator animating={true} /> : null}
       <View style={styles.containerList}>

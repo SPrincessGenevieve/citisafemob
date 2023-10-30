@@ -11,6 +11,9 @@ function OCRScreen(props) {
 
 export default OCRScreen;
 
+
+
+// 
 // import React, { useState } from "react";
 // import { View, Text, StyleSheet } from "react-native";
 // import CameraScan from "../components/CameraScan";
