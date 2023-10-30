@@ -20,8 +20,8 @@ export default function MapLocation({
       <MapView
         style={{ flex: 1 }}
         region={{
-          latitude: location ? location.latitude : 14.5995,
-          longitude: location ? location.longitude : 120.9842,
+          latitude: location ? location.latitude : 8.2727,
+          longitude: location ? location.longitude : 124.8483,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
