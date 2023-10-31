@@ -214,26 +214,35 @@ function FormScreen({ navigation, route }) {
 
   
 
+
   const handleMapPress = async (e) => {
-    const newPin = {
-      coordinate: e.nativeEvent.coordinate,
-      address: await getAddressFromCoordinates(e.nativeEvent.coordinate),
-    };
-    setSelectedPin(newPin);
-    onUpdateLocation(e.nativeEvent.coordinate);
+    try {
+      const newPin = {
+        coordinate: e.nativeEvent.coordinate,
+        address: await getAddressFromCoordinates(e.nativeEvent.coordinate),
+      };
+      setSelectedPin(newPin);
+      onUpdateLocation(e.nativeEvent.coordinate);
+    } catch (error) {
+      console.error("Error handling map press:", error);
+    }
   };
 
 
-  
-  const getLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
 
-    let currentLocation = await Location.getCurrentPositionAsync({});
-    setLocation(currentLocation.coords);
+  const getLocation = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+  
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation.coords);
+    } catch (error) {
+      console.error("Error getting location:", error);
+    }
   };
 
   const getAddressFromCoordinates = async (coordinate) => {
@@ -258,17 +267,13 @@ function FormScreen({ navigation, route }) {
 
   useEffect(() => {
     if (location) {
-      getAddressFromCoordinates(location).then((currentAddress) =>
-        setCurrentAddress(currentAddress)
-      );
-    }
-  }, [location]);
-
-  useEffect(() => {
-    if (location) {
-      getAddressFromCoordinates(location).then((currentAddress) =>
-        setCurrentAddress(currentAddress)
-      );
+      getAddressFromCoordinates(location)
+        .then((currentAddress) => {
+          setCurrentAddress(currentAddress);
+        })
+        .catch((error) => {
+          console.error("Error getting address from coordinates:", error);
+        });
     }
   }, [location]);
 
@@ -1508,7 +1513,7 @@ function FormScreen({ navigation, route }) {
                           marginTop={25}
                           marginBottom={25}
                           required
-                          value={selectedPin ? selectedPin.address : "N/A"}
+                          value={selectedPin ? selectedPin.address : "N/A" }
                           onChangeText={(text) => {
                             setSelectedPin({
                               ...selectedPin,
