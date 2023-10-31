@@ -30,7 +30,6 @@ export const authSlice = createSlice({
       state.token = "";
       state.enforcer = {}
       state.setIsLoggedIn = false;
-      state.isPrinterConnected = false;
     },
     setEnforcer: (state, action) => {
       state.enforcer = action.payload

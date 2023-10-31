@@ -29,9 +29,8 @@ function Privacy(props) {
         },
       })
       .then((response) => {
-        console.log("Changed Password Successfully");
         setResponseText("Your password has been updated");
-        setDisplay(!display);
+        alert("Changed Password Successfully");
         setNewPassword({
           new_password: "",
           re_new_password: "",
@@ -41,7 +40,6 @@ function Privacy(props) {
       .catch((error) => {
         console.log("Error Changed Password");
         setResponseText("Your password hasn't been updated");
-        setDisplay(!display);
       });
   };
 

@@ -11,7 +11,7 @@ function IntroOCR({ navigation }) {
   return (
     <View
       style={{
-        padding: 10,
+        padding: 1,
         backgroundColor: "white",
         height: "100%",
         alignItems: "center",
@@ -31,7 +31,7 @@ function IntroOCR({ navigation }) {
       </View>
       <View style={styles.id}>
         <Image
-          style={{ marginTop: 110, width: 225, height: 280 }}
+          style={{ marginTop: 100, width: 225, height: 280 }}
           source={OCRImage}
         ></Image>
       </View>
@@ -41,7 +41,7 @@ function IntroOCR({ navigation }) {
           marginTop: "80%",
         }}
       >
-      <Text style={[styles.subtitlebottom, { marginTop: 10 }]}> 
+      <Text style={[styles.subtitlebottom, { marginTop: 25 }]}> 
           Every Driver will get the same experience
         </Text>
         <Text style={styles.subtitlebottom}>

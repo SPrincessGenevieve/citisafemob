@@ -195,7 +195,7 @@ function HomeScreen({ navigation }) {
               alignItems: "center",
               justifyContent: "center",
               width: "80%",
-              marginTop: "100%",
+              marginTop: 250,
             }}
           >
               <ConstButton

@@ -73,8 +73,6 @@ import {
 import { setTicketInfo } from "../components/camera/ticketSlice";
 import * as SQLite from "expo-sqlite";
 import ConstDrop from "../components/ConstDrop";
-import Geolocation from '@react-native-community/geolocation';
-
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -777,6 +775,7 @@ function FormScreen({ navigation, route }) {
                         title={"PLACE OF VIOLATION"}
                         value={selectedPin.address}
                       ></PreviewComponent>
+                      
                       <Text style={{ color: "grey", marginTop: 20 }}>
                         TRAFFIC RULES VIOLATION
                       </Text>
@@ -1189,8 +1188,9 @@ function FormScreen({ navigation, route }) {
                           required
                           multiline={true}
                         ></ConstInput>
-                        <ConstInput
+                         <ConstInput
                           borderRadius={10}
+                          placeholder="MM/DD/YYYY"
                           height={40}
                           value={ocrText.birthdate}
                           text={"Date of Birth*"}
@@ -1199,7 +1199,8 @@ function FormScreen({ navigation, route }) {
                           }}
                           marginTop={25}
                           required
-                        ></ConstInput>
+                        ></ConstInput>                                       
+               
                         <ConstInput
                           borderRadius={10}
                           height={40}

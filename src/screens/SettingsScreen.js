@@ -25,8 +25,8 @@ import {
 } from "./Authentication/authSlice";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import ConstInput from "../components/ConstInputShort";
-import * as ImagePicker from "expo-image-picker";
 import axios from "../../plugins/axios";
+import ImagePicker from 'react-native-image-crop-picker';
 
 function SettingsScreen({ navigation }) {
   const [logout1, setLogout1] = useState(false);
@@ -57,25 +57,22 @@ function SettingsScreen({ navigation }) {
     dispatch(setLogout());
   };
 
+
   const handleImagePicker = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+    ImagePicker.openPicker({
+      cropping: true,
+      includeBase64: true,
+    })
+      .then(image => {
+        const base64Image = `data:${image.mime};base64,${image.data}`;
+
+        dispatch(setEnforcerProfilePicture(base64Image));
+      })
+      .catch(error => {
+        console.error("ImagePicker Error: ", error);
       });
-
-      if (!result.canceled) {
-        const selectedImageUri = result.uri;
-        dispatch(setEnforcerProfilePicture(selectedImageUri));
-        // Handle the selected image URI as needed
-      }
-    } catch (error) {
-      console.error("ImagePicker Error: ", error);
-    }
   };
-
+  
   const handleUpdateUserInfo = () => {
     const ID = officer.id;
 
@@ -382,7 +379,7 @@ function SettingsScreen({ navigation }) {
                     <Text style={{ fontSize: 15 }}>Privary and Security</Text>
                     <Icon
                       name="right"
-                      style={{ marginLeft: 210, fontSize: 20, color: "grey" }}
+                      style={{ marginLeft: 180, fontSize: 20, color: "grey" }}
                     ></Icon>
                   </TouchableOpacity>
                 </View>
@@ -495,7 +492,7 @@ function SettingsScreen({ navigation }) {
           {logout1 ? (
             <>
               <View
-                style={{ width: "100%", height: "100%", position: "absolute" }}
+                style={{ width: "100%", height: "100%", position: "absolute", zIndex: 5}}
               >
                 <View
                   style={{
@@ -512,7 +509,7 @@ function SettingsScreen({ navigation }) {
                     width: "100%",
                     height: "100%",
                     alignItems: "center",
-                    marginTop: "80%",
+                    marginTop: "50%",
                   }}
                 >
                   <View
@@ -520,15 +517,15 @@ function SettingsScreen({ navigation }) {
                       backgroundColor: "white",
                       width: "90%",
                       height: "20%",
-                      borderRadius: 20,
+                      borderRadius: 5,
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                    <Text style={{ fontSize: 20, fontWeight: "bold",  }}>
                       You are about to logout
                     </Text>
-                    <Text style={{ color: "grey" }}>
+                    <Text style={{ color: "grey",  }}>
                       Please confirm your selection
                     </Text>
                     <View
@@ -537,7 +534,7 @@ function SettingsScreen({ navigation }) {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "center",
-                        marginTop: -25,
+                        marginTop: 15,
                       }}
                     >
                       <TouchableOpacity

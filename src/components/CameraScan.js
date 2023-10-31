@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
   },
   nextBtn: {
     position: "absolute",
-    bottom: 80,
+    bottom: 30,
     backgroundColor: "#fff",
     borderRadius: 10,
     height: 40,
@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     position: "absolute",
-    bottom: 80,
+    bottom: 30,
     backgroundColor: "#fff",
     borderRadius: 10,
     height: 40,
