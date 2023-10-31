@@ -137,6 +137,10 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    implementation("host.exp.exponent:expo-location:13.0.0") // Replace with the appropriate version
+    // implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation "com.google.android.gms:play-services-location:21.0.1"
+
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-bluetooth-escpos-printer')
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";

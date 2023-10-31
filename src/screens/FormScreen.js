@@ -73,6 +73,8 @@ import {
 import { setTicketInfo } from "../components/camera/ticketSlice";
 import * as SQLite from "expo-sqlite";
 import ConstDrop from "../components/ConstDrop";
+import Geolocation from '@react-native-community/geolocation';
+
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -221,6 +223,8 @@ function FormScreen({ navigation, route }) {
     onUpdateLocation(e.nativeEvent.coordinate);
   };
 
+
+  
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -228,7 +232,7 @@ function FormScreen({ navigation, route }) {
       return;
     }
 
-    let currentLocation = await Location.getCurrentPositionAsync({enableHighAccuracy: true});
+    let currentLocation = await Location.getCurrentPositionAsync({});
     setLocation(currentLocation.coords);
   };
 
