@@ -40,8 +40,8 @@ function FirstScreen({ navigation }) {
   const [animationValue] = useState(new Animated.Value(1));
 
   const [credentials, setCredentials] = useState({
-    username: "mobile",
-    password: "dario200",
+    username: "jaydemike21",
+    password: "2023@engracia",
   });
   // get the authSlice Online
   const internet = useSelector((state) => state.auth.Online)
