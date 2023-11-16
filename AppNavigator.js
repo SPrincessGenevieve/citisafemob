@@ -191,7 +191,7 @@ function AppNavigator() {
         <Stack.Screen
           name="FormScreen"
           options={{
-            headerShown: true,
+            headerShown: false,
             headerStyle: {
               backgroundColor: "#518638",
             },

@@ -157,23 +157,6 @@ function FormScreen({ navigation, route }) {
     item.violation_type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const generateMfrtaTctNo = () => {
-    const year = moment().format("YYYY");
-    const month = moment().format("MM");
-    const unique = generateUniqueNumber().toString().padStart(2, "0");
-    const tctNo = `${year}${month}${unique}`;
-    setMfrtaTctNo(tctNo);
-  };
-
-  useEffect(() => {
-    generateMfrtaTctNo();
-  }, []);
-
-  let uniqueNumber = 1;
-
-  const generateUniqueNumber = () => {
-    return uniqueNumber++;
-  };
 
   useEffect(() => {
     const fetchTime = () => {
@@ -211,7 +194,7 @@ function FormScreen({ navigation, route }) {
   };
 
   
-
+// map location
 
   const handleMapPress = async (e) => {
     try {
@@ -225,8 +208,6 @@ function FormScreen({ navigation, route }) {
       console.error("Error handling map press:", error);
     }
   };
-
-
 
   const getLocation = async () => {
     try {
@@ -279,9 +260,6 @@ function FormScreen({ navigation, route }) {
     setIsAtLeastOneChecked(checkedViolations.length > 0);
   }, [checkedViolations]);
 
-  const toggleSortIcon = () => {
-    setSortAsc(!sortAsc); // Toggle the state between true and false
-  };
 
   // final screen
   const handleTicket = () => {
@@ -1165,6 +1143,7 @@ function FormScreen({ navigation, route }) {
                           }}
                           text="Middle Initial"
                           required
+                          maxLength={1}
                         ></ConstInput>
                         <ConstInput
                           borderRadius={10}
@@ -1483,7 +1462,8 @@ function FormScreen({ navigation, route }) {
                         height={40}
                         text={"Ticket Status"}
                         value="PENDING"
-                        required
+                        editable={false}
+        
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
@@ -1573,6 +1553,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     backgroundColor: "white",
+    paddingTop: 15
   },
   category: {
     height: 50,

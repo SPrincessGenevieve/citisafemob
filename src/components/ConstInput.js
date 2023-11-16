@@ -19,6 +19,7 @@ function ConstInput({
   borderRadius,
   minHeight, // New prop for minimum height
   multiline,
+  maxLength
 }) {
   const [fontsLoaded] = useFonts({
     "Roboto-Light": require("./../../assets/fonts/Roboto-Light.ttf"),
@@ -69,6 +70,7 @@ function ConstInput({
           }}
           multiline={multiline} // Enable multiline input
           numberOfLines={1} // Set an initial number of lines
+          maxLength={maxLength}
         />
       </View>
     </>
