@@ -67,7 +67,7 @@ function History({ navigation }) {
     } else {
       // for localstorage
     }
-  }, []);
+  }, [Token]);
 
   const handleTicketClick = (ticketItem) => {
     setSelectedTicket(ticketItem);

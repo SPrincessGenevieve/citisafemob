@@ -15,6 +15,8 @@ import Icon from "react-native-vector-icons/AntDesign";
 import { useSelector, useDispatch } from "react-redux";
 import NetInfo from '@react-native-community/netinfo'
 import { setOnline } from "./Authentication/authSlice";
+import { setEmptyFinalDriver } from "../components/camera/infoSlice";
+import { setEmptyFinalVehicle, setEmptyextractedInfo } from "../components/camera/infoSliceCOR";
 
 function HomeScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
@@ -84,11 +86,19 @@ function HomeScreen({ navigation }) {
   };
 
   const handleIntroLicense = () => {
+    dispatch(setEmptyFinalDriver());
+    dispatch(setEmptyFinalVehicle());
+    dispatch(setEmptyextractedInfo());    
     navigation.navigate("IntroLicense");
   };
 
   const handleForm = () => {
+    dispatch(setEmptyFinalDriver());
+    dispatch(setEmptyFinalVehicle());
+    dispatch(setEmptyextractedInfo());    
     navigation.navigate("FormScreen");
+
+
   };
 
   const handleLogout = () => {

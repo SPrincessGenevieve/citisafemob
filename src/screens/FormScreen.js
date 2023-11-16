@@ -580,7 +580,7 @@ function FormScreen({ navigation, route }) {
                   height: "100%",
                 }}
               >
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -599,7 +599,7 @@ function FormScreen({ navigation, route }) {
                   >
                     BACK
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <View
                   style={{
                     paddingHorizontal: 45,
@@ -793,7 +793,7 @@ function FormScreen({ navigation, route }) {
             ) : null}
             {violation ? (
               <>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -812,7 +812,7 @@ function FormScreen({ navigation, route }) {
                   >
                     BACK
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <View style={{}}>
                   <View style={{ padding: 20 }}>
                     <Text
@@ -1169,7 +1169,7 @@ function FormScreen({ navigation, route }) {
                         ></ConstInput>
                          <ConstInput
                           borderRadius={10}
-                          placeholder="MM/DD/YYYY"
+                          placeholder="YYYY/MM/DD/"
                           height={40}
                           value={ocrText.birthdate}
                           text={"Date of Birth*"}

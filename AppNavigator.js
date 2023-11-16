@@ -172,6 +172,7 @@ function AppNavigator() {
           }}
           component={OCRScreen}
         />
+
         <Stack.Screen
           name="CameraScanOCR"
           options={{

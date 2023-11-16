@@ -74,7 +74,7 @@ function Privacy(props) {
                 </>
               ) : null}
             </View>
-            <View style={{ width: 330 }}>
+            <View style={{ width: 290 }}>
               <ConstInput
                 text={"Current Password"}
                 placeholder="Current Password"
@@ -85,6 +85,7 @@ function Privacy(props) {
                     current_password: text,
                   });
                 }}
+                
               ></ConstInput>
               <ConstInput
                 text={"New Password"}
