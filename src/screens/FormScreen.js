@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   Keyboard,
+  Alert,
 } from "react-native";
 import KeyboardWithoutWrapper from "../components/KeyboardWithoutWrapper";
 import ConstInput from "../components/ConstInput";
@@ -41,6 +42,7 @@ import {
   setLicenseNumber,
   setMiddleInitial,
   setNationality,
+  setEmptyFinalDriver,
 } from "../components/camera/infoSlice";
 import {
   setBodyMarkings,
@@ -58,6 +60,8 @@ import {
   setVehicleID,
   setVehicleModel,
   setdriverID,
+  setEmptyFinalVehicle,
+  setEmptyextractedInfo,
 } from "../components/camera/infoSliceCOR";
 import { setTicketInfo } from "../components/camera/ticketSlice";
 import ConstDrop from "../components/ConstDrop";
@@ -73,8 +77,6 @@ function FormScreen({ navigation, route }) {
     { key: "NP", value: "Non-Professional" },
   ];
 
-  const [open, setOpen] = useState(false);
-  const [sortAsc, setSortAsc] = useState(true);
   const [cat1, setCat1] = useState(true);
   const [cat2, setCat2] = useState(true);
   const [cat3, setCat3] = useState(true);
@@ -82,6 +84,7 @@ function FormScreen({ navigation, route }) {
   const [cat5, setCat5] = useState(true);
   const [location, setLocation] = useState("");
   const [selectedPin, setSelectedPin] = useState("");
+  const [locationObtained, setLocationObtained] = useState(false);
   const [currentAddress, setCurrentAddress] = useState(null);
   const [mfrtaTctNo, setMfrtaTctNo] = useState("");
   const [currentTime, setCurrentTime] = useState(moment().format("hh:mm A"));
@@ -189,6 +192,7 @@ function FormScreen({ navigation, route }) {
         address: await getAddressFromCoordinates(e.nativeEvent.coordinate),
       };
       setSelectedPin(newPin);
+      setLocationObtained(true);
       onUpdateLocation(e.nativeEvent.coordinate);
     } catch (error) {
       console.error("Error handling map press:", error);
@@ -248,262 +252,327 @@ function FormScreen({ navigation, route }) {
 
   // final screen
   const handleTicket = () => {
-    const isDriverExist = driver.isDriverRegisterd;
-    const isVehicleExist = vehicle.isCarRegistered;
-
-    if (!isDriverExist && !isVehicleExist) {
-      const drivers = driver.finalDriver;
-      console.log(drivers);
-
-      const vehicles = vehicle.finalVehicle;
-      console.log(vehicles);
-
-      axios
-        .post(`drivers/register/`, drivers, {
-          headers: {
-            Authorization: `token ${Token}`,
+    Alert.alert(
+      "Confirmation",
+      "Once you click 'Yes', you will be unable to make any further changes as you have already reviewed and confirmed that all fields are correct.",
+      [
+        {
+          text: "No, Continue Editing",
+          onPress: () => {
+            // If the user clicks 'No', you can perform any additional actions or simply return
+            return;
           },
-        })
-        .then((response) => {
-          const id = response.data.id;
-          const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
-          console.log("Driver ID:", idString);
+          style: "cancel",
+        },
+        {
+          text: "Yes, Proceed",
+          onPress: () => {
+            const isDriverExist = driver.isDriverRegisterd;
+            const isVehicleExist = vehicle.isCarRegistered;
 
-          dispatch(setDriverID(idString));
-          dispatch(setDriverRegisterd());
-          dispatch(setManualDriverID(idString));
+            if (!isDriverExist && !isVehicleExist) {
+              const drivers = driver.finalDriver;
 
-          const requestData = {
-            driverID: idString,
-            name: vehicles.name,
-            address: vehicles.address,
-            contact_number: vehicles.contact_number,
-            plate_number: vehicles.plate_number,
-            make: vehicles.make,
-            color: vehicles.color,
-            vehicle_class: vehicles.vehicle_class,
-            body_markings: vehicles.body_markings,
-            vehicle_model: vehicles.vehicle_model,
-          };
+              const vehicles = vehicle.finalVehicle;
 
-          alert("Successfully Register Driver");
-
-          axios
-            .post(`vehicles/register/`, requestData, {
-              headers: {
-                Authorization: `token ${Token}`,
-              },
-            })
-            .then((response) => {
-              const id = response.data.id;
-              dispatch(setVehicleID(id));
-              dispatch(setIsCarRegistered());
-
-              console.log(vehicles);
-              alert("Successfully Register Vehicle");
-
-              // traffic ticket
-              const driverID = driver.id;
-              const vehicleID = vehicle.id;
-
-              // first post the traffic violation
               axios
-                .post("ticket/trafficviolation/", violationIDs, {
+                .post(`drivers/register/`, drivers, {
                   headers: {
                     Authorization: `token ${Token}`,
                   },
                 })
                 .then((response) => {
-                  // traffic violation id
-                  const traffic_violationID = response.data.id;
-                  setTrafficViolationID(trafficViolationID);
-                  console.log(response.data);
+                  const id = response.data.id;
+                  const idString = id ? id.toString() : "";
+                  console.log("Driver ID:", idString);
 
-                  const formData = {
-                    vehicle: vehicleID,
-                    driver_ID: driverID,
-                    violations: traffic_violationID,
-                    place_violation: selectedPin.address,
-                    ticket_status: "PENDING",
+                  dispatch(setDriverID(idString));
+                  dispatch(setDriverRegisterd());
+                  dispatch(setManualDriverID(idString));
+
+                  const requestData = {
+                    driverID: idString,
+                    name: vehicles.name,
+                    address: vehicles.address,
+                    contact_number: vehicles.contact_number,
+                    plate_number: vehicles.plate_number,
+                    make: vehicles.make,
+                    color: vehicles.color,
+                    vehicle_class: vehicles.vehicle_class,
+                    body_markings: vehicles.body_markings,
+                    vehicle_model: vehicles.vehicle_model,
                   };
 
                   axios
-                    .post("ticket/register/", JSON.stringify(formData), {
+                    .post(`vehicles/register/`, requestData, {
                       headers: {
                         Authorization: `token ${Token}`,
                       },
                     })
                     .then((response) => {
-                      alert("Successfully Cited");
-                      dispatch(setTicketInfo(response.data));
-                      navigation.navigate("TicketScreen");
+                      const id = response.data.id;
+                      dispatch(setVehicleID(id));
+                      dispatch(setIsCarRegistered());
+
+                      // traffic ticket
+                      const driverID = driver.id;
+                      const vehicleID = vehicle.id;
+
+                      // first post the traffic violation
+                      axios
+                        .post("ticket/trafficviolation/", violationIDs, {
+                          headers: {
+                            Authorization: `token ${Token}`,
+                          },
+                        })
+                        .then((response) => {
+                          // traffic violation id
+                          const traffic_violationID = response.data.id;
+                          setTrafficViolationID(trafficViolationID);
+
+                          const formData = {
+                            vehicle: vehicleID,
+                            driver_ID: driverID,
+                            violations: traffic_violationID,
+                            place_violation: selectedPin.address,
+                            ticket_status: "PENDING",
+                          };
+
+                          axios
+                            .post(
+                              "ticket/register/",
+                              JSON.stringify(formData),
+                              {
+                                headers: {
+                                  Authorization: `token ${Token}`,
+                                },
+                              }
+                            )
+                            .then((response) => {
+                              alert("Successfully Cited");
+                              dispatch(setTicketInfo(response.data));
+                              navigation.navigate("TicketScreen");
+                            })
+                            .catch((error) => {
+                              console.log(error);
+                              console.log(formData);
+                            });
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
                     })
                     .catch((error) => {
+                      console.log("Error for Vehicle");
                       console.log(error);
-                      console.log(formData);
+                      console.log(requestData);
+                      alert("Please do check the ORCR Info!!");
                     });
                 })
                 .catch((error) => {
+                  console.log("Error for Drivers");
                   console.log(error);
+                  console.log(drivers);
+                  alert("Please do check the Driver License Info!!");
                 });
-            })
-            .catch((error) => {
-              console.log("Error for Vehicle");
-              console.log(error);
-              console.log(requestData);
-              alert("Please do check the ORCR Info!!");
-            });
-        })
-        .catch((error) => {
-          console.log("Error for Drivers");
-          console.log(error);
-          console.log(drivers);
-          alert("Please do check the Driver License Info!!");
-        });
-    }
+            }
 
-    // If driver exists but vehicle is not
-    if (isDriverExist && !isVehicleExist) {
-      console.log("Not Exist");
-      console.log(isDriverExist);
-      const vehicles = vehicle.finalVehicle;
+            // If driver exists but vehicle is not
+            if (isDriverExist && !isVehicleExist) {
+              const vehicles = vehicle.finalVehicle;
 
-      const id = driver.finalDriver.id;
-      const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
+              const id = driver.finalDriver.id;
+              const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
 
-      const requestData = {
-        driverID: idString,
-        name: vehicles.name,
-        address: vehicles.address,
-        contact_number: vehicles.contact_number,
-        plate_number: vehicles.plate_number,
-        make: vehicles.make,
-        color: vehicles.color,
-        vehicle_class: vehicles.vehicle_class,
-        body_markings: vehicles.body_markings,
-        vehicle_model: vehicles.vehicle_model,
-      };
-
-      axios
-        .post(`vehicles/register/`, requestData, {
-          headers: {
-            Authorization: `token ${Token}`,
-          },
-        })
-        .then((response) => {
-          const id = response.data.id;
-          dispatch(setVehicleID(id));
-          dispatch(setIsCarRegistered());
-
-          console.log(vehicles);
-          alert("Successfully Register Vehicle");
-
-          // traffic violation
-
-          const driverID = driver.id;
-          const vehicleID = vehicle.id;
-
-          // first post the traffic violation
-          axios
-            .post("ticket/trafficviolation/", violationIDs, {
-              headers: {
-                Authorization: `token ${Token}`,
-              },
-            })
-            .then((response) => {
-              // traffic violation id
-              const traffic_violationID = response.data.id;
-              setTrafficViolationID(trafficViolationID);
-              console.log(response.data);
-
-              const formData = {
-                vehicle: vehicleID,
-                driver_ID: driverID,
-                violations: traffic_violationID,
-                place_violation: selectedPin.address,
-                ticket_status: "PENDING",
+              const requestData = {
+                driverID: idString,
+                name: vehicles.name,
+                address: vehicles.address,
+                contact_number: vehicles.contact_number,
+                plate_number: vehicles.plate_number,
+                make: vehicles.make,
+                color: vehicles.color,
+                vehicle_class: vehicles.vehicle_class,
+                body_markings: vehicles.body_markings,
+                vehicle_model: vehicles.vehicle_model,
               };
 
               axios
-                .post("ticket/register/", JSON.stringify(formData), {
+                .post(`vehicles/register/`, requestData, {
                   headers: {
                     Authorization: `token ${Token}`,
                   },
                 })
                 .then((response) => {
-                  alert("Successfully Cited");
-                  dispatch(setTicketInfo(response.data));
-                  navigation.navigate("TicketScreen");
+                  const id = response.data.id;
+                  dispatch(setVehicleID(id));
+                  dispatch(setIsCarRegistered());
+
+                  // traffic violation
+
+                  const driverID = driver.id;
+                  const vehicleID = vehicle.id;
+
+                  // first post the traffic violation
+                  axios
+                    .post("ticket/trafficviolation/", violationIDs, {
+                      headers: {
+                        Authorization: `token ${Token}`,
+                      },
+                    })
+                    .then((response) => {
+                      // traffic violation id
+                      const traffic_violationID = response.data.id;
+                      setTrafficViolationID(trafficViolationID);
+
+                      const formData = {
+                        vehicle: vehicleID,
+                        driver_ID: driverID,
+                        violations: traffic_violationID,
+                        place_violation: selectedPin.address,
+                        ticket_status: "PENDING",
+                      };
+
+                      axios
+                        .post("ticket/register/", JSON.stringify(formData), {
+                          headers: {
+                            Authorization: `token ${Token}`,
+                          },
+                        })
+                        .then((response) => {
+                          alert("Successfully Cited");
+                          dispatch(setTicketInfo(response.data));
+                          navigation.navigate("TicketScreen");
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                          console.log(formData);
+                        });
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
                 })
                 .catch((error) => {
+                  console.log("Error for Vehicle");
                   console.log(error);
-                  console.log(formData);
+                  console.log(requestData);
+                  alert("Please do check the ORCR Info!!");
                 });
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        })
-        .catch((error) => {
-          console.log("Error for Vehicle");
-          console.log(error);
-          console.log(requestData);
-          alert("Please do check the ORCR Info!!");
-        });
-    }
+            }
 
-    // if driver not exist but vehicle exists
-    if (!isDriverExist && isVehicleExist) {
-      const drivers = driver.finalDriver;
-      console.log(drivers);
+            // if driver not exist but vehicle exists
+            if (!isDriverExist && isVehicleExist) {
+              const drivers = driver.finalDriver;
+              console.log(drivers);
 
-      const vehicles = vehicle.finalVehicle;
-      console.log(vehicles);
-
-      axios
-        .post(`drivers/register/`, drivers, {
-          headers: {
-            Authorization: `token ${Token}`,
-          },
-        })
-        .then((response) => {
-          const id = response.data.id;
-          const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
-          console.log("Driver ID:", idString);
-
-          dispatch(setDriverID(idString));
-          dispatch(setDriverRegisterd());
-          dispatch(setManualDriverID(idString));
-
-          const requestData = {
-            driverID: idString,
-            name: vehicles.name,
-            address: vehicles.address,
-            contact_number: vehicles.contact_number,
-            plate_number: vehicles.plate_number,
-            make: vehicles.make,
-            color: vehicles.color,
-            vehicle_class: vehicles.vehicle_class,
-            body_markings: vehicles.body_markings,
-            vehicle_model: vehicles.vehicle_model,
-          };
-          alert("Successfully Register Driver");
-
-          axios
-            .post(`vehicles/register/`, requestData, {
-              headers: {
-                Authorization: `token ${Token}`,
-              },
-            })
-            .then((response) => {
-              const id = response.data.id;
-              dispatch(setVehicleID(id));
-              dispatch(setIsCarRegistered());
-
+              const vehicles = vehicle.finalVehicle;
               console.log(vehicles);
-              alert("Successfully Register Vehicle");
 
-              // traffic violation
+              axios
+                .post(`drivers/register/`, drivers, {
+                  headers: {
+                    Authorization: `token ${Token}`,
+                  },
+                })
+                .then((response) => {
+                  const id = response.data.id;
+                  const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
+                  console.log("Driver ID:", idString);
+
+                  dispatch(setDriverID(idString));
+                  dispatch(setDriverRegisterd());
+                  dispatch(setManualDriverID(idString));
+
+                  const requestData = {
+                    driverID: idString,
+                    name: vehicles.name,
+                    address: vehicles.address,
+                    contact_number: vehicles.contact_number,
+                    plate_number: vehicles.plate_number,
+                    make: vehicles.make,
+                    color: vehicles.color,
+                    vehicle_class: vehicles.vehicle_class,
+                    body_markings: vehicles.body_markings,
+                    vehicle_model: vehicles.vehicle_model,
+                  };
+
+                  axios
+                    .post(`vehicles/register/`, requestData, {
+                      headers: {
+                        Authorization: `token ${Token}`,
+                      },
+                    })
+                    .then((response) => {
+                      const id = response.data.id;
+                      dispatch(setVehicleID(id));
+                      dispatch(setIsCarRegistered());
+
+                      // traffic violation
+                      const driverID = driver.id;
+                      const vehicleID = vehicle.id;
+
+                      // first post the traffic violation
+                      axios
+                        .post("ticket/trafficviolation/", violationIDs, {
+                          headers: {
+                            Authorization: `token ${Token}`,
+                          },
+                        })
+                        .then((response) => {
+                          // traffic violation id
+                          const traffic_violationID = response.data.id;
+                          setTrafficViolationID(trafficViolationID);
+                          console.log(response.data);
+
+                          const formData = {
+                            vehicle: vehicleID,
+                            driver_ID: driverID,
+                            violations: traffic_violationID,
+                            place_violation: selectedPin.address,
+                            ticket_status: "PENDING",
+                          };
+
+                          axios
+                            .post(
+                              "ticket/register/",
+                              JSON.stringify(formData),
+                              {
+                                headers: {
+                                  Authorization: `token ${Token}`,
+                                },
+                              }
+                            )
+                            .then((response) => {
+                              alert("Successfully Cited");
+                              dispatch(setTicketInfo(response.data));
+                              navigation.navigate("TicketScreen");
+                            })
+                            .catch((error) => {
+                              console.log(error);
+                              console.log(formData);
+                            });
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
+                    })
+                    .catch((error) => {
+                      console.log("Error for Vehicle");
+                      console.log(error);
+                      console.log(requestData);
+                      alert("Please do check the ORCR Info!!");
+                    });
+                })
+                .catch((error) => {
+                  console.log("Error for Drivers");
+                  console.log(error);
+                  console.log(drivers);
+                  alert("Please do check the Driver License Info!!");
+                });
+            }
+
+            if (isVehicleExist && isDriverExist) {
               const driverID = driver.id;
               const vehicleID = vehicle.id;
 
@@ -537,6 +606,9 @@ function FormScreen({ navigation, route }) {
                     .then((response) => {
                       alert("Successfully Cited");
                       dispatch(setTicketInfo(response.data));
+                      dispatch(setEmptyFinalDriver());
+                      dispatch(setEmptyFinalVehicle());
+                      dispatch(setEmptyextractedInfo());
                       navigation.navigate("TicketScreen");
                     })
                     .catch((error) => {
@@ -547,67 +619,11 @@ function FormScreen({ navigation, route }) {
                 .catch((error) => {
                   console.log(error);
                 });
-            })
-            .catch((error) => {
-              console.log("Error for Vehicle");
-              console.log(error);
-              console.log(requestData);
-              alert("Please do check the ORCR Info!!");
-            });
-        })
-        .catch((error) => {
-          console.log("Error for Drivers");
-          console.log(error);
-          console.log(drivers);
-          alert("Please do check the Driver License Info!!");
-        });
-    }
-
-    if (isVehicleExist && isDriverExist) {
-      const driverID = driver.id;
-      const vehicleID = vehicle.id;
-
-      // first post the traffic violation
-      axios
-        .post("ticket/trafficviolation/", violationIDs, {
-          headers: {
-            Authorization: `token ${Token}`,
+            }
           },
-        })
-        .then((response) => {
-          // traffic violation id
-          const traffic_violationID = response.data.id;
-          setTrafficViolationID(trafficViolationID);
-          console.log(response.data);
-
-          const formData = {
-            vehicle: vehicleID,
-            driver_ID: driverID,
-            violations: traffic_violationID,
-            place_violation: selectedPin.address,
-            ticket_status: "PENDING",
-          };
-
-          axios
-            .post("ticket/register/", JSON.stringify(formData), {
-              headers: {
-                Authorization: `token ${Token}`,
-              },
-            })
-            .then((response) => {
-              alert("Successfully Cited");
-              dispatch(setTicketInfo(response.data));
-              navigation.navigate("TicketScreen");
-            })
-            .catch((error) => {
-              console.log(error);
-              console.log(formData);
-            });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+        },
+      ]
+    );
   };
 
   const handleNextButton = () => {
@@ -678,223 +694,6 @@ function FormScreen({ navigation, route }) {
               height: "auto",
             }}
           >
-            {preview ? (
-              <View
-                style={{
-                  height: "100%",
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginLeft: 15,
-                  }}
-                  onPress={() => setPreview(!preview)}
-                >
-                  <Ant size={30} name="leftcircleo"></Ant>
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      marginLeft: 20,
-                      fontSize: 20,
-                      color: "green",
-                    }}
-                  >
-                    BACK
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    paddingHorizontal: 45,
-                    marginTop: 40,
-                    marginBottom: 40,
-                  }}
-                >
-                  <View style={{}}>
-                    <Text
-                      style={{
-                        fontSize: 40,
-                        fontWeight: "bold",
-                        color: "#367717",
-                      }}
-                    >
-                      Preview
-                    </Text>
-                  </View>
-                  <View style={{}}>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        color: "grey",
-                      }}
-                    >
-                      Please check all of the information is correct before you
-                      submit the form.
-                    </Text>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "#E4FAD9",
-                    height: "100%",
-                    padding: 40,
-                  }}
-                >
-                  <View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: "#038855",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Personal Information
-                      </Text>
-                    </View>
-                    <View style={{ marginBottom: 20 }}>
-                      {/* driver info */}
-                      {/* <PreviewComponent
-                        title={"MFRTA TICKET NO."}
-                        value={mfrtaTctNo}
-                      ></PreviewComponent> */}
-                      <PreviewComponent
-                        title={"DATE"}
-                        value={currentDate}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"LAST NAME, FIRST NAME, MIDDLE NAME"}
-                        value={`${ocrText.last_name}, ${ocrText.first_name} ${ocrText.middle_initial}.`}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"DATE OF BIRTH"}
-                        value={ocrText.birthdate}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"NATIONALITY"}
-                        value={ocrText.nationality}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"ADDRESS"}
-                        value={ocrText.address}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"LICENSE NO."}
-                        value={ocrText.license_number}
-                      ></PreviewComponent>
-                    </View>
-                  </View>
-                  <View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: "#038855",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Vehicle Information
-                      </Text>
-                    </View>
-                    <View style={{ marginBottom: 20 }}>
-                      <PreviewComponent
-                        title={"REGISTERED OWNER"}
-                        value={ocrTextOCR.name}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"PLATE NO."}
-                        value={ocrTextOCR.plate_number}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"MAKE"}
-                        value={ocrTextOCR.make}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"CLASS"}
-                        value={ocrTextOCR.vehicle_class}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"MODEL"}
-                        value={ocrTextOCR.vehicle_model}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"CONTACT NO."}
-                        value={ocrTextOCR.contact_number}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"COLOR"}
-                        value={ocrTextOCR.color}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"BODY MARKS"}
-                        value={ocrTextOCR.body_markings}
-                      ></PreviewComponent>
-                    </View>
-                  </View>
-                  <View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: "#038855",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Violation Information
-                      </Text>
-                    </View>
-                    <View style={{}}>
-                      <PreviewComponent
-                        title={"APPREHENDING OFFICER"}
-                        value={`${user.first_name} ${user.middle_name}. ${user.last_name}`}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"TIME"}
-                        value={currentTime}
-                      ></PreviewComponent>
-                      <PreviewComponent
-                        title={"PLACE OF VIOLATION"}
-                        value={selectedPin.address}
-                      ></PreviewComponent>
-
-                      <Text style={{ color: "grey", marginTop: 20 }}>
-                        TRAFFIC RULES VIOLATION
-                      </Text>
-                      {checkedViolations.map((checkedViolation, index) => (
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginLeft: 20,
-                            marginTop: 10,
-                          }}
-                          key={index}
-                        >
-                          <Icon
-                            name="dot-fill"
-                            style={{ marginRight: 10, marginTop: 3 }}
-                          ></Icon>
-                          <Text
-                            style={{ fontSize: 20, fontWeight: "bold" }}
-                            key={index}
-                          >
-                            {checkedViolation}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                  <View style={{ marginTop: 20 }}>
-                    <ConstButton
-                      onPress={handleTicket}
-                      title={"Submit Ticket"}
-                      height={50}
-                    ></ConstButton>
-                  </View>
-                </View>
-              </View>
-            ) : null}
             {violation ? (
               <>
                 <TouchableOpacity
@@ -1125,8 +924,8 @@ function FormScreen({ navigation, route }) {
                 >
                   <View style={{ width: "70%", height: "100%" }}>
                     <ConstButton
-                      title="Preview Ticket"
-                      onPress={handlePreviewTicket}
+                      title="Submit"
+                      onPress={handleTicket}
                       height={50}
                     ></ConstButton>
                   </View>
@@ -1629,6 +1428,7 @@ function FormScreen({ navigation, route }) {
                           ></MapLocation>
                         </View>
                         <ConstInput
+                          editable={locationObtained}
                           borderRadius={10}
                           height={40}
                           autoCapitalize={"characters"}
@@ -1636,7 +1436,7 @@ function FormScreen({ navigation, route }) {
                           marginTop={25}
                           marginBottom={25}
                           required
-                          value={selectedPin ? selectedPin.address : "N/A"}
+                          value={selectedPin ? selectedPin.address : ""}
                           onChangeText={(text) => {
                             setSelectedPin({
                               ...selectedPin,

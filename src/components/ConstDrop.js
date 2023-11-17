@@ -47,17 +47,17 @@ function ConstDrop({
       >
         <SelectList
           boxStyles={{
-            width: 353,
+            width: 370,
             height: 50,
             borderColor: "#C5C6CC",
           }}
           dropdownStyles={{
-            width: 353,
+            width: 370,
             borderWidth: 1,
             borderColor: "#C5C6CC",
           }}
           dropdownItemStyles={{
-            width: 353,
+            width: 370,
             borderColor: "#C5C6CC",
           }}
           setSelected={setSelected}
