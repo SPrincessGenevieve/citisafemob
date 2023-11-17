@@ -41,19 +41,24 @@ function ConstDrop({
         style={{
           flexDirection: "row",
           alignItems: "center",
-          width: "90%",
+          width: "70%",
           marginBottom: marginBottom,
         }}
       >
         <SelectList
-          boxStyles={{ width: 322 }}
+          boxStyles={{
+            width: 353,
+            height: 50,
+            borderColor: "#C5C6CC",
+          }}
           dropdownStyles={{
-            width: 322,
+            width: 353,
             borderWidth: 1,
+            borderColor: "#C5C6CC",
           }}
           dropdownItemStyles={{
-            width: 322,
-            borderColor: "lightgrey",
+            width: 353,
+            borderColor: "#C5C6CC",
           }}
           setSelected={setSelected}
           data={data}

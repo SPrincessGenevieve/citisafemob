@@ -22,7 +22,7 @@ import Ant from "react-native-vector-icons/AntDesign";
 import Light from "react-native-vector-icons/FontAwesome5";
 import Circle from "react-native-vector-icons/Entypo";
 import MapLocation from "../components/MapLocation";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import ColorSelector from "../components/ColorSelector";
 import ViolationCheck from "../components/ViolationCheck";
 import violationData from "./../components/ViolationList.json";
@@ -31,31 +31,20 @@ import PreviewComponent from "../components/PreviewComponent";
 import axios from "../../plugins/axios";
 import {
   setAddress,
-  setAgencyCodes,
   setBirthDate,
-  setBloodTypes,
-  setDLCodes,
   setDriverClassification,
   setDriverID,
   setDriverRegisterd,
-  setEmptyFinalDriver,
-  setEmptyRecognizedText,
-  setExpirationDate,
   setFirstName,
-  setGender,
   setGetFinalDriver,
-  setHeight,
   setLastName,
   setLicenseNumber,
   setMiddleInitial,
   setNationality,
-  setWeight,
 } from "../components/camera/infoSlice";
 import {
   setBodyMarkings,
   setColor,
-  setEmptyFinalVehicle,
-  setEmptyextractedInfo,
   setFinalVehicle,
   setGetFinalVehicle,
   setIsCarRegistered,
@@ -71,8 +60,8 @@ import {
   setdriverID,
 } from "../components/camera/infoSliceCOR";
 import { setTicketInfo } from "../components/camera/ticketSlice";
-import * as SQLite from "expo-sqlite";
 import ConstDrop from "../components/ConstDrop";
+import DatePick from "../components/DatePick";
 
 function FormScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -105,15 +94,17 @@ function FormScreen({ navigation, route }) {
   const [checkedViolations, setCheckedViolations] = useState([]);
   const [preview, setPreview] = useState(false);
   const [selected, setSelected] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // driver details
+  const handleDateChange = (date) => {
+    const formattedDate = date.toISOString().split("T")[0].replace(/-/g, "/");
+    dispatch(setBirthDate(formattedDate));
+  };
   const driver = useSelector((state) => state.infoText);
-  // vehicel details
   const vehicle = useSelector((state) => state.infoTextOCR);
-  // enforcer details
   const user = useSelector((state) => state.auth.enforcer);
 
-  // selected violation id's
   const [violationIDs, setViolationIDs] = useState({
     violation_id: [],
   });
@@ -157,7 +148,6 @@ function FormScreen({ navigation, route }) {
     item.violation_type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-
   useEffect(() => {
     const fetchTime = () => {
       const currentTimeFormatted = moment().format("hh:mm A");
@@ -176,7 +166,6 @@ function FormScreen({ navigation, route }) {
   const handleCheckboxChange = (text, isChecked, ids) => {
     if (isChecked) {
       setCheckedViolations((prev) => [...prev, text]);
-      // id
       setViolationIDs((prevState) => ({
         violation_id: [...prevState.violation_id, ids],
       }));
@@ -192,9 +181,6 @@ function FormScreen({ navigation, route }) {
       }));
     }
   };
-
-  
-// map location
 
   const handleMapPress = async (e) => {
     try {
@@ -216,7 +202,7 @@ function FormScreen({ navigation, route }) {
         console.log("Permission to access location was denied");
         return;
       }
-  
+
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation.coords);
     } catch (error) {
@@ -260,60 +246,11 @@ function FormScreen({ navigation, route }) {
     setIsAtLeastOneChecked(checkedViolations.length > 0);
   }, [checkedViolations]);
 
-
   // final screen
   const handleTicket = () => {
-    const driverID = driver.id;
-    const vehicleID = vehicle.id;
-
-    // first post the traffic violation
-    axios
-      .post("ticket/trafficviolation/", violationIDs, {
-        headers: {
-          Authorization: `token ${Token}`,
-        },
-      })
-      .then((response) => {
-        // traffic violation id
-        const traffic_violationID = response.data.id;
-        setTrafficViolationID(trafficViolationID);
-        console.log(response.data);
-
-        const formData = {
-          vehicle: vehicleID,
-          driver_ID: driverID,
-          violations: traffic_violationID,
-          place_violation: selectedPin.address,
-          ticket_status: "PENDING",
-        };
-
-        axios
-          .post("ticket/register/", JSON.stringify(formData), {
-            headers: {
-              Authorization: `token ${Token}`,
-            },
-          })
-          .then((response) => {
-            alert("Successfully Cited");
-            dispatch(setTicketInfo(response.data));
-            navigation.navigate("TicketScreen");
-          })
-          .catch((error) => {
-            console.log(error);
-            console.log(formData);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleNextButton = () => {
-    // check if the driver and vehicle registered
     const isDriverExist = driver.isDriverRegisterd;
     const isVehicleExist = vehicle.isCarRegistered;
 
-    // done
     if (!isDriverExist && !isVehicleExist) {
       const drivers = driver.finalDriver;
       console.log(drivers);
@@ -365,9 +302,50 @@ function FormScreen({ navigation, route }) {
               console.log(vehicles);
               alert("Successfully Register Vehicle");
 
-              Keyboard.dismiss(); // Dismiss the keyboard
-              scrollToTop(); // Scroll to the top
-              setViolation(!violation);
+              // traffic ticket
+              const driverID = driver.id;
+              const vehicleID = vehicle.id;
+
+              // first post the traffic violation
+              axios
+                .post("ticket/trafficviolation/", violationIDs, {
+                  headers: {
+                    Authorization: `token ${Token}`,
+                  },
+                })
+                .then((response) => {
+                  // traffic violation id
+                  const traffic_violationID = response.data.id;
+                  setTrafficViolationID(trafficViolationID);
+                  console.log(response.data);
+
+                  const formData = {
+                    vehicle: vehicleID,
+                    driver_ID: driverID,
+                    violations: traffic_violationID,
+                    place_violation: selectedPin.address,
+                    ticket_status: "PENDING",
+                  };
+
+                  axios
+                    .post("ticket/register/", JSON.stringify(formData), {
+                      headers: {
+                        Authorization: `token ${Token}`,
+                      },
+                    })
+                    .then((response) => {
+                      alert("Successfully Cited");
+                      dispatch(setTicketInfo(response.data));
+                      navigation.navigate("TicketScreen");
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      console.log(formData);
+                    });
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             })
             .catch((error) => {
               console.log("Error for Vehicle");
@@ -375,10 +353,6 @@ function FormScreen({ navigation, route }) {
               console.log(requestData);
               alert("Please do check the ORCR Info!!");
             });
-
-          Keyboard.dismiss(); // Dismiss the keyboard
-          scrollToTop(); // Scroll to the top
-          setViolation(!violation);
         })
         .catch((error) => {
           console.log("Error for Drivers");
@@ -387,7 +361,8 @@ function FormScreen({ navigation, route }) {
           alert("Please do check the Driver License Info!!");
         });
     }
-    // done
+
+    // If driver exists but vehicle is not
     if (isDriverExist && !isVehicleExist) {
       console.log("Not Exist");
       console.log(isDriverExist);
@@ -423,9 +398,51 @@ function FormScreen({ navigation, route }) {
           console.log(vehicles);
           alert("Successfully Register Vehicle");
 
-          Keyboard.dismiss(); // Dismiss the keyboard
-          scrollToTop(); // Scroll to the top
-          setViolation(!violation);
+          // traffic violation
+
+          const driverID = driver.id;
+          const vehicleID = vehicle.id;
+
+          // first post the traffic violation
+          axios
+            .post("ticket/trafficviolation/", violationIDs, {
+              headers: {
+                Authorization: `token ${Token}`,
+              },
+            })
+            .then((response) => {
+              // traffic violation id
+              const traffic_violationID = response.data.id;
+              setTrafficViolationID(trafficViolationID);
+              console.log(response.data);
+
+              const formData = {
+                vehicle: vehicleID,
+                driver_ID: driverID,
+                violations: traffic_violationID,
+                place_violation: selectedPin.address,
+                ticket_status: "PENDING",
+              };
+
+              axios
+                .post("ticket/register/", JSON.stringify(formData), {
+                  headers: {
+                    Authorization: `token ${Token}`,
+                  },
+                })
+                .then((response) => {
+                  alert("Successfully Cited");
+                  dispatch(setTicketInfo(response.data));
+                  navigation.navigate("TicketScreen");
+                })
+                .catch((error) => {
+                  console.log(error);
+                  console.log(formData);
+                });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log("Error for Vehicle");
@@ -435,7 +452,7 @@ function FormScreen({ navigation, route }) {
         });
     }
 
-    // done
+    // if driver not exist but vehicle exists
     if (!isDriverExist && isVehicleExist) {
       const drivers = driver.finalDriver;
       console.log(drivers);
@@ -486,9 +503,50 @@ function FormScreen({ navigation, route }) {
               console.log(vehicles);
               alert("Successfully Register Vehicle");
 
-              Keyboard.dismiss(); // Dismiss the keyboard
-              scrollToTop(); // Scroll to the top
-              setViolation(!violation);
+              // traffic violation
+              const driverID = driver.id;
+              const vehicleID = vehicle.id;
+
+              // first post the traffic violation
+              axios
+                .post("ticket/trafficviolation/", violationIDs, {
+                  headers: {
+                    Authorization: `token ${Token}`,
+                  },
+                })
+                .then((response) => {
+                  // traffic violation id
+                  const traffic_violationID = response.data.id;
+                  setTrafficViolationID(trafficViolationID);
+                  console.log(response.data);
+
+                  const formData = {
+                    vehicle: vehicleID,
+                    driver_ID: driverID,
+                    violations: traffic_violationID,
+                    place_violation: selectedPin.address,
+                    ticket_status: "PENDING",
+                  };
+
+                  axios
+                    .post("ticket/register/", JSON.stringify(formData), {
+                      headers: {
+                        Authorization: `token ${Token}`,
+                      },
+                    })
+                    .then((response) => {
+                      alert("Successfully Cited");
+                      dispatch(setTicketInfo(response.data));
+                      navigation.navigate("TicketScreen");
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      console.log(formData);
+                    });
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             })
             .catch((error) => {
               console.log("Error for Vehicle");
@@ -504,21 +562,67 @@ function FormScreen({ navigation, route }) {
           alert("Please do check the Driver License Info!!");
         });
     }
-    //
+
     if (isVehicleExist && isDriverExist) {
-      Keyboard.dismiss(); // Dismiss the keyboard
-      scrollToTop(); // Scroll to the top
-      setViolation(!violation);
+      const driverID = driver.id;
+      const vehicleID = vehicle.id;
+
+      // first post the traffic violation
+      axios
+        .post("ticket/trafficviolation/", violationIDs, {
+          headers: {
+            Authorization: `token ${Token}`,
+          },
+        })
+        .then((response) => {
+          // traffic violation id
+          const traffic_violationID = response.data.id;
+          setTrafficViolationID(trafficViolationID);
+          console.log(response.data);
+
+          const formData = {
+            vehicle: vehicleID,
+            driver_ID: driverID,
+            violations: traffic_violationID,
+            place_violation: selectedPin.address,
+            ticket_status: "PENDING",
+          };
+
+          axios
+            .post("ticket/register/", JSON.stringify(formData), {
+              headers: {
+                Authorization: `token ${Token}`,
+              },
+            })
+            .then((response) => {
+              alert("Successfully Cited");
+              dispatch(setTicketInfo(response.data));
+              navigation.navigate("TicketScreen");
+            })
+            .catch((error) => {
+              console.log(error);
+              console.log(formData);
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
+  };
+
+  const handleNextButton = () => {
+    Keyboard.dismiss(); // Dismiss the keyboard
+    scrollToTop(); // Scroll to the top
+    setViolation(!violation);
   };
 
   // for ticket
   const [trafficViolationID, setTrafficViolationID] = useState("");
 
   const handlePreviewTicket = () => {
-    setPreview(!preview) 
-    setViolation(!violation) 
-    Keyboard.dismiss() 
+    setPreview(!preview);
+    setViolation(!violation);
+    Keyboard.dismiss();
     scrollToTop();
   };
 
@@ -580,7 +684,7 @@ function FormScreen({ navigation, route }) {
                   height: "100%",
                 }}
               >
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -599,7 +703,7 @@ function FormScreen({ navigation, route }) {
                   >
                     BACK
                   </Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
                 <View
                   style={{
                     paddingHorizontal: 45,
@@ -753,7 +857,7 @@ function FormScreen({ navigation, route }) {
                         title={"PLACE OF VIOLATION"}
                         value={selectedPin.address}
                       ></PreviewComponent>
-                      
+
                       <Text style={{ color: "grey", marginTop: 20 }}>
                         TRAFFIC RULES VIOLATION
                       </Text>
@@ -784,7 +888,7 @@ function FormScreen({ navigation, route }) {
                   <View style={{ marginTop: 20 }}>
                     <ConstButton
                       onPress={handleTicket}
-                      title={"Print Ticket"}
+                      title={"Submit Ticket"}
                       height={50}
                     ></ConstButton>
                   </View>
@@ -793,7 +897,7 @@ function FormScreen({ navigation, route }) {
             ) : null}
             {violation ? (
               <>
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -812,7 +916,7 @@ function FormScreen({ navigation, route }) {
                   >
                     BACK
                   </Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
                 <View style={{}}>
                   <View style={{ padding: 20 }}>
                     <Text
@@ -1093,13 +1197,17 @@ function FormScreen({ navigation, route }) {
                             );
 
                             if (driverExists) {
-                              if (driverExists.license_number === text) {
+                              if (
+                                driverExists.license_number === text &&
+                                driverExists.license_number != ""
+                              ) {
                                 alert(`Existing Driver: ${text}`);
-                                const driverId = driverExists.id;
-                                const classificationString =
-                                  driverExists.classification.toString();
+                                const driverIDString =
+                                  driverExists.id.toString();
+
                                 dispatch(setDriverRegisterd());
-                                dispatch(setdriverID(driverId));
+                                dispatch(setDriverID(driverIDString));
+                                dispatch(setdriverID(driverIDString));
                                 dispatch(
                                   setGetFinalDriver({
                                     ...driverExists,
@@ -1110,10 +1218,11 @@ function FormScreen({ navigation, route }) {
                                     address: driverExists.address,
                                     birthdate: driverExists.birthdate,
                                     nationality: driverExists.nationality,
-                                    classification: classificationString,
+                                    classification: driverExists.classification,
                                   })
                                 );
-                                dispatch(setdriverID(driverId));
+                              } else if (driverExists.license_number === "") {
+                                alert("No driver license");
                               } else {
                                 alert(`New Driver: ${text}`);
                               }
@@ -1124,6 +1233,7 @@ function FormScreen({ navigation, route }) {
                           required
                         ></ConstInput>
                         <ConstInput
+                          autoCapitalize={"characters"}
                           borderRadius={10}
                           height={40}
                           value={ocrText.first_name}
@@ -1135,6 +1245,7 @@ function FormScreen({ navigation, route }) {
                         ></ConstInput>
                         {/* make validation */}
                         <ConstInput
+                          autoCapitalize={"characters"}
                           borderRadius={10}
                           height={40}
                           value={ocrText.middle_initial}
@@ -1146,6 +1257,7 @@ function FormScreen({ navigation, route }) {
                           maxLength={1}
                         ></ConstInput>
                         <ConstInput
+                          autoCapitalize={"characters"}
                           borderRadius={10}
                           height={40}
                           value={ocrText.last_name}
@@ -1156,6 +1268,7 @@ function FormScreen({ navigation, route }) {
                           required
                         ></ConstInput>
                         <ConstInput
+                          autoCapitalize={"characters"}
                           borderRadius={10}
                           height={40}
                           text={"Address*"}
@@ -1167,20 +1280,38 @@ function FormScreen({ navigation, route }) {
                           required
                           multiline={true}
                         ></ConstInput>
-                         <ConstInput
+                        <ConstInput
                           borderRadius={10}
                           placeholder="YYYY/MM/DD/"
                           height={40}
-                          value={ocrText.birthdate}
+                          value={
+                            ocrText.birthdate ||
+                            selectedDate
+                              .toISOString()
+                              .split("T")[0]
+                              .replace(/-/g, "/")
+                          }
                           text={"Date of Birth*"}
+                          type={"birthdate-day"}
                           onChangeText={(text) => {
                             dispatch(setBirthDate(text));
                           }}
                           marginTop={25}
                           required
-                        ></ConstInput>                                       
-               
+                          editable={false}
+                        />
+                        <DatePick
+                          onDateChange={handleDateChange}
+                          value={selectedDate}
+                          style={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            paddingHorizontal: 15,
+                            marginTop: -37,
+                          }}
+                        />
                         <ConstInput
+                          autoCapitalize={"characters"}
                           borderRadius={10}
                           height={40}
                           text={"Nationality*"}
@@ -1194,11 +1325,12 @@ function FormScreen({ navigation, route }) {
 
                         {/* if possible, selection ra sya */}
                         <ConstDrop
+                          autoCapitalize={"characters"}
                           text={"Classification"}
                           setSelected={(val) => {
-                            setSelected(val)
-                            dispatch(setDriverClassification(val))
-                            console.log(val)
+                            setSelected(val);
+                            dispatch(setDriverClassification(val));
+                            console.log(val);
                           }}
                           data={data}
                           save="key"
@@ -1264,6 +1396,7 @@ function FormScreen({ navigation, route }) {
                   >
                     <View style={{ width: "90%" }}>
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         text={"Plate Number*"}
@@ -1310,6 +1443,7 @@ function FormScreen({ navigation, route }) {
                         required
                       ></ConstInput>
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         marginTop={25}
@@ -1321,6 +1455,7 @@ function FormScreen({ navigation, route }) {
                         required
                       ></ConstInput>
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         text={"Owner Address"}
@@ -1334,6 +1469,7 @@ function FormScreen({ navigation, route }) {
                         borderRadius={10}
                         height={40}
                         text={"Contact No.*"}
+                        keyboardType={"number-pad"}
                         value={ocrTextOCR.contact_number}
                         onChangeText={(text) => {
                           dispatch(setOwnerContactNumber(text));
@@ -1341,6 +1477,7 @@ function FormScreen({ navigation, route }) {
                         required
                       ></ConstInput>
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         text={"Make*"}
@@ -1351,6 +1488,7 @@ function FormScreen({ navigation, route }) {
                         required
                       ></ConstInput>
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         value={ocrTextOCR.vehicle_class}
@@ -1361,6 +1499,7 @@ function FormScreen({ navigation, route }) {
                         required
                       ></ConstInput>
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         value={ocrTextOCR.vehicle_model}
@@ -1371,6 +1510,7 @@ function FormScreen({ navigation, route }) {
                         required
                       ></ConstInput>
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         value={ocrTextOCR.body_markings}
@@ -1382,6 +1522,7 @@ function FormScreen({ navigation, route }) {
                       ></ConstInput>
 
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         value={ocrTextOCR.color}
@@ -1458,12 +1599,12 @@ function FormScreen({ navigation, route }) {
                     <View style={{ width: "90%" }}>
                       {/* dili na need e butang */}
                       <ConstInput
+                        autoCapitalize={"characters"}
                         borderRadius={10}
                         height={40}
                         text={"Ticket Status"}
                         value="PENDING"
                         editable={false}
-        
                       ></ConstInput>
                       <ConstInput
                         borderRadius={10}
@@ -1490,11 +1631,12 @@ function FormScreen({ navigation, route }) {
                         <ConstInput
                           borderRadius={10}
                           height={40}
+                          autoCapitalize={"characters"}
                           text={"Place of Violation*"}
                           marginTop={25}
                           marginBottom={25}
                           required
-                          value={selectedPin ? selectedPin.address : "N/A" }
+                          value={selectedPin ? selectedPin.address : "N/A"}
                           onChangeText={(text) => {
                             setSelectedPin({
                               ...selectedPin,
@@ -1553,7 +1695,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     backgroundColor: "white",
-    paddingTop: 15
+    paddingTop: 15,
   },
   category: {
     height: 50,

@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 function ConstInput({
   secureTextEntry,
+  keyboardType,
   onChangeText,
   marginBottom,
   textAlign,
@@ -19,7 +20,7 @@ function ConstInput({
   borderRadius,
   minHeight, // New prop for minimum height
   multiline,
-  maxLength
+  maxLength,
 }) {
   const [fontsLoaded] = useFonts({
     "Roboto-Light": require("./../../assets/fonts/Roboto-Light.ttf"),
@@ -48,6 +49,7 @@ function ConstInput({
       </Text>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TextInput
+          keyboardType={keyboardType}
           required={required}
           value={value}
           type={type}
@@ -63,13 +65,13 @@ function ConstInput({
             padding: 10,
             borderColor: "#C5C6CC",
             fontSize: 17,
-            flex: 1, // Take up remaining space
+            flex: 1,
             textAlign: textAlign,
             marginBottom: marginBottom,
-            minHeight: minHeight, // Set a minimum height
+            minHeight: minHeight,
           }}
-          multiline={multiline} // Enable multiline input
-          numberOfLines={1} // Set an initial number of lines
+          multiline={multiline}
+          numberOfLines={1}
           maxLength={maxLength}
         />
       </View>
