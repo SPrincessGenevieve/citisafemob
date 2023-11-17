@@ -36,7 +36,7 @@ function ConstInputShort({
         <Text
           style={{
             fontSize: 13,
-            color: "black",
+            color: "gray",
             marginLeft: 7,
             position: "absolute",
             backgroundColor: "white",
@@ -52,14 +52,14 @@ function ConstInputShort({
         editable={editable}
         value={value}
         placeholder={placeholder}
-        placeholderTextColor="grey"
+        placeholderTextColor="gray"
         autoCapitalize={autoCapitalize}
         onChangeText={onChangeText}
         style={{
           color: "black",
           borderWidth: 1,
           borderRadius: 10,
-          borderColor: "black",
+          borderColor: "gray",
           fontSize: 15,
           width: width,
           height: 45,
