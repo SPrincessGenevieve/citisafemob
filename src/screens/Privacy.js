@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text } from "react-native";
+import { ScrollView, Text, KeyboardAvoidingView, Platform } from "react-native";
 import { View } from "react-native";
 import ConstInput from "../components/ConstInputVisible";
 import ConstButton from "../components/ConstButton";
@@ -52,12 +52,13 @@ function Privacy(props) {
         backgroundColor: "white",
       }}
     >
-      <KeyboardWithoutWrapper>
-        <View
-          style={{
-            height: "100%",
-            width: "100%",
-          }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
         >
           <View
             style={{
@@ -85,7 +86,6 @@ function Privacy(props) {
                     current_password: text,
                   });
                 }}
-                
               ></ConstInput>
               <ConstInput
                 text={"New Password"}
@@ -118,8 +118,8 @@ function Privacy(props) {
               ></ConstButton>
             </View>
           </View>
-        </View>
-      </KeyboardWithoutWrapper>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }

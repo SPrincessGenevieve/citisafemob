@@ -20,7 +20,6 @@ function RecordDetails({ navigation }) {
     navigation.navigate("FormScreen");
   };
 
-
   const header = ["", ""];
   const data = [
     ["MFRTATCT NO.", "20230803"],
@@ -50,9 +49,6 @@ function RecordDetails({ navigation }) {
     ["Status", "Overdue"],
     ["Fine", "$100"],
   ];
-
-
-
 
   return (
     <View style={{ height: 900 }}>

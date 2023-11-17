@@ -38,21 +38,23 @@ function About(props) {
             </Text>
           </View>
           <View style={styles.welcome}>
-            <Text style={{ textAlign: "justify", fontSize: 17 }}>
-              Contact Information:
+            <Text
+              style={{ textAlign: "justify", fontSize: 20, fontWeight: "bold" }}
+            >
+              Contact Information
             </Text>
             <Text style={{ textAlign: "justify", fontSize: 17 }}>
-              Email: support@etcmfapp.com
+              Email: eTCMFBukidnon@gmail.com
             </Text>
             <Text style={{ textAlign: "justify", fontSize: 17 }}>
-              Phone: 09998867654
+              Phone: 09927978238
             </Text>
             <TouchableOpacity
               onPress={openWebsite}
               style={{ textAlign: "justify", fontSize: 17 }}
             >
               <Text style={{ textAlign: "justify", fontSize: 17 }}>
-                Website: www.etcmfapp.com
+                Website: https://sprincessgenevieve.github.io/citisafeweb/#/
               </Text>
             </TouchableOpacity>
           </View>

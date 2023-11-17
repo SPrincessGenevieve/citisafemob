@@ -17,7 +17,6 @@ import ColorSelector from "./src/components/ColorSelector";
 import MapLocation from "./src/components/MapLocation";
 import HomeScreen from "./src/screens/HomeScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
-import LogsScreen from "./src/screens/LogsScreen";
 import IntroLicense from "./src/components/IntroLicense";
 import IntroOCR from "./src/components/IntroOCR";
 import Privacy from "./src/screens/Privacy";

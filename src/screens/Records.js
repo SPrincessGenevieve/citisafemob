@@ -228,7 +228,7 @@ function Records({ navigation }) {
                 title={"MFRTA TICKET NO."}
                 value={selectedTicket.MFRTA_TCT_NO}
               ></PreviewComponent>
-                            <PreviewComponent
+              <PreviewComponent
                 title={"Penalty Amount"}
                 value={`₱ ${selectedTicket.penalty_amount}.00`}
               ></PreviewComponent>
@@ -399,6 +399,7 @@ function Records({ navigation }) {
           height: "100%",
           width: "100%",
           backgroundColor: "white",
+          flex: 1,
         }}
       >
         <View style={{ padding: 20 }}>

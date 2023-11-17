@@ -27,7 +27,7 @@ function History({ navigation }) {
   const [selectedTicket, setSelectedTicket] = useState(null);
   // search
   const [searchTerm, setSearchTerm] = useState("");
-  const user = useSelector((state) => state.auth.enforcer)
+  const user = useSelector((state) => state.auth.enforcer);
 
   const toggleSortIcon = () => {
     setSortAsc(!sortAsc); // Toggle the state between true and false
@@ -101,7 +101,9 @@ function History({ navigation }) {
 
       return (
         ticketItem.MFRTA_TCT_NO &&
-        ticketItem.MFRTA_TCT_NO.toString().toLowerCase().includes(searchTerm.toLowerCase()) &&
+        ticketItem.MFRTA_TCT_NO.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) &&
         ticketItem.user_ID.id === user.id
       );
     });
@@ -137,9 +139,9 @@ function History({ navigation }) {
             borderRadius: 10,
           }}
         >
-          <Text style={{ marginLeft: "40%", fontWeight: "bold" }}>
-            {ticketItem.date_issued}
-          </Text>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text style={{ fontWeight: "bold" }}>{ticketItem.date_issued}</Text>
+          </View>
 
           <Text
             style={{
@@ -397,6 +399,7 @@ function History({ navigation }) {
           height: "100%",
           width: "100%",
           backgroundColor: "white",
+          flex: 1,
         }}
       >
         <View style={{ padding: 20 }}>
