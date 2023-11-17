@@ -270,10 +270,13 @@ function FormScreen({ navigation, route }) {
             const isDriverExist = driver.isDriverRegisterd;
             const isVehicleExist = vehicle.isCarRegistered;
 
+            // if both not exist
             if (!isDriverExist && !isVehicleExist) {
               const drivers = driver.finalDriver;
+              // console.log(drivers);
 
               const vehicles = vehicle.finalVehicle;
+              // console.log(vehicles);
 
               axios
                 .post(`drivers/register/`, drivers, {
@@ -283,11 +286,11 @@ function FormScreen({ navigation, route }) {
                 })
                 .then((response) => {
                   const id = response.data.id;
-                  const idString = id ? id.toString() : "";
+                  const idString = id ? id.toString() : ""; // Convert to string, or use an empty string if undefined
                   console.log("Driver ID:", idString);
 
                   dispatch(setDriverID(idString));
-                  dispatch(setDriverRegisterd());
+                  // dispatch(setDriverRegisterd());
                   dispatch(setManualDriverID(idString));
 
                   const requestData = {
@@ -303,6 +306,8 @@ function FormScreen({ navigation, route }) {
                     vehicle_model: vehicles.vehicle_model,
                   };
 
+                  // alert("Successfully Register Driver");
+
                   axios
                     .post(`vehicles/register/`, requestData, {
                       headers: {
@@ -312,55 +317,55 @@ function FormScreen({ navigation, route }) {
                     .then((response) => {
                       const id = response.data.id;
                       dispatch(setVehicleID(id));
-                      dispatch(setIsCarRegistered());
+                      // dispatch(setIsCarRegistered());
 
-                      // traffic ticket
+                      // console.log(vehicles);
+                      // alert("Successfully Register Vehicle");
+
+                      // traffic ticket 
                       const driverID = driver.id;
                       const vehicleID = vehicle.id;
 
-                      // first post the traffic violation
-                      axios
-                        .post("ticket/trafficviolation/", violationIDs, {
-                          headers: {
-                            Authorization: `token ${Token}`,
-                          },
-                        })
-                        .then((response) => {
-                          // traffic violation id
-                          const traffic_violationID = response.data.id;
-                          setTrafficViolationID(trafficViolationID);
+                    // first post the traffic violation
+                    axios.post("ticket/trafficviolation/", violationIDs, {
+                        headers: {
+                          Authorization: `token ${Token}`,
+                        },
+                      })
+                      .then((response) => {
+                        // traffic violation id
+                        const traffic_violationID = response.data.id;
+                        setTrafficViolationID(trafficViolationID);
+                        // console.log(response.data);
 
-                          const formData = {
-                            vehicle: vehicleID,
-                            driver_ID: driverID,
-                            violations: traffic_violationID,
-                            place_violation: selectedPin.address,
-                            ticket_status: "PENDING",
-                          };
+                        const formData = {
+                          vehicle: vehicleID,
+                          driver_ID: driverID,
+                          violations: traffic_violationID,
+                          place_violation: selectedPin.address,
+                          ticket_status: "PENDING",
+                        };
 
-                          axios
-                            .post(
-                              "ticket/register/",
-                              JSON.stringify(formData),
-                              {
-                                headers: {
-                                  Authorization: `token ${Token}`,
-                                },
-                              }
-                            )
-                            .then((response) => {
-                              alert("Successfully Cited");
-                              dispatch(setTicketInfo(response.data));
-                              navigation.navigate("TicketScreen");
-                            })
-                            .catch((error) => {
-                              console.log(error);
-                              console.log(formData);
-                            });
-                        })
-                        .catch((error) => {
-                          console.log(error);
-                        });
+                        axios
+                          .post("ticket/register/", JSON.stringify(formData), {
+                            headers: {
+                              Authorization: `token ${Token}`,
+                            },
+                          })
+                          .then((response) => {
+                            alert("Successfully Cited");
+                            dispatch(setTicketInfo(response.data));
+                            navigation.navigate("TicketScreen");
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                            console.log(formData);
+                          });
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+
                     })
                     .catch((error) => {
                       console.log("Error for Vehicle");
@@ -379,6 +384,8 @@ function FormScreen({ navigation, route }) {
 
             // If driver exists but vehicle is not
             if (isDriverExist && !isVehicleExist) {
+              // console.log("Not Exist");
+              // console.log(isDriverExist);
               const vehicles = vehicle.finalVehicle;
 
               const id = driver.finalDriver.id;
@@ -406,13 +413,16 @@ function FormScreen({ navigation, route }) {
                 .then((response) => {
                   const id = response.data.id;
                   dispatch(setVehicleID(id));
-                  dispatch(setIsCarRegistered());
+                  // dispatch(setIsCarRegistered());
+
+                  // console.log(vehicles);
+                  // alert("Successfully Register Vehicle");
 
                   // traffic violation
 
                   const driverID = driver.id;
                   const vehicleID = vehicle.id;
-
+              
                   // first post the traffic violation
                   axios
                     .post("ticket/trafficviolation/", violationIDs, {
@@ -424,7 +434,8 @@ function FormScreen({ navigation, route }) {
                       // traffic violation id
                       const traffic_violationID = response.data.id;
                       setTrafficViolationID(trafficViolationID);
-
+                      console.log(response.data);
+              
                       const formData = {
                         vehicle: vehicleID,
                         driver_ID: driverID,
@@ -432,7 +443,7 @@ function FormScreen({ navigation, route }) {
                         place_violation: selectedPin.address,
                         ticket_status: "PENDING",
                       };
-
+              
                       axios
                         .post("ticket/register/", JSON.stringify(formData), {
                           headers: {
@@ -464,10 +475,10 @@ function FormScreen({ navigation, route }) {
             // if driver not exist but vehicle exists
             if (!isDriverExist && isVehicleExist) {
               const drivers = driver.finalDriver;
-              console.log(drivers);
+              // console.log(drivers);
 
               const vehicles = vehicle.finalVehicle;
-              console.log(vehicles);
+              // console.log(vehicles);
 
               axios
                 .post(`drivers/register/`, drivers, {
@@ -481,7 +492,8 @@ function FormScreen({ navigation, route }) {
                   console.log("Driver ID:", idString);
 
                   dispatch(setDriverID(idString));
-                  dispatch(setDriverRegisterd());
+                  
+                  // dispatch(setDriverRegisterd());
                   dispatch(setManualDriverID(idString));
 
                   const requestData = {
@@ -496,9 +508,9 @@ function FormScreen({ navigation, route }) {
                     body_markings: vehicles.body_markings,
                     vehicle_model: vehicles.vehicle_model,
                   };
+                  // alert("Successfully Register Driver");
 
-                  axios
-                    .post(`vehicles/register/`, requestData, {
+                  axios.post(`vehicles/register/`, requestData, {
                       headers: {
                         Authorization: `token ${Token}`,
                       },
@@ -506,15 +518,16 @@ function FormScreen({ navigation, route }) {
                     .then((response) => {
                       const id = response.data.id;
                       dispatch(setVehicleID(id));
-                      dispatch(setIsCarRegistered());
+                      // dispatch(setIsCarRegistered());
+
+                      // console.log(vehicles);
 
                       // traffic violation
                       const driverID = driver.id;
                       const vehicleID = vehicle.id;
-
+                  
                       // first post the traffic violation
-                      axios
-                        .post("ticket/trafficviolation/", violationIDs, {
+                      axios.post("ticket/trafficviolation/", violationIDs, {
                           headers: {
                             Authorization: `token ${Token}`,
                           },
@@ -524,25 +537,20 @@ function FormScreen({ navigation, route }) {
                           const traffic_violationID = response.data.id;
                           setTrafficViolationID(trafficViolationID);
                           console.log(response.data);
-
+                  
                           const formData = {
                             vehicle: vehicleID,
-                            driver_ID: driverID,
+                            driver_ID: idString,
                             violations: traffic_violationID,
                             place_violation: selectedPin.address,
                             ticket_status: "PENDING",
                           };
-
-                          axios
-                            .post(
-                              "ticket/register/",
-                              JSON.stringify(formData),
-                              {
-                                headers: {
-                                  Authorization: `token ${Token}`,
-                                },
-                              }
-                            )
+                  
+                          axios.post("ticket/register/", JSON.stringify(formData), {
+                              headers: {
+                                Authorization: `token ${Token}`,
+                              },
+                            })
                             .then((response) => {
                               alert("Successfully Cited");
                               dispatch(setTicketInfo(response.data));
@@ -555,7 +563,10 @@ function FormScreen({ navigation, route }) {
                         })
                         .catch((error) => {
                           console.log(error);
-                        });
+                        });              
+
+
+
                     })
                     .catch((error) => {
                       console.log("Error for Vehicle");
@@ -573,9 +584,9 @@ function FormScreen({ navigation, route }) {
             }
 
             if (isVehicleExist && isDriverExist) {
-              const driverID = driver.id;
+              const drivers_ID = driver.id;
               const vehicleID = vehicle.id;
-
+          
               // first post the traffic violation
               axios
                 .post("ticket/trafficviolation/", violationIDs, {
@@ -588,15 +599,15 @@ function FormScreen({ navigation, route }) {
                   const traffic_violationID = response.data.id;
                   setTrafficViolationID(trafficViolationID);
                   console.log(response.data);
-
+          
                   const formData = {
                     vehicle: vehicleID,
-                    driver_ID: driverID,
+                    driver_ID: drivers_ID,
                     violations: traffic_violationID,
                     place_violation: selectedPin.address,
                     ticket_status: "PENDING",
                   };
-
+          
                   axios
                     .post("ticket/register/", JSON.stringify(formData), {
                       headers: {
@@ -608,7 +619,7 @@ function FormScreen({ navigation, route }) {
                       dispatch(setTicketInfo(response.data));
                       dispatch(setEmptyFinalDriver());
                       dispatch(setEmptyFinalVehicle());
-                      dispatch(setEmptyextractedInfo());
+                      dispatch(setEmptyextractedInfo()); 
                       navigation.navigate("TicketScreen");
                     })
                     .catch((error) => {

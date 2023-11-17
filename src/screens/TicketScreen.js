@@ -15,10 +15,6 @@ import {
   setEmptyFinalVehicle,
   setEmptyextractedInfo,
 } from "../components/camera/infoSliceCOR";
-import * as Print from "expo-print";
-import { shareAsync } from "expo-sharing";
-import * as FileSystem from "expo-file-system";
-import * as MediaLibrary from "expo-media-library";
 import { BluetoothEscposPrinter } from "react-native-bluetooth-escpos-printer";
 import { hsdLogo } from "./dummy-logo";
 
