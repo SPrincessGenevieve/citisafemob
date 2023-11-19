@@ -212,15 +212,6 @@ function SettingsScreen({ navigation }) {
                     }}
                   >
                     <ConstInput
-                      text={"Username"}
-                      placeholder="Username"
-                      width={300}
-                      value={officer.username}
-                      onChangeText={(text) => {
-                        dispatch(setEnforcerUsername(text));
-                      }}
-                    ></ConstInput>
-                    <ConstInput
                       text={"First name"}
                       placeholder="First name"
                       width={300}

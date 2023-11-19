@@ -39,6 +39,7 @@ function Privacy(props) {
       })
       .catch((error) => {
         console.log("Error Changed Password");
+        alert("Error Changed Password");
         setResponseText("Your password hasn't been updated");
       });
   };

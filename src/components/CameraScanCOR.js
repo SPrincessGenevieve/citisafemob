@@ -17,7 +17,7 @@ import ScanOutlined from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import axios from "../../plugins/axios";
-import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from "react-native-image-crop-picker";
 import {
   setFinalVehicle,
   setGetFinalVehicle,
@@ -31,6 +31,7 @@ import { useNavigation } from "@react-navigation/native";
 import corners from "./../../assets/cornersOCR.png";
 import { setGetFinalDriver } from "./camera/infoSlice";
 import { ImageManipulator as ExpoImageManipulator } from "expo-image-crop";
+import Scanning from "./Scanning";
 
 export default function CameraScanCOR() {
   const [cameraMode, setCameraMode] = useState(CameraType.back);
@@ -41,6 +42,7 @@ export default function CameraScanCOR() {
   const [showPicture, setShowPicture] = useState(false); // New state variable to control showing the picturerrr
   const [cropMode, setCropMode] = useState(false);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [scanning, setScanning] = useState(false);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -101,21 +103,21 @@ export default function CameraScanCOR() {
   const takePicture = async () => {
     if (cameraRef) {
       const photo = await cameraRef.takePictureAsync();
-  
+
       // Check if photo has a valid path property
       if (photo && photo.uri) {
         ImagePicker.openCropper({
           path: photo.uri, // Use the path property
           includeBase64: true,
         })
-          .then(image => {
+          .then((image) => {
             const base64Image = `data:${image.mime};base64,${image.data}`;
             setCapturedImage(base64Image);
 
             setShowPicture(true);
           })
-          .catch(error => {
-            console.log('Error:', error);
+          .catch((error) => {
+            console.log("Error:", error);
           });
       }
     }
@@ -127,6 +129,7 @@ export default function CameraScanCOR() {
 
   const handleNextButton = async () => {
     try {
+      setScanning(true);
       if (!capturedImage) {
         Alert.alert("Please take a picture first.");
         return;
@@ -248,15 +251,18 @@ export default function CameraScanCOR() {
           navigation.navigate("FormScreen");
         } else {
           alert(`New Vehicle: ${concatenatedFields.plate_no}`);
+          setScanning(false);
           dispatch(setFinalVehicle());
           navigation.navigate("FormScreen");
         }
       } else {
         Alert.alert("Text extraction failed. Please try again later.");
+        setScanning(false);
       }
     } catch (error) {
       console.log("Error extracting text:", error);
       Alert.alert("Error extracting text. Please try again later.");
+      setScanning(false);
     }
   };
 
@@ -277,23 +283,20 @@ export default function CameraScanCOR() {
   };
 
   const pickImage = async () => {
-
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
     })
-      .then(image => {
+      .then((image) => {
         const base64Image = `data:${image.mime};base64,${image.data}`;
 
         setCapturedImage(base64Image);
         setShowPicture(true);
-
       })
-      .catch(error => {
-        console.log('Error:', error);
+      .catch((error) => {
+        console.log("Error:", error);
       });
   };
-
 
   return (
     <View>
@@ -305,13 +308,13 @@ export default function CameraScanCOR() {
             zIndex: 4,
             width: "100%",
             height: "100%",
-            ratio: "16:9" //
+            ratio: "16:9", //
           }}
         >
           {capturedImage ? (
             <Image style={styles.picture} source={{ uri: capturedImage }} />
           ) : null}
-
+          {scanning ? <Scanning></Scanning> : null}
           <TouchableOpacity style={styles.nextBtn} onPress={handleNextButton}>
             <Text style={styles.nextText}>Next</Text>
           </TouchableOpacity>
@@ -322,46 +325,45 @@ export default function CameraScanCOR() {
         </View>
       ) : null}
 
-        <View
-          style={{
-            height: "100%",
-            width: "100%",
-            backgroundColor: "transparent",
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
+          backgroundColor: "transparent",
+        }}
+      >
+        <Image style={styles.corners} source={corners} />
+
+        <Camera
+          flashMode={flash}
+          style={styles.camera}
+          ref={(ref) => {
+            setCameraRef(ref);
           }}
-        >
-          <Image style={styles.corners} source={corners} />
+          ratio="16:9" // Set the aspect ratio to 1:1
+        ></Camera>
+        <View style={styles.controlsContainer}>
+          <View style={styles.control}>
+            <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
+              <Icon name="image" size={28} color="white" style={{}} />
+            </TouchableOpacity>
 
-          <Camera
-            flashMode={flash}
-            style={styles.camera}
-            ref={(ref) => {
-              setCameraRef(ref);
-            }}
-            ratio="16:9" // Set the aspect ratio to 1:1
-
-          ></Camera>
-          <View style={styles.controlsContainer}>
-            <View style={styles.control}>
-              <TouchableOpacity style={styles.otherbtn} onPress={pickImage}>
-                <Icon name="image" size={28} color="white" style={{}} />
+            <View>
+              <TouchableOpacity
+                style={styles.takePictureBtn}
+                onPress={takePicture}
+              >
+                <ScanOutlined
+                  style={{
+                    color: "white",
+                    fontSize: 50,
+                  }}
+                  name="line-scan"
+                ></ScanOutlined>
               </TouchableOpacity>
+            </View>
 
-              <View>
-                <TouchableOpacity
-                  style={styles.takePictureBtn}
-                  onPress={takePicture}
-                >
-                  <ScanOutlined
-                    style={{
-                      color: "white",
-                      fontSize: 50,
-                    }}
-                    name="line-scan"
-                  ></ScanOutlined>
-                </TouchableOpacity>
-              </View>
-
-              {/* <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
+            {/* <TouchableOpacity style={styles.otherbtn} onPress={toggleFlash}>
                 <Feather
                   name={
                     flash === Camera.Constants.FlashMode.off ? "zap-off" : "zap"
@@ -370,9 +372,9 @@ export default function CameraScanCOR() {
                   color="white"
                 />
               </TouchableOpacity> */}
-            </View>
           </View>
         </View>
+      </View>
     </View>
   );
 }
@@ -464,7 +466,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
-    ratio: "16:9" // Se
+    ratio: "16:9", // Se
   },
   nextBtn: {
     position: "absolute",

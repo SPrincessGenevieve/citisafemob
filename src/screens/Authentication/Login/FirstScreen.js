@@ -1,10 +1,5 @@
 import React, { useState, useEffect, Children } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-} from "react-native";
+import { View, Text, StyleSheet, Animated, Image } from "react-native";
 import GradientBackground from "../../../components/GradientBG";
 import { useFonts } from "expo-font";
 import ConstInput from "../../../components/ConstInput";
@@ -29,6 +24,8 @@ import {
   setToken,
 } from "../authSlice";
 import NetInfo from "@react-native-community/netinfo";
+import scan from "./../../../../assets/scan.gif";
+import Scanning from "../../../components/Scanning";
 
 function FirstScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -39,90 +36,91 @@ function FirstScreen({ navigation }) {
   const [textInputFocused, setTextInputFocused] = useState(false);
   const [animationValue] = useState(new Animated.Value(1));
 
+  const startLoading = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  };
   const [credentials, setCredentials] = useState({
     username: "jaydemike21",
     password: "2023@engracia",
   });
-  // get the authSlice Online
-  const internet = useSelector((state) => state.auth.Online)
 
+  const internet = useSelector((state) => state.auth.Online);
 
-  const unsubscribe = NetInfo.addEventListener((state) => {
-    if (state.isConnected === false) {
-      alert("Please Connect to the Internet")
-    } else if (state.isConnected === true) {
-      console.log("Connected");
-      dispatch(setOnline());
-      dispatch(setLogout());
-    }
-  }, [1]);
+  const unsubscribe = NetInfo.addEventListener(
+    (state) => {
+      if (state.isConnected === false) {
+        alert("Please Connect to the Internet");
+      } else if (state.isConnected === true) {
+        console.log("Connected");
+        dispatch(setOnline());
+        dispatch(setLogout());
+      }
+    },
+    [1]
+  );
 
   useEffect(() => {
     unsubscribe();
   });
 
-
   const handleForgotPass = () => {
     navigation.navigate("ForgotPass");
   };
 
-
   const handleLogin = async () => {
+    try {
+      const response = await axios.post("accounts/token/login/", credentials);
+      const token = response.data.auth_token;
 
-      try {
-        const response = await axios.post("accounts/token/login/", credentials);
-        const token = response.data.auth_token;
-  
-        dispatch(setToken(token));
-  
-        const userResponse = await axios.get("accounts/users/me/", {
-          headers: {
-            Authorization: `token ${token}`,
-          },
-        });  
-        const role = userResponse.data.role;
-        const last_name = userResponse.data.last_name;
-        const first_name = userResponse.data.first_name;
-        const middle_name = userResponse.data.middle_name;
-        const username = userResponse.data.username;
-        const id = userResponse.data.id;
-        const profile_picture = userResponse.data.profile_picture;
-        const email = userResponse.data.email;
-        const position = userResponse.data.position;
+      dispatch(setToken(token));
 
-        dispatch(setEnforcerEmail(email));
-        dispatch(setEnforcerID(id));
-        dispatch(setEnforcerUsername(username));
-        dispatch(setEnforcerFirstName(first_name));
-        dispatch(setEnforcerMiddleName(middle_name));
-        dispatch(setEnforcerLastName(last_name));
-        dispatch(setEnforcerProfilePicture(profile_picture));
-        dispatch(setEnforcerPosition(position));
+      const userResponse = await axios.get("accounts/users/me/", {
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
+      const role = userResponse.data.role;
+      const last_name = userResponse.data.last_name;
+      const first_name = userResponse.data.first_name;
+      const middle_name = userResponse.data.middle_name;
+      const username = userResponse.data.username;
+      const id = userResponse.data.id;
+      const profile_picture = userResponse.data.profile_picture;
+      const email = userResponse.data.email;
+      const position = userResponse.data.position;
 
-  
-        if (role !== "ENFORCER") {
-          alert(`Sir ${last_name}, Your Role is ${role}`);
-          setCredentials({
-            username: "",
-            password: "",
-          });
-        } else {
-          dispatch(setLogin());
-        }
-        
-      } catch (error) {
-        console.error('Error during login:', error);
-        // Handle the error, e.g., show an alert or update the UI
+      dispatch(setEnforcerEmail(email));
+      dispatch(setEnforcerID(id));
+      dispatch(setEnforcerUsername(username));
+      dispatch(setEnforcerFirstName(first_name));
+      dispatch(setEnforcerMiddleName(middle_name));
+      dispatch(setEnforcerLastName(last_name));
+      dispatch(setEnforcerProfilePicture(profile_picture));
+      dispatch(setEnforcerPosition(position));
+
+      if (role !== "ENFORCER") {
+        alert(`Sir ${last_name}, Your Role is ${role}`);
+        setCredentials({
+          username: "",
+          password: "",
+        });
+      } else {
+        dispatch(setLogin());
       }
-    
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Incorrect username or password");
+    }
   };
   useEffect(() => {
     return () => {
       unsubscribe();
     };
   }, []);
-
-
 
   if (!fontsLoaded) {
     return null;
